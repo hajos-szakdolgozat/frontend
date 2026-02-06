@@ -1,6 +1,6 @@
 import logo from "./KEPEK/logo.png";
 
-function Users() {
+function Complaints() {
   return (
     <div className="admin-content">
       <div className="admin-header">
@@ -57,4 +57,4 @@ function Users() {
   );
 }
 
-export default Users;
+export default Complaints;

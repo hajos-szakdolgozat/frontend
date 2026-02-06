@@ -1,5 +1,5 @@
 import logo from "./KEPEK/logo.png";
-function Users() {
+function Transactions() {
   return (
     <div className="admin-content">
       <div className="admin-header">
@@ -65,4 +65,4 @@ function Users() {
   );
 }
 
-export default Users;
+export default Transactions;

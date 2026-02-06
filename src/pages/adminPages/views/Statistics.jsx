@@ -25,7 +25,7 @@ ChartJS.register(
   ArcElement,
 );
 
-function Users() {
+function Statistics() {
   // Statikus adat - később cserélhető
   const felhasznalokData = {
     labels: ["Január", "Február", "Március", "Április"],
@@ -92,4 +92,4 @@ function Users() {
   );
 }
 
-export default Users;
+export default Statistics;
