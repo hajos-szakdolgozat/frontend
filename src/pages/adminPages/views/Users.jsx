@@ -1,9 +1,10 @@
+import logo from "./KEPEK/logo.png";
 function Users() {
   return (
     <div className="admin-content">
       {/* Fejléc */}
       <div className="admin-header">
-        <h2>Felhasználók</h2>
+        <img src={logo} alt="kep" className="logo-kep" />
 
         <div className="admin-search">
           <label>Keresés:</label>
@@ -34,23 +35,28 @@ function Users() {
         </div>
       </div>
 
-      {/* Felhasználók táblázat */}
-      <table className="user-table">
-        <thead>
-          <tr>
-            <th>Név</th>
-            <th>Szerep</th>
-            <th>Státusz</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Béla</td>
-            <td>Bérlő</td>
-            <td>Offline</td>
-          </tr>
-        </tbody>
-      </table>
+      <div className="ads-table-container">
+        <div className="ads-table-header">
+          <span>Felhasználók</span>
+        </div>
+        {/* Felhasználók táblázat */}
+        <table className="user-table">
+          <thead>
+            <tr>
+              <th>Név</th>
+              <th>Szerep</th>
+              <th>Státusz</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Béla</td>
+              <td>Bérlő</td>
+              <td>Offline</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

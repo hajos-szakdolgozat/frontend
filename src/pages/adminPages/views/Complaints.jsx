@@ -1,8 +1,10 @@
+import logo from "./KEPEK/logo.png";
+
 function Users() {
   return (
     <div className="admin-content">
       <div className="admin-header">
-        <h2>Panaszok</h2>
+        <img src={logo} alt="kep" className="logo-kep" />
         <div className="admin-search">
           <label>Keresés:</label>
           <input type="text" placeholder="Keresés név alapján..." />
@@ -51,7 +53,7 @@ function Users() {
           <tbody>{/* Üres mock adatok nélkül */}</tbody>
         </table>
       </div>
-        </div>
+    </div>
   );
 }
 

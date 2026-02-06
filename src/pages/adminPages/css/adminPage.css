@@ -82,7 +82,6 @@ body {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
-  color: #1b3a57; /* sötétkék szöveg */
 }
 
 /* Keresőmező */
@@ -201,7 +200,6 @@ body {
   border-color: #6fa4d9;
 }
 
-
 /* ===== Ads oldal specifikus stílus ===== */
 
 /* Ads oldal layout - flex, hogy a tartalom és a filter sidebar egymás mellett legyen */
@@ -306,7 +304,6 @@ body {
   font-size: 0.95rem;
 }
 
-
 /* Date input vagy select mezők stílusa */
 .filter-card input[type="date"],
 .filter-card select {
@@ -337,7 +334,6 @@ body {
   border-color: #1b3a57;
   box-shadow: 0 0 0 2px rgba(142, 187, 240, 0.3);
 }
-
 
 .filter-card {
   display: flex;
@@ -378,4 +374,25 @@ body {
 .filter-card select:hover {
   background: #c0e0ff;
   border-color: #6fa4d9;
+}
+.logo-kep {
+  width: 80px; /* vagy 60px, 100px – ahogy tetszik */
+  height: auto; /* arányok megtartása */
+  display: block; /* ha középre akarod rakni, ez segít */
+}
+
+.charts-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 50px;
+}
+
+.chart-wrapper {
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+  width: 90%;
+  max-width: 650px;
 }

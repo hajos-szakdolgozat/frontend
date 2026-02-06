@@ -1,9 +1,10 @@
+import logo from "./KEPEK/logo.png";
 function Ads() {
   return (
     <div className="admin-content">
       {/* Fejléc */}
       <div className="admin-header">
-        <h2>Hirdetések</h2>
+        <img src={logo} alt="kep" className="logo-kep" />
         <div className="admin-search">
           <label>Keresés:</label>
           <input type="text" placeholder="Keresés név alapján..." />
