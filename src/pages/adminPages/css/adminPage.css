@@ -1,55 +1,79 @@
+/* Teljes oldal méret, fix viewport */
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  background: #e0f2ff; /* világos tengerkék háttér */
+  overflow: hidden; /* az egész oldalra ne legyen scroll */
+}
+
 /* Alap layout minden admin oldalhoz */
 .admin-layout {
   display: flex;
-  width: 1200px; /* fix teljes szélesség */
-  height: 800px; /* fix teljes magasság */
-  margin: 0 auto; /* középre igazítás */
-  border: 1px solid #ccc; /* opcionális keret */
-  font-family: Arial, sans-serif;
-  overflow: hidden; /* a túlcsorduló tartalmat elrejti */
+  width: 100vw; /* teljes szélesség */
+  height: 100vh; /* teljes magasság */
+  border: none; /* opcionális, nincs keret */
+  overflow: hidden;
+  position: relative; /* fix elhelyezéshez */
 }
 
 /* Oldalsáv minden oldalon */
 .admin-sidebar {
   width: 240px; /* fix szélesség */
-  height: 100%; /* kitölti a teljes layout magasságát */
+  height: 100vh; /* fix magasság, ne a tartalomtól függjön */
   padding: 20px;
-  background: #f1f1f1;
+  background: #1b3a57; /* sötét hajós kék */
   display: flex;
   flex-direction: column;
   gap: 14px;
   box-sizing: border-box;
-  overflow-y: auto; /* ha sok gomb van, scroll */
+  overflow-y: auto; /* scroll, ha sok gomb van */
+  position: fixed; /* fix helyzet a képernyőn */
+  left: 0;
+  top: 0;
+  color: #ffffff; /* fehér szöveg */
 }
 
-/* Gombok az oldalsávban */
-.admin-sidebar .admin-btn {
-  width: 100%;
-  padding: 12px;
-  border-radius: 22px;
+/* Sidebar linkek és gombok */
+.admin-sidebar a,
+.admin-sidebar button {
+  display: block;
+  padding: 10px 15px;
   border: none;
-  background: #f4a6a6;
+  border-radius: 6px;
+  background: transparent;
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 500;
   cursor: pointer;
-  transition: background 0.3s;
+  transition:
+    background 0.2s,
+    color 0.2s;
 }
 
-.admin-sidebar .admin-btn:hover {
-  background: #f09e9e;
+.admin-sidebar a:hover,
+.admin-sidebar button:hover {
+  background: #2b5275; /* sötétebb kék hover */
 }
 
-.admin-sidebar .admin-btn.active {
-  background: #d9d9d9;
-  font-weight: bold;
+.admin-sidebar a.active {
+  background: #8ebbf0; /* világoskék aktív link */
+  color: #1b3a57; /* sötétkék szöveg */
 }
 
 /* Tartalom minden oldalon */
 .admin-content {
-  width: calc(100% - 240px); /* oldalsáv kivonása */
-  height: 100%; /* fix magasság */
+  margin-left: 100px; /* oldalsáv szélessége */
+  height: 100vh; /* fix magasság */
+  width: 1325px;
   padding: 30px;
-  background: #fff;
-  overflow-y: auto; /* ha sok tartalom van, scroll */
+  background: #f0f8ff; /* világosabb, halvány kék */
   box-sizing: border-box;
+  overflow-y: auto; /* görgetés csak a tartalmon */
+  color: #1b3a57; /* sötétkék szöveg */
 }
 
 /* Fejléc minden oldalon */
@@ -58,6 +82,7 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+  color: #1b3a57; /* sötétkék szöveg */
 }
 
 /* Keresőmező */
@@ -70,7 +95,9 @@
 .admin-search input[type="text"] {
   padding: 6px 10px;
   border-radius: 6px;
-  border: 1px solid #ccc;
+  border: 1px solid #8ebbf0; /* világoskék keret */
+  background: #d9eeff; /* halvány kék háttér */
+  color: #1b3a57; /* sötétkék szöveg */
 }
 
 /* Kártyák a felső statisztikához */
@@ -82,11 +109,273 @@
 
 .admin-stat-card {
   padding: 20px;
-  border: 1px solid #ccc;
+  border: 1px solid #8ebbf0; /* világoskék keret */
   border-radius: 10px;
   flex: 1;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #fff;
+  background: #ffffff; /* fehér kártya */
+  color: #1b3a57; /* sötétkék szöveg */
+  box-shadow: 0 2px 5px rgba(27, 58, 87, 0.1); /* halvány kék árnyék */
+}
+
+/* Felhasználók táblázat */
+.user-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #ffffff; /* fehér háttér */
+  box-shadow: 0 2px 5px rgba(27, 58, 87, 0.1); /* halvány kék árnyék */
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.user-table th,
+.user-table td {
+  padding: 12px 15px;
+  text-align: left;
+  color: #1b3a57; /* sötétkék szöveg */
+}
+
+.user-table th {
+  background: #d9eeff; /* világoskék fejlécek */
+  border-bottom: 2px solid #8ebbf0; /* világoskék vonal */
+}
+
+.user-table tr {
+  border-bottom: 1px solid #e0f2ff; /* halvány kék sorhatár */
+}
+
+.user-table tr:last-child {
+  border-bottom: none;
+}
+
+.user-table tr:hover {
+  background: #f0f8ff; /* halvány kék hover */
+}
+
+/* Táblázatban akciógombok */
+.user-table .action-btn {
+  padding: 5px 10px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.2s;
+}
+
+.user-table .edit-btn {
+  background: #8ebbf0;
+  color: #1b3a57;
+}
+
+.user-table .edit-btn:hover {
+  background: #6fa4d9;
+}
+
+.user-table .delete-btn {
+  background: #f08080;
+  color: #fff;
+}
+
+.user-table .delete-btn:hover {
+  background: #d9534f;
+}
+
+/* Gombok az admin-contentben */
+.admin-content button {
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: 1px solid #8ebbf0;
+  background: #d9eeff;
+  color: #1b3a57;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    border-color 0.2s;
+}
+
+.admin-content button:hover {
+  background: #c0e0ff;
+  border-color: #6fa4d9;
+}
+
+
+/* ===== Ads oldal specifikus stílus ===== */
+
+/* Ads oldal layout - flex, hogy a tartalom és a filter sidebar egymás mellett legyen */
+.admin-content.ads-page {
+  display: flex;
+  gap: 20px; /* távolság a fő tartalom és a szűrő között */
+  padding: 30px;
+  box-sizing: border-box;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+/* Fő tartalom a táblázattal */
+.ads-main {
+  flex: 1; /* kitölti a rendelkezésre álló helyet */
+  display: flex;
+  flex-direction: column;
+}
+
+/* Hirdetések táblázat konténer */
+.ads-table-container {
+  margin-top: 20px;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(27, 58, 87, 0.1);
+  padding: 20px;
+  overflow-x: auto;
+}
+
+/* Hirdetések táblázat fejléc */
+.ads-table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.ads-table-header span {
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: #1b3a57;
+}
+
+.ads-table-header button {
+  padding: 6px 14px;
+  border-radius: 6px;
+  border: 1px solid #8ebbf0;
+  background: #d9eeff;
+  color: #1b3a57;
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    border-color 0.2s;
+}
+
+.ads-table-header button:hover {
+  background: #c0e0ff;
+  border-color: #6fa4d9;
+}
+
+/* Hirdetések táblázat */
+.ads-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.ads-table th,
+.ads-table td {
+  padding: 12px 15px;
+  text-align: left;
+  color: #1b3a57;
+}
+
+.ads-table th {
+  background: #d9eeff;
+  border-bottom: 2px solid #8ebbf0;
+}
+
+.ads-table tr {
+  border-bottom: 1px solid #e0f2ff;
+}
+
+.ads-table tr:last-child {
+  border-bottom: none;
+}
+
+.ads-table tr:hover {
+  background: #f0f8ff;
+}
+
+/* ===== Ads oldal filter sidebar – Mettől/Meddig mezők ===== */
+
+/* A label-ek rendezése, hogy a szöveg és mező egymás alatt legyen */
+.filter-card label {
+  display: flex;
+  flex-direction: column;
+  font-weight: 500;
+  color: #1b3a57;
+  margin-bottom: 12px;
+  font-size: 0.95rem;
+}
+
+
+/* Date input vagy select mezők stílusa */
+.filter-card input[type="date"],
+.filter-card select {
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #8ebbf0;
+  background: #d9eeff;
+  color: #1b3a57;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    border-color 0.2s;
+  margin-top: 5px; /* kis távolság a label szöveg alatt */
+}
+
+/* Hover állapot */
+.filter-card input[type="date"]:hover,
+.filter-card select:hover {
+  background: #c0e0ff;
+  border-color: #6fa4d9;
+}
+
+/* Focus állapot – amikor a felhasználó a mezőre kattint */
+.filter-card input[type="date"]:focus,
+.filter-card select:focus {
+  outline: none;
+  border-color: #1b3a57;
+  box-shadow: 0 0 0 2px rgba(142, 187, 240, 0.3);
+}
+
+
+.filter-card {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.filter-card button {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #8ebbf0;
+  background: #d9eeff;
+  color: #1b3a57;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    border-color 0.2s;
+}
+
+.filter-card button:hover {
+  background: #c0e0ff;
+  border-color: #6fa4d9;
+}
+
+.filter-card select {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #8ebbf0;
+  background: #d9eeff;
+  color: #1b3a57;
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    border-color 0.2s;
+}
+
+.filter-card select:hover {
+  background: #c0e0ff;
+  border-color: #6fa4d9;
 }

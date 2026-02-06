@@ -11,7 +11,6 @@ function Users() {
         </div>
       </div>
 
-      {/* Statisztikai kártyák */}
       <div className="admin-stats">
         <div className="admin-stat-card">
           <div>
