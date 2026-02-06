@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import useAuthContext from "../hooks/UseAuthContext";
+import useAuthContext from "../../hooks/UseAuthContext";
 
 const Login = () => {
   const [email, setEmail] = useState("");

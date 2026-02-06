@@ -1,4 +1,4 @@
-import useAuthContext from "../hooks/UseAuthContext";
+import useAuthContext from "../../hooks/UseAuthContext";
 
 const Home = () => {
   const { user } = useAuthContext();
