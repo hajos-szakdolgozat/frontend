@@ -1,174 +1,92 @@
-html,
-body {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  font-family: Arial, sans-serif;
-  background: #f5f6fa;
-  color: #333;
-}
-
+/* Alap layout minden admin oldalhoz */
 .admin-layout {
-  display: grid;
-  grid-template-columns: 220px 1fr;
-  height: 100vh;
-  width: 90vw;
+  display: flex;
+  width: 1200px; /* fix teljes szélesség */
+  height: 800px; /* fix teljes magasság */
+  margin: 0 auto; /* középre igazítás */
+  border: 1px solid #ccc; /* opcionális keret */
+  font-family: Arial, sans-serif;
+  overflow: hidden; /* a túlcsorduló tartalmat elrejti */
 }
 
-.sidebar {
-  background-color: #1e1e2f;
-  color: white;
+/* Oldalsáv minden oldalon */
+.admin-sidebar {
+  width: 240px; /* fix szélesség */
+  height: 100%; /* kitölti a teljes layout magasságát */
   padding: 20px;
+  background: #f1f1f1;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  box-sizing: border-box;
+  overflow-y: auto; /* ha sok gomb van, scroll */
 }
 
-.logo-text {
-  font-size: 1.5rem;
-  font-weight: bold;
-  margin-bottom: 30px;
-}
-
-.logo-img {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-
-.menu-item {
-  display: block;
+/* Gombok az oldalsávban */
+.admin-sidebar .admin-btn {
   width: 100%;
-  padding: 12px 20px;
-  margin-bottom: 10px;
+  padding: 12px;
+  border-radius: 22px;
   border: none;
-  background: #2c2c3d;
-  color: white;
-  border-radius: 8px;
+  background: #f4a6a6;
   cursor: pointer;
-  text-align: left;
-  transition: 0.2s;
+  transition: background 0.3s;
 }
 
-.menu-item.active {
-  background: #ff6b6b;
+.admin-sidebar .admin-btn:hover {
+  background: #f09e9e;
 }
 
-.content {
-  padding: 25px;
-  overflow-y: auto;
+.admin-sidebar .admin-btn.active {
+  background: #d9d9d9;
+  font-weight: bold;
 }
 
-.topbar {
-  display: grid;
-  grid-template-columns: 1fr 250px 120px;
+/* Tartalom minden oldalon */
+.admin-content {
+  width: calc(100% - 240px); /* oldalsáv kivonása */
+  height: 100%; /* fix magasság */
+  padding: 30px;
+  background: #fff;
+  overflow-y: auto; /* ha sok tartalom van, scroll */
+  box-sizing: border-box;
+}
+
+/* Fejléc minden oldalon */
+.admin-header {
+  display: flex;
+  justify-content: space-between;
   align-items: center;
-  margin-bottom: 25px;
+  margin-bottom: 20px;
 }
 
-.search {
-  padding: 8px 12px;
-  border-radius: 8px;
+/* Keresőmező */
+.admin-search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.admin-search input[type="text"] {
+  padding: 6px 10px;
+  border-radius: 6px;
   border: 1px solid #ccc;
 }
 
-.profile {
-  text-align: right;
-}
-
-.avatar {
-  margin-right: 8px;
-}
-
-.cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 20px;
-  margin-bottom: 30px;
-}
-
-.card {
-  background: white;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  position: relative;
-  text-align: center;
-  transition:
-    transform 0.2s,
-    box-shadow 0.2s;
-}
-
-.card h3 {
-  margin: 0;
-  font-size: 1.8rem;
-}
-
-.card p {
-  margin: 5px 0;
-  font-weight: bold;
-}
-
-.emoji {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  font-size: 1.2rem;
-}
-
-.tables {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 20px;
-}
-
-.table-box {
-  background: white;
-  padding: 15px;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.table-header {
-  display: grid;
-  grid-template-columns: 1fr 80px;
-  margin-bottom: 10px;
-  align-items: center;
-}
-
-.filter-btn {
-  padding: 6px 10px;
-  border-radius: 8px;
-  border: none;
-  background: #ff6b6b;
-  color: white;
-  cursor: pointer;
-  transition: 0.2s;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-th,
-td {
-  padding: 10px 8px;
-  border-bottom: 1px solid #eee;
-  text-align: left;
-}
-
-.status.offline {
-  color: #ff6b6b;
-  font-weight: bold;
-}
-
-.new-users {
-  padding: 15px;
-  border: 1px dashed #ccc;
-  border-radius: 8px;
-  min-height: 100px;
-  text-align: center;
+/* Kártyák a felső statisztikához */
+.admin-stats {
   display: flex;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.admin-stat-card {
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
   align-items: center;
-  justify-content: center;
-  color: #555;
+  background: #fff;
 }
