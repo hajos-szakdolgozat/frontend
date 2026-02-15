@@ -1,0 +1,40 @@
+.boats {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  text-align: left;
+}
+
+.boats__header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.boats__header h2 {
+  margin: 0;
+  font-size: 1.75rem;
+}
+
+.boats__header p {
+  margin: 0;
+  color: #6b7280;
+}
+
+.boats__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+@media (max-width: 1024px) {
+  .boats__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .boats__grid {
+    grid-template-columns: 1fr;
+  }
+}

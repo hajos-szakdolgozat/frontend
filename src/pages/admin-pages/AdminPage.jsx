@@ -1,7 +1,7 @@
 import { useState } from "react";
 import AdminSidebar from "./components/AdminSidebar";
 import AdminContent from "./components/AdminContent";
-import "./css/adminPage.css";
+import "./css/AdminPage.css";
 
 function AdminPage() {
   const [aktivNezet, setAktivNezet] = useState("users");
