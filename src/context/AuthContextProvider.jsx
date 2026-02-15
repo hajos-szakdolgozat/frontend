@@ -13,6 +13,7 @@ const AuthContextProvider = ({ children }) => {
     const { data } = await httpClient.get("/api/user");
     setUser(data);
   };
+
   const login = async ({ email, password }) => {
     await csrf();
     setErrors([]);
@@ -26,6 +27,7 @@ const AuthContextProvider = ({ children }) => {
       }
     }
   };
+
   const register = async ({ name, email, password, password_confirmation }) => {
     await csrf();
     setErrors([]);
@@ -50,11 +52,13 @@ const AuthContextProvider = ({ children }) => {
       setUser(null);
     });
   };
+
   useEffect(() => {
     if (!user) {
       getUser();
     }
-  }, []);
+  }, [user]);
+
   return (
     <AuthContext.Provider
       value={{ user, errors, getUser, login, register, logout }}
