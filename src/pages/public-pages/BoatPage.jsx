@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { httpClient } from "../../api/axios";
+import ReservationFrom from "../../components/ReservationFrom";
 import "./css/BoatPage.css";
 
 const BoatPage = () => {
@@ -103,6 +104,7 @@ const BoatPage = () => {
             </div>
           </div>
         </div>
+        <ReservationFrom boatId={id} />
       </div>
     </section>
   );

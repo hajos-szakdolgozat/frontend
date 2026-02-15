@@ -11,13 +11,14 @@ const Boats = () => {
   useEffect(() => {
     const fetchBoats = async () => {
       setLoading(true);
+      setError("");
 
       try {
         const { data } = await httpClient.get("/api/boats");
         console.log(data);
         setBoats(data);
       } catch (error) {
-        setError(error);
+        setError(error?.message || "Nem sikerült betölteni a hajót.");
       } finally {
         setLoading(false);
       }

@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import "./css/Navbar.css";
-import useAuthContext from "../../hooks/UseAuthContext";
+import useAuthContext from "../hooks/UseAuthContext";
 function Navbar() {
   const { user, logout } = useAuthContext();
   return (
@@ -48,6 +48,11 @@ function Navbar() {
               <li>
                 <Link to="/" aria-current="page">
                   Home
+                </Link>
+              </li>
+              <li>
+                <Link to="/reservations" aria-current="page">
+                  Foglalások
                 </Link>
               </li>
               {user ? (
