@@ -1,32 +1,16 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useParams, Link } from "react-router-dom";
 import { httpClient } from "../../api/axios";
+import useFetch from "../../hooks/useFetch";
 import "./css/ReservationPage.css";
 
 const ReservationPage = () => {
   const { id } = useParams();
-  const [reservation, setReservation] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-
-  useEffect(() => {
-    const fetchReservation = async () => {
-      setLoading(true);
-      setError("");
-
-      try {
-        const { data } = await httpClient.get("/api/reservations/mine");
-        const found = data.find((item) => String(item.id) === String(id));
-        setReservation(found || null);
-      } catch (err) {
-        setError(err?.message || "Nem sikerült betölteni a foglalást.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchReservation();
-  }, [id]);
+  const {
+    fetchedData: reservation,
+    loading,
+    error,
+  } = useFetch(`/api/reservations/mine/${id}`);
 
   const nights = useMemo(() => {
     if (!reservation?.start_date || !reservation?.end_date) return 0;
@@ -54,7 +38,7 @@ const ReservationPage = () => {
   }
 
   if (error) {
-    return <p className="reservation-page__status">{error}</p>;
+    return <p className="reservation-page__status">{error.message || error}</p>;
   }
 
   if (!reservation) {

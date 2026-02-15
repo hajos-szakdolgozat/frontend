@@ -1,4 +1,4 @@
-import useAuthContext from "../hooks/UseAuthContext";
+import useAuthContext from "../hooks/useAuthContext";
 import { Navigate, Outlet, Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
 

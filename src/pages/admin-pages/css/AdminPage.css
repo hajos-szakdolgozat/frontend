@@ -56,9 +56,9 @@
 
 /* Tartalom minden oldalon */
 .admin-content {
-  margin-left: 100px; /* oldalsáv szélessége */
+  margin-left: 240px; /* oldalsáv szélessége */
+  width: calc(100vw - 240px);
   height: 100vh; /* fix magasság */
-  width: 1325px;
   padding: 30px;
   background: #f0f8ff; /* világosabb, halvány kék */
   box-sizing: border-box;

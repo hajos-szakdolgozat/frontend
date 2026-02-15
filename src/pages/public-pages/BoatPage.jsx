@@ -1,32 +1,12 @@
-import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { httpClient } from "../../api/axios";
 import ReservationFrom from "../../components/ReservationFrom";
 import "./css/BoatPage.css";
+import useFetch from "../../hooks/useFetch";
 
 const BoatPage = () => {
   const { id } = useParams();
-  const [boat, setBoat] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-
-  useEffect(() => {
-    const fetchBoat = async () => {
-      setLoading(true);
-      setError("");
-
-      try {
-        const { data } = await httpClient.get(`/api/boats/${id}`);
-        setBoat(data);
-      } catch (err) {
-        setError(err?.message || "Nem sikerült betölteni a hajót.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchBoat();
-  }, [id]);
+  const { fetchedData: boat, loading, error } = useFetch(`/api/boats/${id}`);
 
   const thumbnail =
     boat?.boat_images?.find((image) => image.is_thumbnail) ||

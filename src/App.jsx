@@ -16,13 +16,12 @@ import "./App.css";
 function App() {
   return (
     <Routes>
-      <Route path="/admin" element={<AdminPage />} />
-
       <Route element={<AuthLayout />}>
         <Route path="/" element={<Home />} />
         <Route path="/boat/:id" element={<BoatPage />} />
         <Route path="/reservations" element={<ReservationsPage />} />
         <Route path="/reservations/:id" element={<ReservationPage />} />
+        <Route path="/admin" element={<AdminPage />} />
       </Route>
 
       <Route element={<GuestLayout />}>

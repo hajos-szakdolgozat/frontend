@@ -1,38 +1,17 @@
-import { useEffect, useState } from "react";
-import { httpClient } from "../api/axios";
+import useFetch from "../hooks/useFetch";
 import Boat from "./Boat";
+
 import "./css/Boats.css";
 
 const Boats = () => {
-  const [boats, setBoats] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-
-  useEffect(() => {
-    const fetchBoats = async () => {
-      setLoading(true);
-      setError("");
-
-      try {
-        const { data } = await httpClient.get("/api/boats");
-        console.log(data);
-        setBoats(data);
-      } catch (error) {
-        setError(error?.message || "Nem sikerült betölteni a hajót.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchBoats();
-  }, []);
+  const { fetchedData: boats, loading, error } = useFetch("/api/boats");
 
   if (loading) {
     return <p>Betöltés...</p>;
   }
 
   if (error) {
-    return <p>{error.message}</p>;
+    return <p>{error}</p>;
   }
 
   return !loading && !error && boats.length ? (

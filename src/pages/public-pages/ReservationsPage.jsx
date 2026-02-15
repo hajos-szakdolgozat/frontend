@@ -1,31 +1,15 @@
-import { useEffect, useState } from "react";
-import { httpClient } from "../../api/axios";
 import { Link, Outlet } from "react-router-dom";
 import Reservation from "../../components/Reservation";
+import useFetch from "../../hooks/useFetch";
+
 import "./css/ReservationsPage.css";
 
 const ReservationsPage = () => {
-  const [reservations, setReservations] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-
-  useEffect(() => {
-    const fetchReservations = async () => {
-      setLoading(true);
-      setError("");
-      try {
-        const { data } = await httpClient.get("/api/reservations/mine");
-        console.log(data);
-        setReservations(data);
-      } catch (error) {
-        setError(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchReservations();
-  }, []);
+  const {
+    fetchedData: reservations,
+    loading,
+    error,
+  } = useFetch("/api/reservations/mine");
 
   if (loading) {
     return <p>Betöltés...</p>;
