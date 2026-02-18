@@ -13,8 +13,7 @@ import AdminPage from "./pages/adminPages/AdminPage";
 function App() {
   return (
     <Routes>
-      <Route path="/admin" element={<AdminPage />} />    
-
+      <Route path="/admin" element={<AdminPage />} />
 
       <Route element={<AuthLayout />}>
         <Route path="/" element={<Home />} />
