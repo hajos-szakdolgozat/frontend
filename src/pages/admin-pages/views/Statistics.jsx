@@ -1,4 +1,4 @@
-import logo from "./KEPEK/logo.png";
+import logo from "./images/logo.png";
 import { Bar, Pie, Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -69,8 +69,16 @@ function Statistics() {
 
   return (
     <div className="admin-content" style={{ fontFamily: "Arial, sans-serif" }}>
-      <div className="admin-header" style={{ textAlign: "center", marginBottom: "50px" }}>
-        <img src={logo} alt="Logo" className="logo-kep" style={{ height: "60px" }} />
+      <div
+        className="admin-header"
+        style={{ textAlign: "center", marginBottom: "50px" }}
+      >
+        <img
+          src={logo}
+          alt="Logo"
+          className="logo-kep"
+          style={{ height: "60px" }}
+        />
         <h2>Statisztika</h2>
       </div>
 

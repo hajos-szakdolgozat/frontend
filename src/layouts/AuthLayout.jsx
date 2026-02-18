@@ -1,7 +1,6 @@
-import React from "react";
-import useAuthContext from "../hooks/UseAuthContext";
+import useAuthContext from "../hooks/useAuthContext";
 import { Navigate, Outlet, Link } from "react-router-dom";
-import Navbar from "../pages/publicPages/Navbar";
+import Navbar from "../components/Navbar";
 
 const AuthLayout = () => {
   const { user } = useAuthContext();

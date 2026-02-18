@@ -1,20 +1,21 @@
-import logo from "./KEPEK/logo.png";
-
-function Complaints() {
+import logo from "./images/logo.png";
+function Transactions() {
   return (
     <div className="admin-content">
       <div className="admin-header">
         <img src={logo} alt="kep" className="logo-kep" />
+
         <div className="admin-search">
           <label>Keresés:</label>
           <input type="text" placeholder="Keresés név alapján..." />
         </div>
       </div>
+
       <div className="admin-stats">
         <div className="admin-stat-card">
           <div>
             <strong>14</strong>
-            <p>Nyitottak</p>
+            <p>Összes tranzakció</p>
           </div>
         </div>
 
@@ -24,7 +25,15 @@ function Complaints() {
             <p>Folyamatban</p>
           </div>
         </div>
+
+        <div className="admin-stat-card">
+          <div>
+            <strong>12</strong>
+            <p>Sikertelen</p>
+          </div>
+        </div>
       </div>
+
       {/* Hirdetések táblázat */}
       <div className="ads-table-container">
         <div className="ads-table-header">
@@ -33,9 +42,8 @@ function Complaints() {
             <div className="filter-card">
               <select name="szures" id="szures">
                 <option value="">Válassz szűrést</option>
-                <option value="statusz">Státusz</option>
-                <option value="tipus">Típus</option>
-                <option value="felhasznalo">Felhasználó</option>
+                <option value="datum">Dátum szerint</option>
+                <option value="mennyiseg">Mennyiség szerint</option>
               </select>
             </div>
           </div>
@@ -57,4 +65,4 @@ function Complaints() {
   );
 }
 
-export default Complaints;
+export default Transactions;

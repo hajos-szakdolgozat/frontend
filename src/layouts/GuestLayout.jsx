@@ -1,4 +1,4 @@
-import useAuthContext from "../hooks/UseAuthContext";
+import useAuthContext from "../hooks/useAuthContext";
 import { Navigate, Outlet } from "react-router-dom";
 
 const GuestLayout = () => {
