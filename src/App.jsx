@@ -2,6 +2,8 @@ import { Route, Routes } from "react-router-dom";
 
 import AuthLayout from "./layouts/AuthLayout";
 import GuestLayout from "./layouts/GuestLayout";
+import PublicLayout from "./layouts/PublicLayout";
+import AdminLayout from "./layouts/AdminLayout";
 
 import Home from "./pages/public-pages/Home";
 import Register from "./pages/public-pages/Register";
@@ -16,13 +18,17 @@ import "./App.css";
 function App() {
   return (
     <Routes>
-      <Route path="/admin" element={<AdminPage />} />
-
-      <Route element={<AuthLayout />}>
+      <Route element={<PublicLayout />}>
         <Route path="/" element={<Home />} />
         <Route path="/boat/:id" element={<BoatPage />} />
+      </Route>
+
+      <Route element={<AuthLayout />}>
         <Route path="/reservations" element={<ReservationsPage />} />
         <Route path="/reservations/:id" element={<ReservationPage />} />
+      </Route>
+
+      <Route element={<AdminLayout />}>
         <Route path="/admin" element={<AdminPage />} />
       </Route>
 

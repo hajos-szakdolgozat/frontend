@@ -7,12 +7,19 @@ const Register = () => {
   // const [lastname, setLastName] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState(0);
   const [password_confirmation, setPassword_confirmation] = useState("");
   const { register, errors } = useAuthContext();
 
   const handleRegister = async (event) => {
     event.preventDefault();
-    register({ name, email, password, password_confirmation });
+    register({
+      name,
+      email,
+      phone_number: phoneNumber,
+      password,
+      password_confirmation,
+    });
   };
 
   return (
@@ -57,6 +64,19 @@ const Register = () => {
                   {errors.email && (
                     <div>
                       <span>{errors.email[0]}</span>
+                    </div>
+                  )}
+                </div>
+                <div>
+                  <input
+                    type="tel"
+                    value={phoneNumber}
+                    onChange={(e) => setPhoneNumber(e.target.value)}
+                    placeholder="Telefonszám"
+                  />
+                  {errors.phone_number && (
+                    <div>
+                      <span>{errors.phone_number[0]}</span>
                     </div>
                   )}
                 </div>

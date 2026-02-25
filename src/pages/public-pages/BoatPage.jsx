@@ -3,9 +3,11 @@ import { httpClient } from "../../api/axios";
 import ReservationFrom from "../../components/ReservationFrom";
 import "./css/BoatPage.css";
 import useFetch from "../../hooks/useFetch";
+import useAuthContext from "../../hooks/useAuthContext";
 
 const BoatPage = () => {
   const { id } = useParams();
+  const { user } = useAuthContext();
   const { fetchedData: boat, loading, error } = useFetch(`/api/boats/${id}`);
 
   const thumbnail =
@@ -84,7 +86,18 @@ const BoatPage = () => {
             </div>
           </div>
         </div>
-        <ReservationFrom boatId={id} />
+        {user ? (
+          <ReservationFrom boatId={id} />
+        ) : (
+          <div className="boat-page__details">
+            <p className="boat-page__description">
+              Foglaláshoz be kell jelentkezned.
+            </p>
+            <Link className="boat-page__back" to="/login">
+              Bejelentkezés
+            </Link>
+          </div>
+        )}
       </div>
     </section>
   );

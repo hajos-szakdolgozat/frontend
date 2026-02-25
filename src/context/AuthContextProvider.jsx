@@ -28,13 +28,20 @@ const AuthContextProvider = ({ children }) => {
     }
   };
 
-  const register = async ({ name, email, password, password_confirmation }) => {
+  const register = async ({
+    name,
+    email,
+    phone_number,
+    password,
+    password_confirmation,
+  }) => {
     await csrf();
     setErrors([]);
     try {
       await httpClient.post("/register", {
         name,
         email,
+        phone_number,
         password,
         password_confirmation,
       });

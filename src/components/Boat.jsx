@@ -1,8 +1,11 @@
 import "./css/Boat.css";
 import { httpClient } from "../api/axios";
 import { Link } from "react-router-dom";
+import { useState } from "react";
 
 const Boat = ({ boat }) => {
+  const [isFavorite, setIsFavorite] = useState(false);
+
   const portLabel = boat?.port?.name
     ? `${boat.port.name} • ${boat.port.city}`
     : "Ismeretlen kikötő";
@@ -14,10 +17,22 @@ const Boat = ({ boat }) => {
   const imageUrl = thumbnail?.path
     ? `${httpClient.defaults.baseURL}storage/${thumbnail.path}`
     : null;
-
+  const favorite = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsFavorite(!isFavorite);
+    //Kirus ide kell a favorite logika.
+  };
   return (
     <Link to={boat.is_active ? `/boat/${boat.id}` : ""} className="boat-card">
       <div className="boat-card__media">
+        <span
+          className="boat-card__favorite"
+          onClick={(e) => favorite(e)}
+          style={{ color: isFavorite ? "red" : "gray" }}
+        >
+          ♥
+        </span>
         {imageUrl ? (
           <img src={imageUrl} alt={boat.name} />
         ) : (
