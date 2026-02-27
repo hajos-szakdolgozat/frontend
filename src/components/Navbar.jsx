@@ -6,6 +6,7 @@ import { httpClient } from "../api/axios";
 
 function Navbar() {
   const { user, logout } = useAuthContext();
+  const welcomeMessage = user ? `Üdvözöllek, ${user.name}!` : "";
   const hasAvatarPath =
     typeof user?.avatar_path === "string" && user.avatar_path.trim() !== "";
   const avatarSrc = hasAvatarPath
@@ -16,7 +17,7 @@ function Navbar() {
     <nav className="nav">
       <div className="nav-container">
         <div className="nav-logo">
-          <h2>Hajók</h2>
+          <h2>{welcomeMessage}</h2>
         </div>
         <div className="nav-search">
           <div className="search-container">

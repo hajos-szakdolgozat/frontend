@@ -57,6 +57,7 @@ const AuthContextProvider = ({ children }) => {
   const logout = () => {
     httpClient.post("/logout").then(() => {
       setUser(null);
+      navigate("/");
     });
   };
 
