@@ -14,6 +14,7 @@ import ReservationsPage from "./pages/public-pages/ReservationsPage";
 import ReservationPage from "./pages/public-pages/ReservationPage";
 
 import "./App.css";
+import FavoritesPage from "./pages/public-pages/FavoritesPage";
 
 function App() {
   return (
@@ -26,6 +27,8 @@ function App() {
       <Route element={<AuthLayout />}>
         <Route path="/reservations" element={<ReservationsPage />} />
         <Route path="/reservations/:id" element={<ReservationPage />} />
+        <Route path="/favorites" element={<FavoritesPage />} />
+        <Route path="favorites/me" element={<FavoritesPage />} />
       </Route>
 
       <Route element={<AdminLayout />}>

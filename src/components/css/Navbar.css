@@ -120,6 +120,45 @@ body {
 .nav-links > a:hover {
   background: rgba(13, 110, 253, 0.06);
 }
+img {
+  height: 25px;
+}
+.image-container {
+  position: relative;
+  display: inline-block;
+}
+.dropdown ul {
+  display: block;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.dropdown li {
+  display: block;
+}
+.dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: white;
+  border: 1px solid #ccc;
+  display: none;
+  min-width: 120px;
+}
+
+.image-container:hover .dropdown {
+  display: block;
+}
+#navbar-default .dropdown ul {
+  display: block;
+  flex-direction: column; /* biztos ami biztos */
+  align-items: stretch;
+}
+
+#navbar-default .dropdown li {
+  display: block;
+  width: 100%;
+}
 
 @media (max-width: 900px) {
   .search-container {

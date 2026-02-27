@@ -1,8 +1,17 @@
 import { Link } from "react-router-dom";
 import "./css/Navbar.css";
 import useAuthContext from "../hooks/useAuthContext";
+import img from "../images/userimage.png";
+import { httpClient } from "../api/axios";
+
 function Navbar() {
   const { user, logout } = useAuthContext();
+  const hasAvatarPath =
+    typeof user?.avatar_path === "string" && user.avatar_path.trim() !== "";
+  const avatarSrc = hasAvatarPath
+    ? new URL(user.avatar_path, httpClient.defaults.baseURL).toString()
+    : img;
+
   return (
     <nav className="nav">
       <div className="nav-container">
@@ -50,33 +59,46 @@ function Navbar() {
                   Home
                 </Link>
               </li>
-              <li>
-                <Link to="/reservations" aria-current="page">
-                  Foglalások
-                </Link>
-              </li>
-              {user ? (
-                <>
-                  <li>
-                    <button onClick={logout} aria-current="page">
-                      LogOut
-                    </button>
-                  </li>
-                </>
-              ) : (
-                <>
-                  <li>
-                    <Link to="/login" aria-current="page">
-                      Login
-                    </Link>
-                  </li>
-                  <li>
-                    <Link to="/register" aria-current="page">
-                      Register
-                    </Link>
-                  </li>
-                </>
-              )}
+              <div className="image-container">
+                <img src={avatarSrc} alt="" />
+                <div className="dropdown">
+                  <ul>
+                    <li>
+                      <Link to="/me">Profilom</Link>
+                    </li>
+                    <li>
+                      <Link to="/reservations" aria-current="page">
+                        Foglalásaim
+                      </Link>{" "}
+                    </li>
+                    <li>
+                      <Link to="/favorites">Kedvenceim</Link>
+                    </li>
+                    {user ? (
+                      <>
+                        <li>
+                          <button onClick={logout} aria-current="page">
+                            LogOut
+                          </button>
+                        </li>
+                      </>
+                    ) : (
+                      <>
+                        <li>
+                          <Link to="/login" aria-current="page">
+                            Login
+                          </Link>
+                        </li>
+                        <li>
+                          <Link to="/register" aria-current="page">
+                            Register
+                          </Link>
+                        </li>
+                      </>
+                    )}
+                  </ul>
+                </div>
+              </div>
             </ul>
           </div>
         </div>
