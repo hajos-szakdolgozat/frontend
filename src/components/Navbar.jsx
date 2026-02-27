@@ -67,6 +67,9 @@ function Navbar() {
                       <Link to="/me">Profilom</Link>
                     </li>
                     <li>
+                      <Link to="/newBoat">Hajóm kiadása</Link>
+                    </li>
+                    <li>
                       <Link to="/reservations" aria-current="page">
                         Foglalásaim
                       </Link>{" "}

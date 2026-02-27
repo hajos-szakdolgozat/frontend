@@ -12,6 +12,7 @@ import AdminPage from "./pages/admin-pages/AdminPage";
 import BoatPage from "./pages/public-pages/BoatPage";
 import ReservationsPage from "./pages/public-pages/ReservationsPage";
 import ReservationPage from "./pages/public-pages/ReservationPage";
+import AddBoat from "./components/AddBoat";
 
 import "./App.css";
 import FavoritesPage from "./pages/public-pages/FavoritesPage";
@@ -29,6 +30,7 @@ function App() {
         <Route path="/reservations/:id" element={<ReservationPage />} />
         <Route path="/favorites" element={<FavoritesPage />} />
         <Route path="favorites/me" element={<FavoritesPage />} />
+        <Route path="/newBoat" element={AddBoat} />
       </Route>
 
       <Route element={<AdminLayout />}>
