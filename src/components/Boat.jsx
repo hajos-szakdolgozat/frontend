@@ -53,7 +53,7 @@ const Boat = ({ boat }) => {
       }
 
       try {
-        const { data } = await httpClient.get("/api/favorites/mine");
+        const { data } = await httpClient.get("/api/favorites/me");
         const myFav = data.find(
           (f) => f.boat_id === boat.id || f.boat?.id === boat.id,
         );
@@ -106,6 +106,10 @@ const Boat = ({ boat }) => {
         <div>
           <span className="boat-card__meta-label">Évjárat</span>
           <strong className="boat-card__meta-value">{boat.year_built}</strong>
+        </div>
+        <div>
+          <span className="boat-card__meta-label">Capacity</span>
+          <strong className="boat-card__meta-value">{boat.capacity} pax</strong>
         </div>
         <div>
           <span className="boat-card__meta-label">Méret</span>

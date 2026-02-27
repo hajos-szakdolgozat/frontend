@@ -26,7 +26,7 @@ const ReservationFrom = ({ boatId }) => {
       await httpClient.post("/api/reservations", {
         user_id: user.id,
         boat_id: boatId,
-        status: "requested",
+        status: "pending",
         start_date: startDate,
         end_date: endDate,
       });
@@ -35,7 +35,11 @@ const ReservationFrom = ({ boatId }) => {
       setEndDate("");
       navigate("/reservations");
     } catch (error) {
-      setError(error);
+      const message =
+        error?.response?.data?.message ||
+        Object.values(error?.response?.data?.errors || {})?.[0]?.[0] ||
+        "Foglalás létrehozása sikertelen.";
+      setError({ message });
     }
   };
 
