@@ -3,7 +3,12 @@ import { Navigate, Outlet, Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
 
 const AuthLayout = () => {
-  const { user } = useAuthContext();
+  const { user, authLoading } = useAuthContext();
+
+  if (authLoading) {
+    return null;
+  }
+
   return user ? (
     <>
       <Navbar />

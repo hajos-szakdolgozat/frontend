@@ -1,0 +1,23 @@
+/* Alap layout minden admin oldalhoz */
+.admin-layout {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  border: none;
+  overflow: hidden;
+  position: relative;
+  font-family: Arial, sans-serif;
+  background: #e0f2ff;
+}
+
+/* Tartalom minden oldalon */
+.admin-content {
+  margin-left: 240px;
+  width: calc(100vw - 240px);
+  height: 100vh;
+  padding: 30px;
+  background: #f0f8ff;
+  box-sizing: border-box;
+  overflow-y: auto;
+  color: #1b3a57;
+}

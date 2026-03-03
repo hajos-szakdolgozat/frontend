@@ -1,0 +1,49 @@
+/* Statistics oldal */
+.stats-page .admin-header {
+  justify-content: flex-start;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.stats-heading h2 {
+  margin: 0;
+}
+
+.stats-heading p {
+  margin: 4px 0 0;
+  color: #4c6c8c;
+}
+
+.stats-page .admin-stats {
+  margin-bottom: 24px;
+}
+
+.stats-charts-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.stats-chart-card {
+  background: #ffffff;
+  border: 1px solid #8ebbf0;
+  border-radius: 12px;
+  box-shadow: 0 2px 5px rgba(27, 58, 87, 0.1);
+  padding: 18px;
+}
+
+.stats-chart-card h3 {
+  margin: 0 0 14px;
+}
+
+.stats-chart-card--wide {
+  grid-column: span 2;
+}
+
+.stats-chart-body {
+  height: 320px;
+}
+
+.stats-chart-body--small {
+  height: 280px;
+}

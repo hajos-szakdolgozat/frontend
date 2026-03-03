@@ -1,0 +1,131 @@
+/* Általános reszponzív szabályok admin oldalakhoz */
+@media (max-width: 1100px) {
+  .stats-charts-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stats-chart-card--wide {
+    grid-column: span 1;
+  }
+
+  .stats-page .admin-stats {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 980px) {
+  .admin-layout {
+    width: 100%;
+    min-height: 100vh;
+    height: auto;
+    overflow: visible;
+  }
+
+  .admin-sidebar {
+    position: sticky;
+    top: 0;
+    width: 100%;
+    height: auto;
+    z-index: 20;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 12px;
+  }
+
+  .admin-sidebar a,
+  .admin-sidebar button {
+    flex: 1 1 calc(50% - 8px);
+    text-align: center;
+  }
+
+  .admin-content {
+    margin-left: 0;
+    width: 100%;
+    min-height: calc(100vh - 80px);
+    height: auto;
+    padding: 20px;
+  }
+
+  .admin-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .admin-search {
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .admin-search input[type="text"] {
+    width: 100%;
+  }
+
+  .admin-stats {
+    flex-direction: column;
+  }
+
+  .filter-card {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .ads-table-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .ads-table-container {
+    padding: 14px;
+  }
+
+  .ads-table th,
+  .ads-table td,
+  .user-table th,
+  .user-table td {
+    padding: 10px 8px;
+    font-size: 0.9rem;
+  }
+
+  .stats-chart-body {
+    height: 270px;
+  }
+
+  .stats-chart-body--small {
+    height: 240px;
+  }
+}
+
+@media (max-width: 640px) {
+  .admin-content {
+    padding: 14px;
+  }
+
+  .admin-sidebar a,
+  .admin-sidebar button {
+    flex: 1 1 100%;
+  }
+
+  .logo-kep {
+    width: 64px;
+  }
+
+  .admin-stat-card {
+    padding: 14px;
+  }
+
+  .stats-chart-card {
+    padding: 14px;
+  }
+
+  .stats-chart-body {
+    height: 220px;
+  }
+
+  .stats-chart-body--small {
+    height: 200px;
+  }
+}

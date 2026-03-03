@@ -1,0 +1,61 @@
+/* Ads oldal filter sidebar */
+.filter-card {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.filter-card label {
+  display: flex;
+  flex-direction: column;
+  font-weight: 500;
+  color: #1b3a57;
+  margin-bottom: 12px;
+  font-size: 0.95rem;
+}
+
+.filter-card input[type="date"],
+.filter-card select {
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #8ebbf0;
+  background: #d9eeff;
+  color: #1b3a57;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    border-color 0.2s;
+  margin-top: 5px;
+}
+
+.filter-card input[type="date"]:hover,
+.filter-card select:hover {
+  background: #c0e0ff;
+  border-color: #6fa4d9;
+}
+
+.filter-card input[type="date"]:focus,
+.filter-card select:focus {
+  outline: none;
+  border-color: #1b3a57;
+  box-shadow: 0 0 0 2px rgba(142, 187, 240, 0.3);
+}
+
+.filter-card button {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #8ebbf0;
+  background: #d9eeff;
+  color: #1b3a57;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    border-color 0.2s;
+}
+
+.filter-card button:hover {
+  background: #c0e0ff;
+  border-color: #6fa4d9;
+}

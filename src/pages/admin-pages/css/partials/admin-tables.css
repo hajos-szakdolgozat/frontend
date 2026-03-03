@@ -1,0 +1,131 @@
+/* Felhasználók táblázat */
+.user-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #ffffff;
+  box-shadow: 0 2px 5px rgba(27, 58, 87, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.user-table th,
+.user-table td {
+  padding: 12px 15px;
+  text-align: left;
+  color: #1b3a57;
+}
+
+.user-table th {
+  background: #d9eeff;
+  border-bottom: 2px solid #8ebbf0;
+}
+
+.user-table tr {
+  border-bottom: 1px solid #e0f2ff;
+}
+
+.user-table tr:last-child {
+  border-bottom: none;
+}
+
+.user-table tr:hover {
+  background: #f0f8ff;
+}
+
+.user-table .action-btn {
+  padding: 5px 10px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.2s;
+}
+
+.user-table .edit-btn {
+  background: #8ebbf0;
+  color: #1b3a57;
+}
+
+.user-table .edit-btn:hover {
+  background: #6fa4d9;
+}
+
+.user-table .delete-btn {
+  background: #f08080;
+  color: #fff;
+}
+
+.user-table .delete-btn:hover {
+  background: #d9534f;
+}
+
+/* Hirdetések/tranzakciók táblázat konténer */
+.ads-table-container {
+  margin-top: 20px;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(27, 58, 87, 0.1);
+  padding: 20px;
+  overflow-x: auto;
+}
+
+.ads-table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.ads-table-header span {
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: #1b3a57;
+}
+
+.ads-table-header button {
+  padding: 6px 14px;
+  border-radius: 6px;
+  border: 1px solid #8ebbf0;
+  background: #d9eeff;
+  color: #1b3a57;
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    border-color 0.2s;
+}
+
+.ads-table-header button:hover {
+  background: #c0e0ff;
+  border-color: #6fa4d9;
+}
+
+.ads-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.ads-table th,
+.ads-table td {
+  padding: 12px 15px;
+  text-align: left;
+  color: #1b3a57;
+}
+
+.ads-table th {
+  background: #d9eeff;
+  border-bottom: 2px solid #8ebbf0;
+}
+
+.ads-table tr {
+  border-bottom: 1px solid #e0f2ff;
+}
+
+.ads-table tr:last-child {
+  border-bottom: none;
+}
+
+.ads-table tr:hover {
+  background: #f0f8ff;
+}

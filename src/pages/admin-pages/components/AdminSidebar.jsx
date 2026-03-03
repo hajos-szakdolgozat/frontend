@@ -1,44 +1,15 @@
-function AdminSidebar({ aktivNezet, setAktivNezet }) {
+import { NavLink } from "react-router-dom";
+
+function AdminSidebar() {
+  const getNavClass = ({ isActive }) => (isActive ? "active" : "");
+
   return (
     <div className="admin-sidebar">
-      <button
-        className={aktivNezet === "users" ? "admin-btn active" : "admin-btn"}
-        onClick={() => setAktivNezet("users")}
-      >
-        Felhasználók
-      </button>
-
-      <button
-        className={aktivNezet === "ads" ? "admin-btn active" : "admin-btn"}
-        onClick={() => setAktivNezet("ads")}
-      >
-        Hirdetések
-      </button>
-
-      <button
-        className={
-          aktivNezet === "transactions" ? "admin-btn active" : "admin-btn"
-        }
-        onClick={() => setAktivNezet("transactions")}
-      >
-        Tranzakciók
-      </button>
-
-      <button
-        className={
-          aktivNezet === "complaints" ? "admin-btn active" : "admin-btn"
-        }
-        onClick={() => setAktivNezet("complaints")}
-      >
-        Panaszok
-      </button>
-
-      <button
-        className={aktivNezet === "stats" ? "admin-btn active" : "admin-btn"}
-        onClick={() => setAktivNezet("stats")}
-      >
-        Statisztikák
-      </button>
+      <NavLink to="/admin/users" className={getNavClass}>Felhasználók</NavLink>
+      <NavLink to="/admin/ads" className={getNavClass}>Hirdetések</NavLink>
+      <NavLink to="/admin/transactions" className={getNavClass}>Tranzakciók</NavLink>
+      <NavLink to="/admin/complaints" className={getNavClass}>Panaszok</NavLink>
+      <NavLink to="/admin/stats" className={getNavClass}>Statisztikák</NavLink>
     </div>
   );
 }

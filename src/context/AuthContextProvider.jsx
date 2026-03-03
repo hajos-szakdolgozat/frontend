@@ -6,12 +6,19 @@ import { AuthContext } from "./AuthContext";
 const AuthContextProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [errors, setErrors] = useState([]);
+  const [authLoading, setAuthLoading] = useState(true);
   const csrf = () => httpClient.get("/sanctum/csrf-cookie");
   const navigate = useNavigate();
 
   const getUser = async () => {
-    const { data } = await httpClient.get("/api/user");
-    setUser(data);
+    try {
+      const { data } = await httpClient.get("/api/user");
+      setUser(data);
+    } catch {
+      setUser(null);
+    } finally {
+      setAuthLoading(false);
+    }
   };
 
   const login = async ({ email, password }) => {
@@ -69,7 +76,7 @@ const AuthContextProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, errors, getUser, login, register, logout }}
+      value={{ user, errors, authLoading, getUser, login, register, logout }}
     >
       {children}
     </AuthContext.Provider>

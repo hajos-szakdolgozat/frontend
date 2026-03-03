@@ -1,0 +1,47 @@
+/* Fejléc minden oldalon */
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+/* Keresőmező */
+.admin-search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.admin-search input[type="text"] {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #8ebbf0;
+  background: #d9eeff;
+  color: #1b3a57;
+}
+
+.logo-kep {
+  width: 80px;
+  height: auto;
+  display: block;
+}
+
+/* Gombok az admin-contentben */
+.admin-content button {
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: 1px solid #8ebbf0;
+  background: #d9eeff;
+  color: #1b3a57;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    border-color 0.2s;
+}
+
+.admin-content button:hover {
+  background: #c0e0ff;
+  border-color: #6fa4d9;
+}
