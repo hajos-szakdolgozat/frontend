@@ -29,8 +29,8 @@
   padding: 12px 18px;
 }
 
-/* push page content below the fixed navbar */
-body {
+/* push page content below the fixed navbar only where navbar exists */
+.with-navbar-offset {
   padding-top: var(--nav-height);
 }
 

@@ -12,7 +12,9 @@ const AuthLayout = () => {
   return user ? (
     <>
       <Navbar />
-      <Outlet />
+      <div className="with-navbar-offset">
+        <Outlet />
+      </div>
     </>
   ) : (
     <Navigate to="/login" />

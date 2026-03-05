@@ -1,13 +1,38 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import logo from "./images/logo.png";
 import useFetch from "../../../hooks/useFetch";
 import { extractList } from "./adminUtils";
+import { httpClient } from "../../../api/axios";
 
 function Users() {
   const [query, setQuery] = useState("");
+  const [users, setUsers] = useState([]);
+  const [deletingUserId, setDeletingUserId] = useState(null);
   const { fetchedData, loading, error } = useFetch("/api/users");
 
-  const users = useMemo(() => extractList(fetchedData), [fetchedData]);
+  useEffect(() => {
+    setUsers(extractList(fetchedData));
+  }, [fetchedData]);
+
+  const handleDeleteUser = async (userId, userName) => {
+    const accepted = window.confirm(
+      `Biztosan törölni szeretnéd ezt a felhasználót: ${userName || `#${userId}`}?`,
+    );
+
+    if (!accepted) {
+      return;
+    }
+
+    setDeletingUserId(userId);
+    try {
+      await httpClient.delete(`/api/users/${userId}`);
+      setUsers((prevUsers) => prevUsers.filter((user) => user.id !== userId));
+    } catch (deleteError) {
+      window.alert(deleteError?.response?.data?.message || "A törlés sikertelen volt.");
+    } finally {
+      setDeletingUserId(null);
+    }
+  };
 
   const filteredUsers = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
@@ -90,6 +115,7 @@ function Users() {
               <th>Email</th>
               <th>Szerep</th>
               <th>Státusz</th>
+              <th>Törlés</th>
             </tr>
           </thead>
           <tbody>
@@ -101,11 +127,21 @@ function Users() {
                   <td>{user.email || "-"}</td>
                   <td>{user.role || "-"}</td>
                   <td>{user.is_active === false ? "Inaktív" : "Aktív"}</td>
+                  <td>
+                    <button
+                      type="button"
+                      className="action-btn delete-btn"
+                      onClick={() => handleDeleteUser(user.id, user.name)}
+                      disabled={deletingUserId === user.id}
+                    >
+                      {deletingUserId === user.id ? "Törlés..." : "Törlés"}
+                    </button>
+                  </td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan="5">Nincs találat.</td>
+                <td colSpan="6">Nincs találat.</td>
               </tr>
             )}
           </tbody>

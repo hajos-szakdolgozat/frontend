@@ -1,15 +1,40 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import logo from "./images/logo.png";
 import useFetch from "../../../hooks/useFetch";
 import { extractList, formatDate, formatMoney } from "./adminUtils";
+import { httpClient } from "../../../api/axios";
 
 function Ads() {
   const [query, setQuery] = useState("");
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
+  const [boats, setBoats] = useState([]);
+  const [deletingBoatId, setDeletingBoatId] = useState(null);
   const { fetchedData, loading, error } = useFetch("/api/boats");
 
-  const boats = useMemo(() => extractList(fetchedData), [fetchedData]);
+  useEffect(() => {
+    setBoats(extractList(fetchedData));
+  }, [fetchedData]);
+
+  const handleDeleteBoat = async (boatId, boatName) => {
+    const accepted = window.confirm(
+      `Biztosan törölni szeretnéd ezt a hirdetést: ${boatName || `#${boatId}`}?`,
+    );
+
+    if (!accepted) {
+      return;
+    }
+
+    setDeletingBoatId(boatId);
+    try {
+      await httpClient.delete(`/api/boats/${boatId}`);
+      setBoats((prevBoats) => prevBoats.filter((boat) => boat.id !== boatId));
+    } catch (deleteError) {
+      window.alert(deleteError?.response?.data?.message || "A törlés sikertelen volt.");
+    } finally {
+      setDeletingBoatId(null);
+    }
+  };
 
   const filteredBoats = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
@@ -107,6 +132,7 @@ function Ads() {
               <th>Kategória</th>
               <th>Ár</th>
               <th>Létrehozva</th>
+              <th>Művelet</th>
             </tr>
           </thead>
           <tbody>
@@ -119,11 +145,21 @@ function Ads() {
                   <td>{boat.type || "-"}</td>
                   <td>{formatMoney(boat.price_per_night)}</td>
                   <td>{formatDate(boat.created_at)}</td>
+                  <td>
+                    <button
+                      type="button"
+                      className="action-btn delete-btn"
+                      onClick={() => handleDeleteBoat(boat.id, boat.name)}
+                      disabled={deletingBoatId === boat.id}
+                    >
+                      {deletingBoatId === boat.id ? "Törlés..." : "Törlés"}
+                    </button>
+                  </td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan="6">Nincs megjeleníthető hirdetés.</td>
+                <td colSpan="7">Nincs megjeleníthető hirdetés.</td>
               </tr>
             )}
           </tbody>
