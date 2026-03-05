@@ -129,3 +129,21 @@
 .ads-table tr:hover {
   background: #f0f8ff;
 }
+
+.ads-table .action-btn {
+  padding: 5px 10px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.2s;
+}
+
+.ads-table .delete-btn {
+  background: #f08080;
+  color: #fff;
+}
+
+.ads-table .delete-btn:hover {
+  background: #d9534f;
+}

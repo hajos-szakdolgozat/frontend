@@ -5,7 +5,9 @@ const PublicLayout = () => {
   return (
     <>
       <Navbar />
-      <Outlet />
+      <div className="with-navbar-offset">
+        <Outlet />
+      </div>
     </>
   );
 };
