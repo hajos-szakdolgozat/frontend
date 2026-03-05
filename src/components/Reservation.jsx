@@ -4,6 +4,7 @@ const Reservation = ({ reservation }) => {
   const boatName = reservation?.boat?.name || "Ismeretlen hajó";
   const status = reservation?.status || "ismeretlen";
   const pricePerNight = reservation?.boat?.price_per_night || 0;
+  const currency = reservation?.boat?.currency || "€";
 
   const nights = (() => {
     if (!reservation?.start_date || !reservation?.end_date) return 0;
@@ -27,7 +28,7 @@ const Reservation = ({ reservation }) => {
       <div className="reservation-row__meta">
         <div>
           <span>Ár / éj</span>
-          <strong>{pricePerNight} €</strong>
+          <strong>{pricePerNight} {currency}</strong>
         </div>
         <div>
           <span>Típus</span>
@@ -35,7 +36,7 @@ const Reservation = ({ reservation }) => {
         </div>
         <div>
           <span>Összesen</span>
-          <strong>{total} €</strong>
+          <strong>{total} {currency}</strong>
         </div>
       </div>
 

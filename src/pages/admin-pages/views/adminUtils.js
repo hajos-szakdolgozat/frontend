@@ -11,7 +11,7 @@ export const formatDate = (value) => {
   return date.toLocaleDateString("hu-HU");
 };
 
-export const formatMoney = (value) => {
+export const formatMoney = (value, currency = "€") => {
   const amount = Number(value || 0);
-  return `${amount.toLocaleString("hu-HU")} €`;
+  return `${amount.toLocaleString("hu-HU")} ${currency}`;
 };

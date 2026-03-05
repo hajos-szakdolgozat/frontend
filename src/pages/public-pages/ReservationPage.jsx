@@ -82,11 +82,15 @@ const ReservationPage = () => {
           </div>
           <div>
             <span>Ár / éj</span>
-            <strong>{reservation?.boat?.price_per_night} €</strong>
+            <strong>
+              {reservation?.boat?.price_per_night} {reservation?.boat?.currency || "€"}
+            </strong>
           </div>
           <div>
             <span>Összesen</span>
-            <strong>{total} €</strong>
+            <strong>
+              {total} {reservation?.boat?.currency || "€"}
+            </strong>
           </div>
         </div>
 

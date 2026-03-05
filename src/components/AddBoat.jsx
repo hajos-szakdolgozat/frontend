@@ -1,13 +1,30 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { httpClient } from "../api/axios";
+import useAuthContext from "../hooks/useAuthContext";
 import "./css/AddBoat.css";
 
 const AddBoat = () => {
+  const { user } = useAuthContext();
+
+  const [ports, setPorts] = useState([]);
+
+  const typeOptions = [
+    "Sailboat",
+    "Catamaran",
+    "Yacht",
+    "Motorboat",
+    "Fishing Boat",
+    "Speedboat",
+  ];
+
+  const currencyOptions = ["EUR", "USD", "HUF"];
+
   const [formData, setFormData] = useState({
     port_id: "",
     name: "",
     description: "",
     price_per_night: "",
+    currency: "EUR",
     is_active: true,
     type: "",
     year_built: "",
@@ -16,8 +33,7 @@ const AddBoat = () => {
     length: "",
     draft: "",
   });
-  //kirus: Típus legördülős fix opxiók, port is és ne id alapján,(név alapján),férőhelyek is, ha van kedved currency is legyen választható az 1 éjszaka áránál.
-  //user id-t nem kap az event stb ezek teljes átírást igényelnek
+  
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
 
@@ -29,6 +45,12 @@ const AddBoat = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // ensure user is logged in
+    if (!user) {
+      window.alert("Jelentkezz be a hajó feladásához.");
+      return;
+    }
 
     try {
       await httpClient.post("api/newBoat", formData, {
@@ -45,6 +67,7 @@ const AddBoat = () => {
         name: "",
         description: "",
         price_per_night: "",
+        currency: "EUR",
         is_active: true,
         type: "",
         year_built: "",
@@ -59,6 +82,18 @@ const AddBoat = () => {
     }
   };
 
+  useEffect(() => {
+    const loadPorts = async () => {
+      try {
+        const { data } = await httpClient.get("/api/ports");
+        setPorts(data);
+      } catch (err) {
+        console.error("Failed to load ports", err);
+      }
+    };
+    loadPorts();
+  }, []);
+
   return (
     <section className="add-boat">
       <div className="add-boat__header">
@@ -68,15 +103,21 @@ const AddBoat = () => {
 
       <form className="add-boat__form" onSubmit={handleSubmit}>
         <div className="add-boat__field">
-          <label htmlFor="port_id">Port ID</label>
-          <input
-            type="number"
+          <label htmlFor="port_id">Kikötő</label>
+          <select
             id="port_id"
             name="port_id"
             value={formData.port_id}
             onChange={handleChange}
             required
-          />
+          >
+            <option value="">Válassz kikötőt</option>
+            {ports.map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.name}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div className="add-boat__field">
@@ -113,17 +154,38 @@ const AddBoat = () => {
             required
           />
         </div>
+        <div className="add-boat__field">
+          <label htmlFor="currency">Currency</label>
+          <select
+            id="currency"
+            name="currency"
+            value={formData.currency}
+            onChange={handleChange}
+          >
+            {currencyOptions.map((c) => (
+              <option key={c} value={c}>
+                {c}
+              </option>
+            ))}
+          </select>
+        </div>
 
         <div className="add-boat__field">
           <label htmlFor="type">Típus</label>
-          <input
-            type="text"
+          <select
             id="type"
             name="type"
             value={formData.type}
             onChange={handleChange}
             required
-          />
+          >
+            <option value="">Válassz típust</option>
+            {typeOptions.map((t) => (
+              <option key={t} value={t}>
+                {t}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div className="add-boat__field">

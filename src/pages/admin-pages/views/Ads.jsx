@@ -117,7 +117,7 @@ function Ads() {
                   <td>{boat.name || "-"}</td>
                   <td>{boat?.user?.name || "-"}</td>
                   <td>{boat.type || "-"}</td>
-                  <td>{formatMoney(boat.price_per_night)}</td>
+                  <td>{formatMoney(boat.price_per_night, boat.currency)}</td>
                   <td>{formatDate(boat.created_at)}</td>
                 </tr>
               ))

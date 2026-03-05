@@ -52,7 +52,8 @@
 }
 
 .add-boat__field input,
-.add-boat__field textarea {
+.add-boat__field textarea,
+.add-boat__field select {
   padding: 0.65rem 0.8rem;
   border-radius: 10px;
   border: 1px solid #cbd5f5;
@@ -68,7 +69,8 @@
 }
 
 .add-boat__field input:focus,
-.add-boat__field textarea:focus {
+.add-boat__field textarea:focus,
+.add-boat__field select:focus {
   outline: none;
   border-color: #0d6efd;
   box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15);

@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import useAuthContext from "../hooks/useAuthContext";
 
-const Boat = ({ boat }) => {
+const Boat = ({ boat, onFavoriteChange }) => {
   const [isFavorite, setIsFavorite] = useState(false);
   const { user } = useAuthContext();
 
@@ -32,9 +32,11 @@ const Boat = ({ boat }) => {
         if (!isFavorite) {
           await httpClient.post(`/api/favorites/${boat.id}`);
           setIsFavorite(true);
+          if (onFavoriteChange) onFavoriteChange(boat.id, true);
         } else {
           await httpClient.delete(`/api/favorites/${boat.id}`);
           setIsFavorite(false);
+          if (onFavoriteChange) onFavoriteChange(boat.id, false);
         }
       } catch (err) {
         console.error(err);
@@ -54,9 +56,8 @@ const Boat = ({ boat }) => {
 
       try {
         const { data } = await httpClient.get("/api/favorites/me");
-        const myFav = data.find(
-          (f) => f.boat_id === boat.id || f.boat?.id === boat.id,
-        );
+        // API returns an array of boat objects, so just check by id
+        const myFav = data.find((b) => b.id === boat.id);
         if (mounted) setIsFavorite(!!myFav);
       } catch (err) {
         console.error(err);
@@ -100,7 +101,7 @@ const Boat = ({ boat }) => {
         <div>
           <span className="boat-card__meta-label">Ár / éj</span>
           <strong className="boat-card__meta-value">
-            {boat.price_per_night} €
+            {boat.price_per_night} {boat.currency || "€"}
           </strong>
         </div>
         <div>

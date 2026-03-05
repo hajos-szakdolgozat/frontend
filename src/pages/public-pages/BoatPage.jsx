@@ -62,7 +62,7 @@ const BoatPage = () => {
           <div className="boat-page__stats">
             <div>
               <span>Ár / éj</span>
-              <strong>{boat.price_per_night} €</strong>
+              <strong>{boat.price_per_night} {boat.currency || "€"}</strong>
             </div>
             <div>
               <span>Évjárat</span>
