@@ -6,6 +6,7 @@ import { extractList, formatDate } from "./adminUtils";
 function Complaints() {
   const [query, setQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
+  const [sortConfig, setSortConfig] = useState({ key: "id", direction: "asc" });
   const { fetchedData, loading, error } = useFetch("/api/reservations");
 
   const reservations = useMemo(() => extractList(fetchedData), [fetchedData]);
@@ -28,6 +29,66 @@ function Complaints() {
       return matchesText && matchesStatus;
     });
   }, [reservations, query, statusFilter]);
+
+  const sortedReservations = useMemo(() => {
+    const list = [...filteredReservations];
+    const { key, direction } = sortConfig;
+
+    const getValue = (item) => {
+      switch (key) {
+        case "user":
+          return item?.user?.name;
+        case "boat":
+          return item?.boat?.name;
+        case "date":
+          return item?.created_at
+            ? new Date(item.created_at).getTime()
+            : item?.start_date
+              ? new Date(item.start_date).getTime()
+              : null;
+        default:
+          return item?.[key];
+      }
+    };
+
+    list.sort((a, b) => {
+      const aValue = getValue(a);
+      const bValue = getValue(b);
+
+      if (aValue == null && bValue == null) return 0;
+      if (aValue == null) return 1;
+      if (bValue == null) return -1;
+
+      if (typeof aValue === "number" && typeof bValue === "number") {
+        return direction === "asc" ? aValue - bValue : bValue - aValue;
+      }
+
+      const aString = String(aValue).toLowerCase();
+      const bString = String(bValue).toLowerCase();
+      const result = aString.localeCompare(bString, "hu");
+      return direction === "asc" ? result : -result;
+    });
+
+    return list;
+  }, [filteredReservations, sortConfig]);
+
+  const handleSort = (key) => {
+    setSortConfig((prev) => {
+      if (prev.key === key) {
+        return {
+          key,
+          direction: prev.direction === "asc" ? "desc" : "asc",
+        };
+      }
+
+      return { key, direction: "asc" };
+    });
+  };
+
+  const getSortIndicator = (key) => {
+    if (sortConfig.key !== key) return "▿";
+    return sortConfig.direction === "asc" ? "▴" : "▾";
+  };
 
   const openCount = reservations.filter((item) => {
     const status = String(item?.status || "").toLowerCase();
@@ -103,16 +164,40 @@ function Complaints() {
         <table className="ads-table">
           <thead>
             <tr>
-              <th>ID</th>
-              <th>Felhasználó</th>
-              <th>Hajó</th>
-              <th>Státusz</th>
-              <th>Dátum</th>
+              <th>
+                <button type="button" className="sort-header-btn" onClick={() => handleSort("id")}>
+                  ID <span className="sort-caret">{getSortIndicator("id")}</span>
+                </button>
+              </th>
+              <th>
+                <button type="button" className="sort-header-btn" onClick={() => handleSort("user")}>
+                  Felhasználó <span className="sort-caret">{getSortIndicator("user")}</span>
+                </button>
+              </th>
+              <th>
+                <button type="button" className="sort-header-btn" onClick={() => handleSort("boat")}>
+                  Hajó <span className="sort-caret">{getSortIndicator("boat")}</span>
+                </button>
+              </th>
+              <th>
+                <button
+                  type="button"
+                  className="sort-header-btn"
+                  onClick={() => handleSort("status")}
+                >
+                  Státusz <span className="sort-caret">{getSortIndicator("status")}</span>
+                </button>
+              </th>
+              <th>
+                <button type="button" className="sort-header-btn" onClick={() => handleSort("date")}>
+                  Dátum <span className="sort-caret">{getSortIndicator("date")}</span>
+                </button>
+              </th>
             </tr>
           </thead>
           <tbody>
-            {filteredReservations.length ? (
-              filteredReservations.map((item) => (
+            {sortedReservations.length ? (
+              sortedReservations.map((item) => (
                 <tr key={item.id}>
                   <td>{item.id}</td>
                   <td>{item?.user?.name || "-"}</td>

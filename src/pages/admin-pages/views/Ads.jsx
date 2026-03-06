@@ -10,6 +10,7 @@ function Ads() {
   const [toDate, setToDate] = useState("");
   const [boats, setBoats] = useState([]);
   const [deletingBoatId, setDeletingBoatId] = useState(null);
+  const [sortConfig, setSortConfig] = useState({ key: "id", direction: "asc" });
   const { fetchedData, loading, error } = useFetch("/api/boats");
 
   useEffect(() => {
@@ -58,6 +59,62 @@ function Ads() {
       return matchText && matchesFrom && matchesTo;
     });
   }, [boats, query, fromDate, toDate]);
+
+  const sortedBoats = useMemo(() => {
+    const list = [...filteredBoats];
+    const { key, direction } = sortConfig;
+
+    const getValue = (boat) => {
+      switch (key) {
+        case "owner":
+          return boat?.user?.name;
+        case "price":
+          return Number(boat?.price_per_night ?? 0);
+        case "created_at":
+          return boat?.created_at ? new Date(boat.created_at).getTime() : null;
+        default:
+          return boat?.[key];
+      }
+    };
+
+    list.sort((a, b) => {
+      const aValue = getValue(a);
+      const bValue = getValue(b);
+
+      if (aValue == null && bValue == null) return 0;
+      if (aValue == null) return 1;
+      if (bValue == null) return -1;
+
+      if (typeof aValue === "number" && typeof bValue === "number") {
+        return direction === "asc" ? aValue - bValue : bValue - aValue;
+      }
+
+      const aString = String(aValue).toLowerCase();
+      const bString = String(bValue).toLowerCase();
+      const result = aString.localeCompare(bString, "hu");
+      return direction === "asc" ? result : -result;
+    });
+
+    return list;
+  }, [filteredBoats, sortConfig]);
+
+  const handleSort = (key) => {
+    setSortConfig((prev) => {
+      if (prev.key === key) {
+        return {
+          key,
+          direction: prev.direction === "asc" ? "desc" : "asc",
+        };
+      }
+
+      return { key, direction: "asc" };
+    });
+  };
+
+  const getSortIndicator = (key) => {
+    if (sortConfig.key !== key) return "▿";
+    return sortConfig.direction === "asc" ? "▴" : "▾";
+  };
 
   const activeCount = boats.filter((boat) => boat?.is_active).length;
   const inactiveCount = boats.length - activeCount;
@@ -127,18 +184,50 @@ function Ads() {
         <table className="ads-table">
           <thead>
             <tr>
-              <th>ID</th>
-              <th>Cím</th>
-              <th>Felhasználó</th>
-              <th>Kategória</th>
-              <th>Ár</th>
-              <th>Létrehozva</th>
+              <th>
+                <button type="button" className="sort-header-btn" onClick={() => handleSort("id")}>
+                  ID <span className="sort-caret">{getSortIndicator("id")}</span>
+                </button>
+              </th>
+              <th>
+                <button type="button" className="sort-header-btn" onClick={() => handleSort("name")}>
+                  Cím <span className="sort-caret">{getSortIndicator("name")}</span>
+                </button>
+              </th>
+              <th>
+                <button
+                  type="button"
+                  className="sort-header-btn"
+                  onClick={() => handleSort("owner")}
+                >
+                  Felhasználó <span className="sort-caret">{getSortIndicator("owner")}</span>
+                </button>
+              </th>
+              <th>
+                <button type="button" className="sort-header-btn" onClick={() => handleSort("type")}>
+                  Kategória <span className="sort-caret">{getSortIndicator("type")}</span>
+                </button>
+              </th>
+              <th>
+                <button type="button" className="sort-header-btn" onClick={() => handleSort("price")}>
+                  Ár <span className="sort-caret">{getSortIndicator("price")}</span>
+                </button>
+              </th>
+              <th>
+                <button
+                  type="button"
+                  className="sort-header-btn"
+                  onClick={() => handleSort("created_at")}
+                >
+                  Létrehozva <span className="sort-caret">{getSortIndicator("created_at")}</span>
+                </button>
+              </th>
               <th>Művelet</th>
             </tr>
           </thead>
           <tbody>
-            {filteredBoats.length ? (
-              filteredBoats.map((boat) => (
+            {sortedBoats.length ? (
+              sortedBoats.map((boat) => (
                 <tr key={boat.id}>
                   <td>{boat.id}</td>
                   <td>{boat.name || "-"}</td>

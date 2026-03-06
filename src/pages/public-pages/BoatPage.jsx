@@ -64,6 +64,74 @@ function BoatPage() {
     return imageUrls.filter((url) => !brokenUrls.includes(url));
   }, [imageUrls, brokenUrls]);
 
+  const portLocationLabel = useMemo(() => {
+    const parts = [
+      boat?.port?.name,
+      boat?.port?.city,
+      boat?.port?.country,
+      boat?.port?.country_name,
+      boat?.port?.countryName,
+    ]
+      .map((part) => String(part || "").trim())
+      .filter(Boolean);
+    return Array.from(new Set(parts)).join(", ");
+  }, [
+    boat?.port?.name,
+    boat?.port?.city,
+    boat?.port?.country,
+    boat?.port?.country_name,
+    boat?.port?.countryName,
+  ]);
+
+  const mapLocationLabel = useMemo(() => {
+    const city = String(boat?.port?.city || "").trim();
+    const country = String(
+      boat?.port?.country || boat?.port?.country_name || boat?.port?.countryName || "",
+    ).trim();
+
+    if (city && country) return `${city}, ${country}`;
+    if (city) return city;
+    if (country) return country;
+    return portLocationLabel;
+  }, [
+    boat?.port?.city,
+    boat?.port?.country,
+    boat?.port?.country_name,
+    boat?.port?.countryName,
+    portLocationLabel,
+  ]);
+
+  const portCoordinates = useMemo(() => {
+    const latRaw =
+      boat?.port?.latitude ?? boat?.port?.lat ?? boat?.port?.y ?? boat?.port?.geo_lat ?? null;
+    const lngRaw =
+      boat?.port?.longitude ?? boat?.port?.lng ?? boat?.port?.lon ?? boat?.port?.x ?? boat?.port?.geo_lng ?? null;
+
+    const lat = Number(latRaw);
+    const lng = Number(lngRaw);
+
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
+    return { lat, lng };
+  }, [boat?.port]);
+
+  const mapQuery = useMemo(() => {
+    if (portCoordinates) {
+      return `${portCoordinates.lat},${portCoordinates.lng}`;
+    }
+    return portLocationLabel;
+  }, [portCoordinates, portLocationLabel]);
+
+  const googleMapsEmbedUrl = useMemo(() => {
+    if (!mapQuery) return null;
+    // Use `q` so Google renders a real map marker tied to the location.
+    return `https://www.google.com/maps?q=${encodeURIComponent(mapQuery)}&z=14&output=embed`;
+  }, [mapQuery]);
+
+  const googleMapsPageUrl = useMemo(() => {
+    if (!mapQuery) return null;
+    return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapQuery)}`;
+  }, [mapQuery]);
+
   useEffect(() => {
     setPageImageIndex(0);
     setLightboxImageIndex(0);
@@ -250,6 +318,40 @@ function BoatPage() {
           </div>
         )}
       </div>
+
+      <section className="boat-page__map" aria-label="Kikoto helyszin terkep">
+        <div className="boat-page__map-header">
+          <h2>Itt leszel</h2>
+          <p>{mapLocationLabel || "Nincs eleg adat a kikoto helyszinehez."}</p>
+        </div>
+
+        {googleMapsEmbedUrl ? (
+          <>
+            <div className="boat-page__map-frame-wrap">
+              <iframe
+                className="boat-page__map-frame"
+                title={`Google terkep - ${portLocationLabel}`}
+                src={googleMapsEmbedUrl}
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                allowFullScreen
+              />
+            </div>
+            {googleMapsPageUrl && (
+              <a
+                className="boat-page__map-link"
+                href={googleMapsPageUrl}
+                target="_blank"
+                rel="noreferrer"
+              >
+                Megnyitas Google Maps-ben
+              </a>
+            )}
+          </>
+        ) : (
+          <p className="boat-page__map-empty">A terkep megjelenitesehez kikoto nev es varos szukseges.</p>
+        )}
+      </section>
 
       {isLightboxOpen && visibleImageUrls[lightboxImageIndex] && (
         <div className="boat-page__lightbox" onClick={closeLightbox}>

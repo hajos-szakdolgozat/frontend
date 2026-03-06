@@ -251,6 +251,60 @@
   font-size: 1rem;
 }
 
+.boat-page__map {
+  margin-top: 0.25rem;
+  padding-top: 0.5rem;
+  display: grid;
+  gap: 0.9rem;
+}
+
+.boat-page__map-header h2 {
+  margin: 0;
+  font-size: 2rem;
+  line-height: 1.15;
+  color: var(--color-text);
+}
+
+.boat-page__map-header p {
+  margin: 0.45rem 0 0;
+  font-size: 1.25rem;
+  color: var(--color-text-muted);
+}
+
+.boat-page__map-frame-wrap {
+  position: relative;
+  border-radius: 24px;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-soft);
+  box-shadow: var(--shadow-soft);
+}
+
+.boat-page__map-frame {
+  display: block;
+  width: 100%;
+  height: 620px;
+  border: 0;
+}
+
+.boat-page__map-link {
+  justify-self: end;
+  color: var(--color-primary);
+  border-radius: 999px;
+  padding: 0.25rem 0.5rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.boat-page__map-link:hover {
+  color: var(--color-primary-strong);
+}
+
+.boat-page__map-empty {
+  margin: 0;
+  color: var(--color-text-muted);
+}
+
 @media (max-width: 900px) {
   .boat-page__gallery {
     grid-template-columns: 1fr;
@@ -275,5 +329,17 @@
   .boat-page__show-all {
     position: static;
     justify-self: end;
+  }
+
+  .boat-page__map-frame {
+    height: 420px;
+  }
+
+  .boat-page__map-header h2 {
+    font-size: 1.55rem;
+  }
+
+  .boat-page__map-header p {
+    font-size: 1.05rem;
   }
 }

@@ -20,6 +20,30 @@
   border-bottom: 2px solid var(--admin-border);
 }
 
+.admin-content .sort-header-btn {
+  border: none;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  color: inherit;
+  font: inherit;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  cursor: pointer;
+}
+
+.admin-content .sort-header-btn:hover {
+  color: var(--color-primary);
+}
+
+.sort-caret {
+  font-size: 0.8rem;
+  line-height: 1;
+  opacity: 0.8;
+}
+
 .user-table tr {
   border-bottom: 1px solid var(--admin-border);
 }

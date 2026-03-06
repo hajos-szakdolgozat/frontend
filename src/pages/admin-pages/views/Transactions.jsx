@@ -6,6 +6,7 @@ import { extractList, formatDate, formatMoney } from "./adminUtils";
 function Transactions() {
   const [query, setQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
+  const [sortConfig, setSortConfig] = useState({ key: "id", direction: "asc" });
   const { fetchedData, loading, error } = useFetch("/api/transactions");
 
   const transactions = useMemo(() => extractList(fetchedData), [fetchedData]);
@@ -43,6 +44,64 @@ function Transactions() {
       return matchesText && matchesStatus;
     });
   }, [transactions, query, statusFilter]);
+
+  const sortedTransactions = useMemo(() => {
+    const list = [...filteredTransactions];
+    const { key, direction } = sortConfig;
+
+    const getValue = (item) => {
+      switch (key) {
+        case "fromUser":
+          return item?.user?.name || item?.from_user?.name;
+        case "toUser":
+          return item?.recipient?.name || item?.to_user?.name;
+        case "amount":
+          return Number(item?.amount ?? 0);
+        case "created_at":
+          return item?.created_at ? new Date(item.created_at).getTime() : null;
+        default:
+          return item?.[key];
+      }
+    };
+
+    list.sort((a, b) => {
+      const aValue = getValue(a);
+      const bValue = getValue(b);
+
+      if (aValue == null && bValue == null) return 0;
+      if (aValue == null) return 1;
+      if (bValue == null) return -1;
+
+      if (typeof aValue === "number" && typeof bValue === "number") {
+        return direction === "asc" ? aValue - bValue : bValue - aValue;
+      }
+
+      const aString = String(aValue).toLowerCase();
+      const bString = String(bValue).toLowerCase();
+      const result = aString.localeCompare(bString, "hu");
+      return direction === "asc" ? result : -result;
+    });
+
+    return list;
+  }, [filteredTransactions, sortConfig]);
+
+  const handleSort = (key) => {
+    setSortConfig((prev) => {
+      if (prev.key === key) {
+        return {
+          key,
+          direction: prev.direction === "asc" ? "desc" : "asc",
+        };
+      }
+
+      return { key, direction: "asc" };
+    });
+  };
+
+  const getSortIndicator = (key) => {
+    if (sortConfig.key !== key) return "▿";
+    return sortConfig.direction === "asc" ? "▴" : "▾";
+  };
 
   const availableStatuses = useMemo(() => {
     return [...new Set(transactions.map((item) => String(item?.status || "").toLowerCase()).filter(Boolean))];
@@ -119,17 +178,61 @@ function Transactions() {
         <table className="ads-table">
           <thead>
             <tr>
-              <th>ID</th>
-              <th>Felhasználó</th>
-              <th>Címzett</th>
-              <th>Mennyiség</th>
-              <th>Dátum</th>
-              <th>Státusz</th>
+              <th>
+                <button type="button" className="sort-header-btn" onClick={() => handleSort("id")}>
+                  ID <span className="sort-caret">{getSortIndicator("id")}</span>
+                </button>
+              </th>
+              <th>
+                <button
+                  type="button"
+                  className="sort-header-btn"
+                  onClick={() => handleSort("fromUser")}
+                >
+                  Felhasználó <span className="sort-caret">{getSortIndicator("fromUser")}</span>
+                </button>
+              </th>
+              <th>
+                <button
+                  type="button"
+                  className="sort-header-btn"
+                  onClick={() => handleSort("toUser")}
+                >
+                  Címzett <span className="sort-caret">{getSortIndicator("toUser")}</span>
+                </button>
+              </th>
+              <th>
+                <button
+                  type="button"
+                  className="sort-header-btn"
+                  onClick={() => handleSort("amount")}
+                >
+                  Mennyiség <span className="sort-caret">{getSortIndicator("amount")}</span>
+                </button>
+              </th>
+              <th>
+                <button
+                  type="button"
+                  className="sort-header-btn"
+                  onClick={() => handleSort("created_at")}
+                >
+                  Dátum <span className="sort-caret">{getSortIndicator("created_at")}</span>
+                </button>
+              </th>
+              <th>
+                <button
+                  type="button"
+                  className="sort-header-btn"
+                  onClick={() => handleSort("status")}
+                >
+                  Státusz <span className="sort-caret">{getSortIndicator("status")}</span>
+                </button>
+              </th>
             </tr>
           </thead>
           <tbody>
-            {filteredTransactions.length ? (
-              filteredTransactions.map((item) => (
+            {sortedTransactions.length ? (
+              sortedTransactions.map((item) => (
                 <tr key={item.id}>
                   <td>{item.id}</td>
                   <td>{item?.user?.name || item?.from_user?.name || "-"}</td>

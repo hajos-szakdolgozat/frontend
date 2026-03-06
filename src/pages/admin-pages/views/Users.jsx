@@ -8,6 +8,7 @@ function Users() {
   const [query, setQuery] = useState("");
   const [users, setUsers] = useState([]);
   const [deletingUserId, setDeletingUserId] = useState(null);
+  const [sortConfig, setSortConfig] = useState({ key: "id", direction: "asc" });
   const { fetchedData, loading, error } = useFetch("/api/users");
 
   useEffect(() => {
@@ -45,6 +46,57 @@ function Users() {
       return name.includes(normalizedQuery) || email.includes(normalizedQuery);
     });
   }, [users, query]);
+
+  const sortedUsers = useMemo(() => {
+    const list = [...filteredUsers];
+    const { key, direction } = sortConfig;
+
+    list.sort((a, b) => {
+      let aValue;
+      let bValue;
+
+      if (key === "status") {
+        aValue = a?.is_active === false ? 0 : 1;
+        bValue = b?.is_active === false ? 0 : 1;
+      } else {
+        aValue = a?.[key];
+        bValue = b?.[key];
+      }
+
+      if (aValue == null && bValue == null) return 0;
+      if (aValue == null) return 1;
+      if (bValue == null) return -1;
+
+      if (typeof aValue === "number" && typeof bValue === "number") {
+        return direction === "asc" ? aValue - bValue : bValue - aValue;
+      }
+
+      const aString = String(aValue).toLowerCase();
+      const bString = String(bValue).toLowerCase();
+      const result = aString.localeCompare(bString, "hu");
+      return direction === "asc" ? result : -result;
+    });
+
+    return list;
+  }, [filteredUsers, sortConfig]);
+
+  const handleSort = (key) => {
+    setSortConfig((prev) => {
+      if (prev.key === key) {
+        return {
+          key,
+          direction: prev.direction === "asc" ? "desc" : "asc",
+        };
+      }
+
+      return { key, direction: "asc" };
+    });
+  };
+
+  const getSortIndicator = (key) => {
+    if (sortConfig.key !== key) return "▿";
+    return sortConfig.direction === "asc" ? "▴" : "▾";
+  };
 
   const renterCount = users.filter((user) => {
     const role = String(user?.role || "").toLowerCase();
@@ -111,17 +163,53 @@ function Users() {
         <table className="user-table">
           <thead>
             <tr>
-              <th>ID</th>
-              <th>Név</th>
-              <th>Email</th>
-              <th>Szerep</th>
-              <th>Státusz</th>
+              <th>
+                <button type="button" className="sort-header-btn" onClick={() => handleSort("id")}>
+                  ID <span className="sort-caret">{getSortIndicator("id")}</span>
+                </button>
+              </th>
+              <th>
+                <button
+                  type="button"
+                  className="sort-header-btn"
+                  onClick={() => handleSort("name")}
+                >
+                  Név <span className="sort-caret">{getSortIndicator("name")}</span>
+                </button>
+              </th>
+              <th>
+                <button
+                  type="button"
+                  className="sort-header-btn"
+                  onClick={() => handleSort("email")}
+                >
+                  Email <span className="sort-caret">{getSortIndicator("email")}</span>
+                </button>
+              </th>
+              <th>
+                <button
+                  type="button"
+                  className="sort-header-btn"
+                  onClick={() => handleSort("role")}
+                >
+                  Szerep <span className="sort-caret">{getSortIndicator("role")}</span>
+                </button>
+              </th>
+              <th>
+                <button
+                  type="button"
+                  className="sort-header-btn"
+                  onClick={() => handleSort("status")}
+                >
+                  Státusz <span className="sort-caret">{getSortIndicator("status")}</span>
+                </button>
+              </th>
               <th>Törlés</th>
             </tr>
           </thead>
           <tbody>
-            {filteredUsers.length ? (
-              filteredUsers.map((user) => (
+            {sortedUsers.length ? (
+              sortedUsers.map((user) => (
                 <tr key={user.id}>
                   <td>{user.id}</td>
                   <td>{user.name || "-"}</td>
