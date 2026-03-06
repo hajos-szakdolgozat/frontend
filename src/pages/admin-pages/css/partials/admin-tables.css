@@ -44,6 +44,48 @@
   opacity: 0.8;
 }
 
+.admin-role-badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 0.2rem 0.55rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  border: 1px solid transparent;
+}
+
+.admin-role-badge--owner {
+  background: color-mix(in srgb, var(--color-primary) 14%, transparent);
+  color: var(--color-primary-strong);
+  border-color: color-mix(in srgb, var(--color-primary) 35%, transparent);
+}
+
+.admin-role-badge--renter {
+  background: color-mix(in srgb, var(--admin-text-muted) 16%, transparent);
+  color: var(--admin-text);
+  border-color: color-mix(in srgb, var(--admin-text-muted) 28%, transparent);
+}
+
+.admin-role-badge--admin {
+  background: color-mix(in srgb, #8b5cf6 20%, transparent);
+  color: color-mix(in srgb, #8b5cf6 82%, var(--admin-text));
+  border-color: color-mix(in srgb, #8b5cf6 45%, transparent);
+}
+
+.admin-role-badge--unknown {
+  background: var(--admin-row-hover);
+  color: var(--admin-text-muted);
+  border-color: var(--admin-border);
+}
+
+.admin-owner-cell {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
+
 .user-table tr {
   border-bottom: 1px solid var(--admin-border);
 }

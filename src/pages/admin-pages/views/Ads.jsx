@@ -4,6 +4,21 @@ import useFetch, { invalidateFetchCache } from "../../../hooks/useFetch";
 import { extractList, formatDate, formatMoney } from "./adminUtils";
 import { httpClient } from "../../../api/axios";
 
+const getRoleMeta = (user) => {
+  const role = String(user?.role || "").toLowerCase();
+
+  if (role.includes("admin")) return { key: "admin", label: "Admin" };
+  if (role.includes("owner") || role.includes("berbeado") || role.includes("host")) {
+    return { key: "owner", label: "Bérbeadó" };
+  }
+  if (role.includes("user") || role.includes("berlo") || role.includes("renter")) {
+    return { key: "renter", label: "Bérlő" };
+  }
+
+  // Boat ads are typically created by owners, so provide a clear fallback label.
+  return { key: "owner", label: "Bérbeadó" };
+};
+
 function Ads() {
   const [query, setQuery] = useState("");
   const [fromDate, setFromDate] = useState("");
@@ -227,11 +242,20 @@ function Ads() {
           </thead>
           <tbody>
             {sortedBoats.length ? (
-              sortedBoats.map((boat) => (
+              sortedBoats.map((boat) => {
+                const ownerRole = getRoleMeta(boat?.user);
+                return (
                 <tr key={boat.id}>
                   <td>{boat.id}</td>
                   <td>{boat.name || "-"}</td>
-                  <td>{boat?.user?.name || "-"}</td>
+                  <td>
+                    <div className="admin-owner-cell">
+                      <span>{boat?.user?.name || "-"}</span>
+                      <span className={`admin-role-badge admin-role-badge--${ownerRole.key}`}>
+                        {ownerRole.label}
+                      </span>
+                    </div>
+                  </td>
                   <td>{boat.type || "-"}</td>
                   <td>{formatMoney(boat.price_per_night, boat.currency)}</td>
                   <td>{formatDate(boat.created_at)}</td>
@@ -246,7 +270,8 @@ function Ads() {
                     </button>
                   </td>
                 </tr>
-              ))
+                );
+              })
             ) : (
               <tr>
                 <td colSpan="7">Nincs megjeleníthető hirdetés.</td>

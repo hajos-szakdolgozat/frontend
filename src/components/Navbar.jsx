@@ -95,11 +95,6 @@ function Navbar() {
                   Home
                 </Link>
               </li>
-              <li>
-                <button type="button" className="theme-toggle" onClick={toggleTheme}>
-                  {theme === "dark" ? "Vilagos" : "Sotet"}
-                </button>
-              </li>
               <li className="image-container" ref={dropdownRef}>
                 <button
                   type="button"
@@ -115,6 +110,18 @@ function Navbar() {
                     </li>
                     <li>
                       <Link to="/newBoat" onClick={() => setIsDropdownOpen(false)}>Hajóm kiadása</Link>
+                    <li>
+                      <button
+                        type="button"
+                        className="dropdown-theme-btn"
+                        onClick={() => {
+                          toggleTheme();
+                          setIsDropdownOpen(false);
+                        }}
+                      >
+                        Tema: {theme === "dark" ? "Vilagos" : "Sotet"}
+                      </button>
+                    </li>
                     </li>
                     <li>
                       <Link

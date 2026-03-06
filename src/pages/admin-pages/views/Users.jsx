@@ -4,6 +4,24 @@ import useFetch, { invalidateFetchCache } from "../../../hooks/useFetch";
 import { extractList } from "./adminUtils";
 import { httpClient } from "../../../api/axios";
 
+const getRoleMeta = (user) => {
+  const role = String(user?.role || "").toLowerCase();
+
+  if (role.includes("admin")) {
+    return { key: "admin", label: "Admin" };
+  }
+
+  if (role.includes("owner") || role.includes("berbeado") || role.includes("host")) {
+    return { key: "owner", label: "Bérbeadó" };
+  }
+
+  if (role.includes("user") || role.includes("berlo") || role.includes("renter")) {
+    return { key: "renter", label: "Bérlő" };
+  }
+
+  return { key: "unknown", label: user?.role || "-" };
+};
+
 function Users() {
   const [query, setQuery] = useState("");
   const [users, setUsers] = useState([]);
@@ -98,15 +116,9 @@ function Users() {
     return sortConfig.direction === "asc" ? "▴" : "▾";
   };
 
-  const renterCount = users.filter((user) => {
-    const role = String(user?.role || "").toLowerCase();
-    return role.includes("user") || role.includes("berlo") || role.includes("renter");
-  }).length;
+  const renterCount = users.filter((user) => getRoleMeta(user).key === "renter").length;
 
-  const ownerCount = users.filter((user) => {
-    const role = String(user?.role || "").toLowerCase();
-    return role.includes("owner") || role.includes("berbeado") || role.includes("host");
-  }).length;
+  const ownerCount = users.filter((user) => getRoleMeta(user).key === "owner").length;
 
   if (loading) {
     return <div className="admin-content">Betöltés...</div>;
@@ -209,12 +221,18 @@ function Users() {
           </thead>
           <tbody>
             {sortedUsers.length ? (
-              sortedUsers.map((user) => (
+              sortedUsers.map((user) => {
+                const roleMeta = getRoleMeta(user);
+                return (
                 <tr key={user.id}>
                   <td>{user.id}</td>
                   <td>{user.name || "-"}</td>
                   <td>{user.email || "-"}</td>
-                  <td>{user.role || "-"}</td>
+                  <td>
+                    <span className={`admin-role-badge admin-role-badge--${roleMeta.key}`}>
+                      {roleMeta.label}
+                    </span>
+                  </td>
                   <td>{user.is_active === false ? "Inaktív" : "Aktív"}</td>
                   <td>
                     <button
@@ -227,7 +245,8 @@ function Users() {
                     </button>
                   </td>
                 </tr>
-              ))
+                );
+              })
             ) : (
               <tr>
                 <td colSpan="6">Nincs találat.</td>
