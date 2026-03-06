@@ -1,12 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { httpClient } from "../api/axios";
 import useAuthContext from "../hooks/useAuthContext";
+import { invalidateFetchCache } from "../hooks/useFetch";
 import "./css/AddBoat.css";
 
 const AddBoat = () => {
   const { user } = useAuthContext();
 
   const [ports, setPorts] = useState([]);
+  const [imageFiles, setImageFiles] = useState([]);
+  const [thumbnailIndex, setThumbnailIndex] = useState(0);
+  const [submitting, setSubmitting] = useState(false);
+  const [previewUrls, setPreviewUrls] = useState([]);
 
   const typeOptions = [
     "Sailboat",
@@ -33,7 +38,14 @@ const AddBoat = () => {
     length: "",
     draft: "",
   });
-  
+
+  const extractBoatImages = (boatPayload) => {
+    if (Array.isArray(boatPayload?.boat_images)) return boatPayload.boat_images;
+    if (Array.isArray(boatPayload?.boatImages)) return boatPayload.boatImages;
+    if (Array.isArray(boatPayload?.images)) return boatPayload.images;
+    return [];
+  };
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
 
@@ -42,6 +54,47 @@ const AddBoat = () => {
       [name]: type === "checkbox" ? checked : value,
     });
   };
+
+  const handleImageChange = (e) => {
+    const files = Array.from(e.target.files || []);
+    if (!files.length) {
+      setImageFiles([]);
+      setThumbnailIndex(0);
+      return;
+    }
+
+    const validFiles = files.filter((file) => file.type.startsWith("image/"));
+    if (validFiles.length !== files.length) {
+      window.alert("Csak kep fajlok tolthetok fel.");
+    }
+
+    // Protect the UI and backend from accidental huge batches.
+    const limitedFiles = validFiles.slice(0, 8);
+    if (validFiles.length > 8) {
+      window.alert("Legfeljebb 8 kepet tolthetsz fel egyszerre.");
+    }
+
+    setImageFiles(limitedFiles);
+    setThumbnailIndex(0);
+  };
+
+  const removeImageAt = (indexToRemove) => {
+    setImageFiles((prev) => prev.filter((_, index) => index !== indexToRemove));
+    setThumbnailIndex((prev) => {
+      if (indexToRemove === prev) return 0;
+      if (indexToRemove < prev) return prev - 1;
+      return prev;
+    });
+  };
+
+  useEffect(() => {
+    const urls = imageFiles.map((file) => URL.createObjectURL(file));
+    setPreviewUrls(urls);
+
+    return () => {
+      urls.forEach((url) => URL.revokeObjectURL(url));
+    };
+  }, [imageFiles]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -52,12 +105,72 @@ const AddBoat = () => {
       return;
     }
 
+    if (!user?.id) {
+      window.alert("Nem talalhato felhasznaloi azonosito. Jelentkezz be ujra.");
+      return;
+    }
+
+    if (!imageFiles.length) {
+      window.alert("Legalabb egy kepet tolts fel a hirdeteshez.");
+      return;
+    }
+
+    setSubmitting(true);
+
     try {
-      await httpClient.post("api/newBoat", formData, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
+      const payload = new FormData();
+
+      Object.entries(formData).forEach(([key, value]) => {
+        if (typeof value === "boolean") {
+          payload.append(key, value ? "1" : "0");
+          return;
+        }
+        payload.append(key, String(value ?? ""));
       });
+
+      payload.append("user_id", String(user.id));
+
+      const thumbnailFile = imageFiles[thumbnailIndex] || imageFiles[0];
+      if (thumbnailFile) {
+        payload.append("thumbnail", thumbnailFile);
+      }
+
+      imageFiles.forEach((file) => {
+        payload.append("images[]", file);
+      });
+      payload.append("thumbnail_index", String(thumbnailIndex));
+
+      const token = localStorage.getItem("token");
+      const requestConfig = token
+        ? { headers: { Authorization: `Bearer ${token}` } }
+        : {};
+
+      const createResponse = await httpClient.post("/api/newBoat", payload, requestConfig);
+      const createdBoatId = createResponse?.data?.id;
+
+      // Fallback: if /api/newBoat does not persist image files, upload them through the
+      // dedicated image endpoint.
+      if (createdBoatId) {
+        const { data: refreshedBoat } = await httpClient.get(`/api/boats/${createdBoatId}`);
+        const existingImages = extractBoatImages(refreshedBoat);
+
+        if (!existingImages.length && imageFiles.length) {
+          await Promise.all(
+            imageFiles.map((file, index) => {
+              const imagePayload = new FormData();
+              imagePayload.append("image", file);
+              imagePayload.append("is_thumbnail", index === thumbnailIndex ? "1" : "0");
+              return httpClient.post(
+                `/api/boats/${createdBoatId}/images`,
+                imagePayload,
+                requestConfig,
+              );
+            }),
+          );
+        }
+      }
+
+      invalidateFetchCache("/api/boats");
 
       alert("Boat created successfully!");
 
@@ -76,9 +189,17 @@ const AddBoat = () => {
         length: "",
         draft: "",
       });
+      setImageFiles([]);
+      setThumbnailIndex(0);
     } catch (error) {
       console.error(error);
-      alert("Error creating boat");
+      const backendMessage = error?.response?.data?.message;
+      const fieldErrors = error?.response?.data?.errors
+        ? Object.values(error.response.data.errors).flat().join("\n")
+        : "";
+      alert(backendMessage || fieldErrors || "Error creating boat");
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -265,8 +386,70 @@ const AddBoat = () => {
           </label>
         </div>
 
-        <button className="add-boat__submit" type="submit">
-          Create Boat
+        <div className="add-boat__field add-boat__field--full">
+          <label htmlFor="images">Hajo kepek (max 8 db)</label>
+          <input
+            id="images"
+            name="images"
+            type="file"
+            accept="image/*"
+            multiple
+            onChange={handleImageChange}
+            required
+          />
+        </div>
+
+        {imageFiles.length > 0 && (
+          <div className="add-boat__field add-boat__field--full">
+            <label>Valaszd ki a boritokept</label>
+            <p className="add-boat__hint">
+              Kattints egy kepre vagy a radio gombra a thumbnail beallitasahoz.
+            </p>
+            <div className="add-boat__preview-grid">
+              {imageFiles.map((file, index) => (
+                <article
+                  key={`${file.name}-${index}`}
+                  className={
+                    thumbnailIndex === index
+                      ? "add-boat__preview-card add-boat__preview-card--active"
+                      : "add-boat__preview-card"
+                  }
+                >
+                  <button
+                    type="button"
+                    className="add-boat__preview-select"
+                    onClick={() => setThumbnailIndex(index)}
+                  >
+                    <img src={previewUrls[index]} alt={file.name} />
+                  </button>
+
+                  <div className="add-boat__preview-meta">
+                    <label className="add-boat__image-item">
+                      <input
+                        type="radio"
+                        name="thumbnailIndex"
+                        checked={thumbnailIndex === index}
+                        onChange={() => setThumbnailIndex(index)}
+                      />
+                      <span>{file.name}</span>
+                    </label>
+
+                    <button
+                      type="button"
+                      className="add-boat__image-remove"
+                      onClick={() => removeImageAt(index)}
+                    >
+                      Torles
+                    </button>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <button className="add-boat__submit" type="submit" disabled={submitting}>
+          {submitting ? "Feltoltes..." : "Create Boat"}
         </button>
       </form>
     </section>

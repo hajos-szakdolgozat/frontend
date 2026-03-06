@@ -11,7 +11,7 @@
 .reservation-page__status {
   padding: 2rem;
   text-align: center;
-  color: #64748b;
+  color: var(--color-text-muted);
 }
 
 .reservation-page__header {
@@ -24,19 +24,19 @@
 .reservation-page__header h2 {
   margin: 0;
   font-size: 1.75rem;
-  color: #0f172a;
+  color: var(--color-text);
 }
 
 .reservation-page__header p {
   margin: 0.35rem 0 0;
-  color: #64748b;
+  color: var(--color-text-muted);
 }
 
 .reservation-page__back {
   padding: 0.5rem 1rem;
   border-radius: 999px;
-  background: #e2e8f0;
-  color: #0f172a;
+  background: var(--color-surface-soft);
+  color: var(--color-text);
   text-decoration: none;
   font-weight: 600;
 }
@@ -50,9 +50,9 @@
 .reservation-page__media {
   border-radius: 18px;
   overflow: hidden;
-  background: #e2e8f0;
+  background: var(--color-surface-soft);
   height: 320px;
-  box-shadow: 0 10px 20px rgba(15, 23, 42, 0.06);
+  box-shadow: var(--shadow-soft);
 }
 
 .reservation-page__media img {
@@ -66,17 +66,17 @@
   height: 100%;
   display: grid;
   place-items: center;
-  color: #475569;
+  color: var(--color-text-muted);
   font-weight: 600;
 }
 
 .reservation-page__summary,
 .reservation-page__details {
-  background: #ffffff;
+  background: var(--color-surface);
   border-radius: 16px;
   padding: 1.25rem;
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  box-shadow: 0 10px 20px rgba(15, 23, 42, 0.06);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-soft);
   display: grid;
   gap: 0.75rem;
 }
@@ -92,14 +92,14 @@
 .reservation-page__summary span,
 .reservation-page__details span {
   font-size: 0.85rem;
-  color: #94a3b8;
+  color: var(--color-text-muted);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
 .reservation-page__summary strong,
 .reservation-page__details strong {
-  color: #0f172a;
+  color: var(--color-text);
   font-weight: 600;
 }
 
@@ -110,24 +110,24 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  background: #e2e8f0;
-  color: #475569;
+  background: var(--color-surface-soft);
+  color: var(--color-text-muted);
 }
 
 .reservation-page__badge.status--pending,
 .reservation-page__badge.status--requested {
-  background: #fef9c3;
-  color: #a16207;
+  background: var(--status-pending-bg);
+  color: var(--status-pending-text);
 }
 
 .reservation-page__badge.status--approved {
-  background: #dcfce7;
-  color: #15803d;
+  background: var(--status-approved-bg);
+  color: var(--status-approved-text);
 }
 
 .reservation-page__badge.status--rejected {
-  background: #fee2e2;
-  color: #b91c1c;
+  background: var(--status-rejected-bg);
+  color: var(--status-rejected-text);
 }
 
 @media (max-width: 900px) {

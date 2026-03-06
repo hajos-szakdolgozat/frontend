@@ -18,12 +18,12 @@
 .reservations-page__header h2 {
   margin: 0;
   font-size: 1.8rem;
-  color: #0f172a;
+  color: var(--color-text);
 }
 
 .reservations-page__header p {
   margin: 0.35rem 0 0;
-  color: #64748b;
+  color: var(--color-text-muted);
 }
 
 .reservations-page__grid {
@@ -39,5 +39,5 @@
 .reservations-page__status {
   padding: 2rem;
   text-align: center;
-  color: #64748b;
+  color: var(--color-text-muted);
 }

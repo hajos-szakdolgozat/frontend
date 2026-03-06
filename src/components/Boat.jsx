@@ -4,6 +4,65 @@ import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import useAuthContext from "../hooks/useAuthContext";
 
+let favoriteIdsCache = null;
+let favoriteIdsRequest = null;
+
+const buildFavoriteIdSet = (payload = []) => {
+  const ids = payload
+    .map((item) => item?.boat_id ?? item?.boat?.id ?? item?.id)
+    .filter((id) => Number.isFinite(Number(id)))
+    .map(Number);
+  return new Set(ids);
+};
+
+const getFavoriteIds = async () => {
+  if (favoriteIdsCache) return favoriteIdsCache;
+  if (favoriteIdsRequest) return favoriteIdsRequest;
+
+  favoriteIdsRequest = httpClient
+    .get("/api/favorites/me")
+    .then(({ data }) => {
+      favoriteIdsCache = buildFavoriteIdSet(Array.isArray(data) ? data : []);
+      return favoriteIdsCache;
+    })
+    .catch(() => {
+      favoriteIdsCache = new Set();
+      return favoriteIdsCache;
+    })
+    .finally(() => {
+      favoriteIdsRequest = null;
+    });
+
+  return favoriteIdsRequest;
+};
+
+const getBoatImages = (boat) => {
+  if (Array.isArray(boat?.boat_images)) return boat.boat_images;
+  if (Array.isArray(boat?.boatImages)) return boat.boatImages;
+  if (Array.isArray(boat?.images)) return boat.images;
+  return [];
+};
+
+const resolveBoatImageUrl = (image) => {
+  const rawPath =
+    image?.image_url || image?.path || image?.url || image?.image_path || image?.src;
+  if (!rawPath) return null;
+
+  if (/^https?:\/\//i.test(rawPath)) {
+    return rawPath;
+  }
+
+  const baseUrl = String(httpClient.defaults.baseURL || "");
+  const normalizedBase = baseUrl.endsWith("/") ? baseUrl : `${baseUrl}/`;
+  const normalizedPath = String(rawPath).replace(/^\/+/, "");
+
+  if (normalizedPath.startsWith("storage/")) {
+    return `${normalizedBase}${normalizedPath}`;
+  }
+
+  return `${normalizedBase}storage/${normalizedPath}`;
+};
+
 const Boat = ({ boat, onFavoriteChange }) => {
   const [isFavorite, setIsFavorite] = useState(false);
   const { user } = useAuthContext();
@@ -12,13 +71,12 @@ const Boat = ({ boat, onFavoriteChange }) => {
     ? `${boat.port.name} • ${boat.port.city}`
     : "Ismeretlen kikötő";
 
+  const boatImages = getBoatImages(boat);
   const thumbnail =
-    boat?.boat_images?.find((image) => image.is_thumbnail) ||
-    boat?.boat_images?.[0];
+    boatImages.find((image) => image?.is_thumbnail || image?.isThumbnail) ||
+    boatImages[0];
 
-  const imageUrl = thumbnail?.path
-    ? `${httpClient.defaults.baseURL}storage/${thumbnail.path}`
-    : null;
+  const imageUrl = resolveBoatImageUrl(thumbnail);
   const favorite = (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -32,10 +90,12 @@ const Boat = ({ boat, onFavoriteChange }) => {
         if (!isFavorite) {
           await httpClient.post(`/api/favorites/${boat.id}`);
           setIsFavorite(true);
+          if (favoriteIdsCache) favoriteIdsCache.add(Number(boat.id));
           if (onFavoriteChange) onFavoriteChange(boat.id, true);
         } else {
           await httpClient.delete(`/api/favorites/${boat.id}`);
           setIsFavorite(false);
+          if (favoriteIdsCache) favoriteIdsCache.delete(Number(boat.id));
           if (onFavoriteChange) onFavoriteChange(boat.id, false);
         }
       } catch (err) {
@@ -55,10 +115,10 @@ const Boat = ({ boat, onFavoriteChange }) => {
       }
 
       try {
-        const { data } = await httpClient.get("/api/favorites/me");
-        // API returns an array of boat objects, so just check by id
-        const myFav = data.find((b) => b.id === boat.id);
-        if (mounted) setIsFavorite(!!myFav);
+        const favoriteIds = await getFavoriteIds();
+        if (mounted) {
+          setIsFavorite(favoriteIds.has(Number(boat.id)));
+        }
       } catch (err) {
         console.error(err);
       }
@@ -78,7 +138,7 @@ const Boat = ({ boat, onFavoriteChange }) => {
           ♥
         </span>
         {imageUrl ? (
-          <img src={imageUrl} alt={boat.name} />
+          <img src={imageUrl} alt={boat.name} loading="lazy" decoding="async" />
         ) : (
           <div className="boat-card__media-placeholder">
             <span>Nincs kép</span>

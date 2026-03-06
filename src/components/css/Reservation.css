@@ -5,20 +5,20 @@
   gap: 1.5rem;
   padding: 1rem 1.25rem;
   border-radius: 12px;
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  background: #ffffff;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
   text-align: left;
 }
 
 .reservation-row__main h3 {
   margin: 0;
   font-size: 1.05rem;
-  color: #0f172a;
+  color: var(--color-text);
 }
 
 .reservation-row__main p {
   margin: 0.25rem 0 0;
-  color: #64748b;
+  color: var(--color-text-muted);
   font-size: 0.9rem;
 }
 
@@ -31,13 +31,13 @@
 .reservation-row__meta span {
   display: block;
   font-size: 0.7rem;
-  color: #94a3b8;
+  color: var(--color-text-muted);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
 .reservation-row__meta strong {
-  color: #0f172a;
+  color: var(--color-text);
   font-size: 0.95rem;
 }
 
@@ -48,25 +48,25 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  background: #e2e8f0;
-  color: #475569;
+  background: var(--color-surface-soft);
+  color: var(--color-text-muted);
   white-space: nowrap;
 }
 
 .reservation-row__status.status--requested,
 .reservation-row__status.status--pending {
-  background: #fef9c3;
-  color: #a16207;
+  background: var(--status-pending-bg);
+  color: var(--status-pending-text);
 }
 
 .reservation-row__status.status--approved {
-  background: #dcfce7;
-  color: #15803d;
+  background: var(--status-approved-bg);
+  color: var(--status-approved-text);
 }
 
 .reservation-row__status.status--rejected {
-  background: #fee2e2;
-  color: #b91c1c;
+  background: var(--status-rejected-bg);
+  color: var(--status-rejected-text);
 }
 
 @media (max-width: 900px) {

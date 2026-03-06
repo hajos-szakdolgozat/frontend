@@ -17,9 +17,9 @@
 .admin-search input[type="text"] {
   padding: 6px 10px;
   border-radius: 6px;
-  border: 1px solid #8ebbf0;
-  background: #d9eeff;
-  color: #1b3a57;
+  border: 1px solid var(--admin-border);
+  background: var(--admin-surface-soft);
+  color: var(--admin-text);
 }
 
 .logo-kep {
@@ -32,9 +32,9 @@
 .admin-content button {
   padding: 8px 16px;
   border-radius: 6px;
-  border: 1px solid #8ebbf0;
-  background: #d9eeff;
-  color: #1b3a57;
+  border: 1px solid var(--admin-border);
+  background: var(--admin-surface-soft);
+  color: var(--admin-text);
   font-weight: 500;
   cursor: pointer;
   transition:
@@ -43,6 +43,6 @@
 }
 
 .admin-content button:hover {
-  background: #c0e0ff;
-  border-color: #6fa4d9;
+  background: var(--admin-row-hover);
+  border-color: var(--admin-border);
 }

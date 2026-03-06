@@ -7,13 +7,13 @@
 
 .admin-stat-card {
   padding: 20px;
-  border: 1px solid #8ebbf0;
+  border: 1px solid var(--admin-border);
   border-radius: 10px;
   flex: 1;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #ffffff;
-  color: #1b3a57;
-  box-shadow: 0 2px 5px rgba(27, 58, 87, 0.1);
+  background: var(--admin-surface);
+  color: var(--admin-text);
+  box-shadow: var(--shadow-soft);
 }

@@ -1,12 +1,12 @@
 .boat-card {
-  background: #ffffff;
+  background: var(--color-surface);
   border-radius: 16px;
   padding: 1.25rem;
-  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+  box-shadow: var(--shadow-soft);
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  border: 1px solid rgba(148, 163, 184, 0.2);
+  border: 1px solid var(--color-border);
 }
 
 .boat-card__media {
@@ -14,7 +14,7 @@
   height: 180px;
   border-radius: 12px;
   overflow: hidden;
-  background: #e2e8f0;
+  background: var(--color-surface-soft);
   position: relative;
 }
 
@@ -42,8 +42,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #cbd5f5 0%, #e2e8f0 100%);
-  color: #475569;
+  background: linear-gradient(135deg, var(--color-primary-soft) 0%, var(--color-surface-soft) 100%);
+  color: var(--color-text-muted);
   font-weight: 600;
 }
 
@@ -57,18 +57,18 @@
 .boat-card__title {
   margin: 0;
   font-size: 1.2rem;
-  color: #0f172a;
+  color: var(--color-text);
 }
 
 .boat-card__subtitle {
   margin: 0.25rem 0 0;
-  color: #64748b;
+  color: var(--color-text-muted);
   font-size: 0.9rem;
 }
 
 .boat-card__type {
-  background: #e0f2fe;
-  color: #0369a1;
+  background: var(--color-primary-soft);
+  color: var(--color-primary-strong);
   padding: 0.25rem 0.6rem;
   border-radius: 999px;
   font-size: 0.75rem;
@@ -78,7 +78,7 @@
 
 .boat-card__description {
   margin: 0;
-  color: #475569;
+  color: var(--color-text-muted);
   font-size: 0.95rem;
   line-height: 1.5;
 }
@@ -87,7 +87,7 @@
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0.75rem;
-  background: #f8fafc;
+  background: var(--color-surface-soft);
   border-radius: 12px;
   padding: 0.75rem;
 }
@@ -95,14 +95,14 @@
 .boat-card__meta-label {
   display: block;
   font-size: 0.7rem;
-  color: #94a3b8;
+  color: var(--color-text-muted);
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
 
 .boat-card__meta-value {
   font-size: 0.95rem;
-  color: #0f172a;
+  color: var(--color-text);
 }
 
 .boat-card__footer {
@@ -110,23 +110,23 @@
   justify-content: space-between;
   align-items: center;
   font-size: 0.85rem;
-  color: #64748b;
+  color: var(--color-text-muted);
 }
 
 .boat-card__owner {
   font-weight: 600;
-  color: #1e293b;
+  color: var(--color-text);
 }
 
 .boat-card__status {
   padding: 0.2rem 0.5rem;
   border-radius: 8px;
-  background: #f1f5f9;
-  color: #475569;
+  background: var(--color-surface-soft);
+  color: var(--color-text-muted);
   font-weight: 600;
 }
 
 .boat-card__status.is-active {
-  background: #dcfce7;
-  color: #15803d;
+  background: var(--status-approved-bg);
+  color: var(--status-approved-text);
 }

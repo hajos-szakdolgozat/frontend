@@ -8,8 +8,8 @@
   overflow-x: hidden;
   overflow-y: visible;
   position: relative;
-  font-family: Arial, sans-serif;
-  background: #e0f2ff;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: var(--admin-bg);
 }
 
 /* Tartalom minden oldalon */
@@ -19,8 +19,8 @@
   min-height: 100dvh;
   height: auto;
   padding: 0 30px 30px;
-  background: #f0f8ff;
+  background: var(--admin-content-bg);
   box-sizing: border-box;
   overflow: visible;
-  color: #1b3a57;
+  color: var(--admin-text);
 }

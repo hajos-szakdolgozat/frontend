@@ -9,7 +9,7 @@
   display: flex;
   flex-direction: column;
   font-weight: 500;
-  color: #1b3a57;
+  color: var(--admin-text);
   margin-bottom: 12px;
   font-size: 0.95rem;
 }
@@ -18,9 +18,9 @@
 .filter-card select {
   padding: 8px 10px;
   border-radius: 6px;
-  border: 1px solid #8ebbf0;
-  background: #d9eeff;
-  color: #1b3a57;
+  border: 1px solid var(--admin-border);
+  background: var(--admin-surface-soft);
+  color: var(--admin-text);
   font-size: 0.95rem;
   cursor: pointer;
   transition:
@@ -31,23 +31,23 @@
 
 .filter-card input[type="date"]:hover,
 .filter-card select:hover {
-  background: #c0e0ff;
-  border-color: #6fa4d9;
+  background: var(--admin-row-hover);
+  border-color: var(--admin-border);
 }
 
 .filter-card input[type="date"]:focus,
 .filter-card select:focus {
   outline: none;
-  border-color: #1b3a57;
-  box-shadow: 0 0 0 2px rgba(142, 187, 240, 0.3);
+  border-color: var(--admin-text);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-primary) 24%, transparent);
 }
 
 .filter-card button {
   padding: 8px 12px;
   border-radius: 6px;
-  border: 1px solid #8ebbf0;
-  background: #d9eeff;
-  color: #1b3a57;
+  border: 1px solid var(--admin-border);
+  background: var(--admin-surface-soft);
+  color: var(--admin-text);
   font-weight: 500;
   cursor: pointer;
   transition:
@@ -56,6 +56,6 @@
 }
 
 .filter-card button:hover {
-  background: #c0e0ff;
-  border-color: #6fa4d9;
+  background: var(--admin-row-hover);
+  border-color: var(--admin-border);
 }

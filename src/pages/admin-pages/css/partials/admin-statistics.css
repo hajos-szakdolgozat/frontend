@@ -11,7 +11,7 @@
 
 .stats-heading p {
   margin: 4px 0 0;
-  color: #4c6c8c;
+  color: var(--admin-text-muted);
 }
 
 .stats-page .admin-stats {
@@ -25,10 +25,10 @@
 }
 
 .stats-chart-card {
-  background: #ffffff;
-  border: 1px solid #8ebbf0;
+  background: var(--admin-surface);
+  border: 1px solid var(--admin-border);
   border-radius: 12px;
-  box-shadow: 0 2px 5px rgba(27, 58, 87, 0.1);
+  box-shadow: var(--shadow-soft);
   padding: 18px;
 }
 

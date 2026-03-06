@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import logo from "./images/logo.png";
-import useFetch from "../../../hooks/useFetch";
+import useFetch, { invalidateFetchCache } from "../../../hooks/useFetch";
 import { extractList } from "./adminUtils";
 import { httpClient } from "../../../api/axios";
 
@@ -27,6 +27,7 @@ function Users() {
     try {
       await httpClient.delete(`/api/users/${userId}`);
       setUsers((prevUsers) => prevUsers.filter((user) => user.id !== userId));
+      invalidateFetchCache("/api/users");
     } catch (deleteError) {
       window.alert(deleteError?.response?.data?.message || "A törlés sikertelen volt.");
     } finally {

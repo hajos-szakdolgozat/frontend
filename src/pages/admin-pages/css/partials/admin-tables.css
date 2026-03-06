@@ -2,8 +2,8 @@
 .user-table {
   width: 100%;
   border-collapse: collapse;
-  background: #ffffff;
-  box-shadow: 0 2px 5px rgba(27, 58, 87, 0.1);
+  background: var(--admin-surface);
+  box-shadow: var(--shadow-soft);
   border-radius: 10px;
   overflow: hidden;
 }
@@ -12,16 +12,16 @@
 .user-table td {
   padding: 12px 15px;
   text-align: left;
-  color: #1b3a57;
+  color: var(--admin-text);
 }
 
 .user-table th {
-  background: #d9eeff;
-  border-bottom: 2px solid #8ebbf0;
+  background: var(--admin-surface-soft);
+  border-bottom: 2px solid var(--admin-border);
 }
 
 .user-table tr {
-  border-bottom: 1px solid #e0f2ff;
+  border-bottom: 1px solid var(--admin-border);
 }
 
 .user-table tr:last-child {
@@ -29,7 +29,7 @@
 }
 
 .user-table tr:hover {
-  background: #f0f8ff;
+  background: var(--admin-row-hover);
 }
 
 .user-table .action-btn {
@@ -42,12 +42,12 @@
 }
 
 .user-table .edit-btn {
-  background: #8ebbf0;
-  color: #1b3a57;
+  background: var(--admin-sidebar-active-bg);
+  color: var(--admin-text);
 }
 
 .user-table .edit-btn:hover {
-  background: #6fa4d9;
+  background: color-mix(in srgb, var(--admin-sidebar-active-bg) 80%, var(--admin-sidebar-bg));
 }
 
 .user-table .delete-btn {
@@ -62,9 +62,9 @@
 /* Hirdetések/tranzakciók táblázat konténer */
 .ads-table-container {
   margin-top: 20px;
-  background: #ffffff;
+  background: var(--admin-surface);
   border-radius: 10px;
-  box-shadow: 0 2px 5px rgba(27, 58, 87, 0.1);
+  box-shadow: var(--shadow-soft);
   padding: 20px;
   overflow-x: auto;
 }
@@ -79,15 +79,15 @@
 .ads-table-header span {
   font-weight: 600;
   font-size: 1.1rem;
-  color: #1b3a57;
+  color: var(--admin-text);
 }
 
 .ads-table-header button {
   padding: 6px 14px;
   border-radius: 6px;
-  border: 1px solid #8ebbf0;
-  background: #d9eeff;
-  color: #1b3a57;
+  border: 1px solid var(--admin-border);
+  background: var(--admin-surface-soft);
+  color: var(--admin-text);
   cursor: pointer;
   transition:
     background 0.2s,
@@ -95,8 +95,8 @@
 }
 
 .ads-table-header button:hover {
-  background: #c0e0ff;
-  border-color: #6fa4d9;
+  background: var(--admin-row-hover);
+  border-color: var(--admin-border);
 }
 
 .ads-table {
@@ -110,16 +110,16 @@
 .ads-table td {
   padding: 12px 15px;
   text-align: left;
-  color: #1b3a57;
+  color: var(--admin-text);
 }
 
 .ads-table th {
-  background: #d9eeff;
-  border-bottom: 2px solid #8ebbf0;
+  background: var(--admin-surface-soft);
+  border-bottom: 2px solid var(--admin-border);
 }
 
 .ads-table tr {
-  border-bottom: 1px solid #e0f2ff;
+  border-bottom: 1px solid var(--admin-border);
 }
 
 .ads-table tr:last-child {
@@ -127,7 +127,7 @@
 }
 
 .ads-table tr:hover {
-  background: #f0f8ff;
+  background: var(--admin-row-hover);
 }
 
 .ads-table .action-btn {

@@ -3,7 +3,7 @@
   width: 240px;
   height: 100vh;
   padding: 20px;
-  background: #1b3a57;
+  background: var(--admin-sidebar-bg);
   display: flex;
   flex-direction: column;
   gap: 14px;
@@ -34,10 +34,10 @@
 
 .admin-sidebar a:hover,
 .admin-sidebar button:hover {
-  background: #2b5275;
+  background: var(--admin-sidebar-hover);
 }
 
 .admin-sidebar a.active {
-  background: #8ebbf0;
-  color: #1b3a57;
+  background: var(--admin-sidebar-active-bg);
+  color: var(--admin-text);
 }

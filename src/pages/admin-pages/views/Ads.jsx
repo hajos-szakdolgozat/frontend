@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import logo from "./images/logo.png";
-import useFetch from "../../../hooks/useFetch";
+import useFetch, { invalidateFetchCache } from "../../../hooks/useFetch";
 import { extractList, formatDate, formatMoney } from "./adminUtils";
 import { httpClient } from "../../../api/axios";
 
@@ -29,6 +29,7 @@ function Ads() {
     try {
       await httpClient.delete(`/api/boats/${boatId}`);
       setBoats((prevBoats) => prevBoats.filter((boat) => boat.id !== boatId));
+      invalidateFetchCache("/api/boats");
     } catch (deleteError) {
       window.alert(deleteError?.response?.data?.message || "A törlés sikertelen volt.");
     } finally {
