@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import "./css/Navbar.css";
 import useAuthContext from "../hooks/useAuthContext";
 import img from "../images/userimage.png";
@@ -9,7 +9,13 @@ function Navbar() {
   const { user, logout } = useAuthContext();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [theme, setTheme] = useState("light");
+  const [searchLocation, setSearchLocation] = useState("");
+  const [checkIn, setCheckIn] = useState("");
+  const [checkOut, setCheckOut] = useState("");
+  const [guests, setGuests] = useState("");
   const dropdownRef = useRef(null);
+  const navigate = useNavigate();
+  const location = useLocation();
   const welcomeMessage = user ? `Üdvözöllek, ${user.name}!` : "";
   const hasAvatarPath =
     typeof user?.avatar_path === "string" && user.avatar_path.trim() !== "";
@@ -48,6 +54,30 @@ function Navbar() {
     setTheme((prev) => (prev === "dark" ? "light" : "dark"));
   };
 
+  const handleSearch = () => {
+    const params = new URLSearchParams();
+
+    if (searchLocation.trim()) {
+      params.set("location", searchLocation.trim());
+    }
+    if (checkIn) {
+      params.set("checkin", checkIn);
+    }
+    if (checkOut) {
+      params.set("checkout", checkOut);
+    }
+    if (guests) {
+      params.set("guests", guests);
+    }
+
+    const queryString = params.toString();
+    const target = queryString ? `/?${queryString}` : "/";
+
+    if (location.pathname !== "/" || location.search !== `?${queryString}`) {
+      navigate(target);
+    }
+  };
+
   return (
     <nav className="nav">
       <div className="nav-container">
@@ -60,18 +90,28 @@ function Navbar() {
               type="text"
               placeholder="Hol?"
               className="nav-search-input"
+              value={searchLocation}
+              onChange={(e) => setSearchLocation(e.target.value)}
             />
             <input
               type="date"
               placeholder="Check-in"
               className="nav-search-input date-input"
+              value={checkIn}
+              onChange={(e) => setCheckIn(e.target.value)}
             />
             <input
               type="date"
               placeholder="Check-out"
               className="nav-search-input date-input"
+              value={checkOut}
+              onChange={(e) => setCheckOut(e.target.value)}
             />
-            <select className="nav-search-input">
+            <select
+              className="nav-search-input"
+              value={guests}
+              onChange={(e) => setGuests(e.target.value)}
+            >
               <option value="">Vendégek</option>
               <option value="1">1 fő</option>
               <option value="2">2 fő</option>
@@ -84,7 +124,7 @@ function Navbar() {
               <option value="9">9 fő</option>
               <option value="10">10+ fő</option>
             </select>
-            <button className="search-button">Keresés</button>
+            <button className="search-button" onClick={handleSearch}>Keresés</button>
           </div>
         </div>
         <div className="nav-links">
