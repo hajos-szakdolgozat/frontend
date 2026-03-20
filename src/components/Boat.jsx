@@ -93,7 +93,7 @@ const Boat = ({ boat, onFavoriteChange }) => {
           if (favoriteIdsCache) favoriteIdsCache.add(Number(boat.id));
           if (onFavoriteChange) onFavoriteChange(boat.id, true);
         } else {
-          await httpClient.delete(`/api/favorites/${boat.id}`);
+          await httpClient.delete(`/api/favorites/${boat.id}`); // contextbe átrakás (Kirus)
           setIsFavorite(false);
           if (favoriteIdsCache) favoriteIdsCache.delete(Number(boat.id));
           if (onFavoriteChange) onFavoriteChange(boat.id, false);

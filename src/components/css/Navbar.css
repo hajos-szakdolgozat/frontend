@@ -41,6 +41,39 @@
   color: var(--color-text);
 }
 
+
+.brand-logo {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  text-decoration: none;
+  padding: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  transition: color 0.15s;
+}
+
+.brand-logo:hover .brand-name {
+  color: var(--accent);
+}
+
+
+.brand-icon {
+  font-size: 1.25rem;
+  filter: none;
+}
+
+
+.brand-name {
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: var(--color-text);
+  text-shadow: none;
+}
+}
+
 .nav-search {
   flex: 1 1 auto;
 }

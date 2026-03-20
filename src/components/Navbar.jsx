@@ -1,7 +1,8 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import "./css/Navbar.css";
 import useAuthContext from "../hooks/useAuthContext";
-import img from "../images/userimage.png";
+import userImg from "../images/userimage.png";
+import img from "../pages/admin-pages/views/images/logo.png";
 import { httpClient } from "../api/axios";
 import { useEffect, useRef, useState } from "react";
 
@@ -21,7 +22,7 @@ function Navbar() {
     typeof user?.avatar_path === "string" && user.avatar_path.trim() !== "";
   const avatarSrc = hasAvatarPath
     ? new URL(user.avatar_path, httpClient.defaults.baseURL).toString()
-    : img;
+    : userImg;
 
   useEffect(() => {
     const handleOutsideClick = (event) => {
@@ -82,7 +83,12 @@ function Navbar() {
     <nav className="nav">
       <div className="nav-container">
         <div className="nav-logo">
+          <Link to="/" className="brand-logo">
+             <span className="brand-name">DockJet</span>
+             <span className="brand-image"><img src={img} alt="Brand icon" style={{height: '32px'}} /></span>
+          </Link>
           <h2>{welcomeMessage}</h2>
+          
         </div>
         <div className="nav-search">
           <div className="search-container">
@@ -150,6 +156,7 @@ function Navbar() {
                     </li>
                     <li>
                       <Link to="/newBoat" onClick={() => setIsDropdownOpen(false)}>Hajóm kiadása</Link>
+                    </li>
                     <li>
                       <button
                         type="button"
@@ -161,7 +168,6 @@ function Navbar() {
                       >
                         Tema: {theme === "dark" ? "Vilagos" : "Sotet"}
                       </button>
-                    </li>
                     </li>
                     <li>
                       <Link
@@ -176,7 +182,6 @@ function Navbar() {
                       <Link to="/favorites" onClick={() => setIsDropdownOpen(false)}>Kedvenceim</Link>
                     </li>
                     {user ? (
-                      <>
                         <li>
                           <button
                             onClick={() => {
@@ -188,7 +193,6 @@ function Navbar() {
                             LogOut
                           </button>
                         </li>
-                      </>
                     ) : (
                       <>
                         <li>
