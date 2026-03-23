@@ -60,6 +60,75 @@
   position: relative;
 }
 
+.auth-phone-wrapper {
+  width: 100%;
+}
+
+.auth-phone-wrapper .form-control.auth-phone-input {
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: var(--color-surface-soft);
+  color: var(--color-text);
+  padding: 0.72rem 0.82rem 0.72rem 3.5rem;
+  font-size: 0.97rem;
+  letter-spacing: 0.01em;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.auth-phone-wrapper .form-control.auth-phone-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-primary) 22%, transparent);
+}
+
+.auth-phone-wrapper .flag-dropdown.auth-phone-flag-btn {
+  border: 1px solid var(--color-border);
+  border-right: none;
+  border-radius: 12px 0 0 12px;
+  background: var(--color-surface-soft);
+}
+
+.auth-phone-wrapper .flag-dropdown.auth-phone-flag-btn.open {
+  background: color-mix(in srgb, var(--color-primary) 6%, var(--color-surface-soft));
+}
+
+.auth-phone-wrapper .selected-flag {
+  border-radius: 11px 0 0 11px;
+  padding: 0 0 0 10px;
+}
+
+.auth-phone-wrapper .country-list.auth-phone-dropdown {
+  margin-top: 0.55rem;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  box-shadow: var(--shadow-card);
+}
+
+.auth-phone-wrapper .country-list .country {
+  color: var(--color-text);
+}
+
+.auth-phone-wrapper .country-list .country:hover,
+.auth-phone-wrapper .country-list .country.highlight {
+  background: color-mix(in srgb, var(--color-primary) 12%, var(--color-surface));
+}
+
+.auth-phone-wrapper .search-box.auth-phone-search {
+  width: calc(100% - 16px);
+  margin: 8px;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background: var(--color-surface-soft);
+  color: var(--color-text);
+  padding: 0.55rem 0.68rem;
+}
+
 .auth-field input {
   width: 100%;
   border: 1px solid var(--color-border);
@@ -181,5 +250,9 @@
   .auth-card {
     padding: 1.35rem 1rem;
     border-radius: 14px;
+  }
+
+  .auth-phone-wrapper .form-control.auth-phone-input {
+    font-size: 16px;
   }
 }

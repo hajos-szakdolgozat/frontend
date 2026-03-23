@@ -20,6 +20,7 @@ const ReservationsPage = lazy(() => import("./pages/public-pages/ReservationsPag
 const ReservationPage = lazy(() => import("./pages/public-pages/ReservationPage"));
 const AddBoat = lazy(() => import("./components/AddBoat"));
 const FavoritesPage = lazy(() => import("./pages/public-pages/FavoritesPage"));
+const ProfilePage = lazy(() => import("./pages/public-pages/ProfilePage"));
 
 import "./App.css";
 
@@ -37,6 +38,7 @@ function App() {
           <Route path="/reservations/:id" element={<ReservationPage />} />
           <Route path="/favorites" element={<FavoritesPage />} />
           <Route path="favorites/me" element={<FavoritesPage />} />
+          <Route path="/me" element={<ProfilePage />} />
           <Route path="/newBoat" element={<AddBoat />} />
         </Route>
 

@@ -1,37 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { httpClient } from "../../api/axios";
 import ReservationFrom from "../../components/ReservationFrom";
 import "./css/BoatPage.css";
 import useFetch from "../../hooks/useFetch";
 import useAuthContext from "../../hooks/useAuthContext";
-
-const resolveBoatImageUrl = (image) => {
-  const rawPath =
-    image?.image_url || image?.path || image?.url || image?.image_path || image?.src;
-  if (!rawPath) return null;
-
-  if (/^https?:\/\//i.test(rawPath)) {
-    return rawPath;
-  }
-
-  const baseUrl = String(httpClient.defaults.baseURL || "");
-  const normalizedBase = baseUrl.endsWith("/") ? baseUrl : `${baseUrl}/`;
-  const normalizedPath = String(rawPath).replace(/^\/+/, "");
-
-  if (normalizedPath.startsWith("storage/")) {
-    return `${normalizedBase}${normalizedPath}`;
-  }
-
-  return `${normalizedBase}storage/${normalizedPath}`;
-};
-
-const getBoatImages = (boat) => {
-  if (Array.isArray(boat?.boat_images)) return boat.boat_images;
-  if (Array.isArray(boat?.boatImages)) return boat.boatImages;
-  if (Array.isArray(boat?.images)) return boat.images;
-  return [];
-};
+import { getBoatImages, resolveBoatImageUrl } from "../../utils/boatImages";
 
 function BoatPage() {
   const { id } = useParams();

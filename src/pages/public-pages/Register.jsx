@@ -1,25 +1,95 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
 import useAuthContext from "../../hooks/useAuthContext";
+import PasswordField from "../../components/auth/PasswordField";
 import "./css/AuthPages.css";
+
+const phoneRules = {
+  hu: {
+    localPlaceholder: "30 123 4567",
+    localRegex: /^(?:1\d{7}|(?:20|30|31|50|70)\d{7})$/,
+    errorText: "Magyar szamhoz 8-9 szamjegy kell, pl: 30 123 4567",
+  },
+  us: {
+    localPlaceholder: "201 555 5555",
+    localRegex: /^\d{10}$/,
+    errorText: "US szamhoz 10 szamjegy kell, pl: 201 555 5555",
+  },
+  gb: {
+    localPlaceholder: "7700 900123",
+    localRegex: /^\d{10}$/,
+    errorText: "UK szamhoz 10 szamjegy kell, pl: 7700 900123",
+  },
+  ro: {
+    localPlaceholder: "712 345 678",
+    localRegex: /^\d{9}$/,
+    errorText: "Roman szamhoz 9 szamjegy kell, pl: 712 345 678",
+  },
+  de: {
+    localPlaceholder: "1512 3456789",
+    localRegex: /^\d{10,11}$/,
+    errorText: "Nemet szamhoz 10-11 szamjegy kell, pl: 1512 3456789",
+  },
+  at: {
+    localPlaceholder: "664 1234567",
+    localRegex: /^\d{9,11}$/,
+    errorText: "Osztrak szamhoz 9-11 szamjegy kell, pl: 664 1234567",
+  },
+  hr: {
+    localPlaceholder: "91 123 4567",
+    localRegex: /^\d{8,9}$/,
+    errorText: "Horvat szamhoz 8-9 szamjegy kell, pl: 91 123 4567",
+  },
+  rs: {
+    localPlaceholder: "60 1234567",
+    localRegex: /^\d{8,9}$/,
+    errorText: "Szerb szamhoz 8-9 szamjegy kell, pl: 60 1234567",
+  },
+};
+
+const defaultRule = {
+  localPlaceholder: "123 456 789",
+  localRegex: /^\d{6,12}$/,
+  errorText: "A telefonszam formatuma hibas.",
+};
 
 const Register = () => {
   const [name, setName] = useState("");
   // const [lastname, setLastName] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState(0);
+  const [phoneValue, setPhoneValue] = useState("36");
+  const [phoneCountry, setPhoneCountry] = useState("hu");
+  const [phoneDialCode, setPhoneDialCode] = useState("36");
+  const [phoneError, setPhoneError] = useState("");
   const [password_confirmation, setPassword_confirmation] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [showPasswordConfirmation, setShowPasswordConfirmation] = useState(false);
   const { register, errors } = useAuthContext();
+
+  const selectedPhoneRule = phoneRules[phoneCountry] || defaultRule;
+
+  const sanitizePhone = (value) => value.replace(/\D/g, "");
 
   const handleRegister = async (event) => {
     event.preventDefault();
+
+    const digits = sanitizePhone(phoneValue);
+    const normalizedLocalPhone = digits.startsWith(phoneDialCode)
+      ? digits.slice(phoneDialCode.length)
+      : digits;
+    const localRegex = selectedPhoneRule.localRegex || defaultRule.localRegex;
+    if (!localRegex.test(normalizedLocalPhone)) {
+      setPhoneError(selectedPhoneRule.errorText);
+      return;
+    }
+
+    setPhoneError("");
+
     register({
       name,
       email,
-      phone_number: phoneNumber,
+      phone_number: `+${phoneDialCode}${normalizedLocalPhone}`,
       password,
       password_confirmation,
     });
@@ -30,7 +100,6 @@ const Register = () => {
       <div className="auth-page__shell">
         <div className="auth-card">
           <div className="auth-card__header">
-            <p className="auth-card__eyebrow">Laraveller</p>
             <h1>Create account</h1>
             <p>Join now to manage bookings and keep your favorite boats close.</p>
           </div>
@@ -59,83 +128,53 @@ const Register = () => {
             </div>
 
             <div className="auth-field">
-              <input
-                type="tel"
-                value={phoneNumber}
-                onChange={(e) => setPhoneNumber(e.target.value)}
-                placeholder="Telefonszam"
-                autoComplete="tel"
+              <PhoneInput
+                country={phoneCountry}
+                value={phoneValue}
+                onChange={(value, countryData) => {
+                  setPhoneValue(value);
+                  setPhoneCountry(countryData?.countryCode || "hu");
+                  setPhoneDialCode(String(countryData?.dialCode || "36"));
+                  if (phoneError) {
+                    setPhoneError("");
+                  }
+                }}
+                preferredCountries={["hu", "us", "gb", "ro", "de", "at", "hr", "rs"]}
+                enableSearch
+                autocompleteSearch
+                disableSearchIcon
+                inputProps={{
+                  name: "phone_number",
+                  required: true,
+                  autoComplete: "tel",
+                  placeholder: selectedPhoneRule.localPlaceholder,
+                }}
+                containerClass="auth-phone-wrapper"
+                buttonClass="auth-phone-flag-btn"
+                inputClass="auth-phone-input"
+                dropdownClass="auth-phone-dropdown"
+                searchClass="auth-phone-search"
+                specialLabel=""
               />
+              {phoneError && <span className="auth-error">{phoneError}</span>}
               {errors.phone_number && <span className="auth-error">{errors.phone_number[0]}</span>}
             </div>
 
-            <div className="auth-field">
-              <div className="auth-field__input-wrap">
-                <input
-                  type={showPassword ? "text" : "password"}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Password"
-                  autoComplete="new-password"
-                />
-                <button
-                  type="button"
-                  className="auth-toggle"
-                  onClick={() => setShowPassword((prev) => !prev)}
-                  aria-label={showPassword ? "Hide password" : "Show password"}
-                >
-                  {showPassword ? (
-                    <svg viewBox="0 0 24 24" aria-hidden="true">
-                      <path d="M2 3.3 20.7 22" />
-                      <path d="M9.5 9.8a3 3 0 0 0 4.7 3.7" />
-                      <path d="M7.9 6.6A18.8 18.8 0 0 1 12 6c6.4 0 10 6 10 6a16.2 16.2 0 0 1-3.2 4.1" />
-                      <path d="M14.1 17.4A18.7 18.7 0 0 1 12 18c-6.4 0-10-6-10-6a16 16 0 0 1 3.2-4.1" />
-                    </svg>
-                  ) : (
-                    <svg viewBox="0 0 24 24" aria-hidden="true">
-                      <path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6-10-6-10-6Z" />
-                      <circle cx="12" cy="12" r="3" />
-                    </svg>
-                  )}
-                </button>
-              </div>
-              {errors.password && <span className="auth-error">{errors.password[0]}</span>}
-            </div>
+            <PasswordField
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Password"
+              autoComplete="new-password"
+              error={errors.password}
+            />
 
-            <div className="auth-field">
-              <div className="auth-field__input-wrap">
-                <input
-                  type={showPasswordConfirmation ? "text" : "password"}
-                  value={password_confirmation}
-                  onChange={(e) => setPassword_confirmation(e.target.value)}
-                  placeholder="Password Confirmation"
-                  autoComplete="new-password"
-                />
-                <button
-                  type="button"
-                  className="auth-toggle"
-                  onClick={() => setShowPasswordConfirmation((prev) => !prev)}
-                  aria-label={showPasswordConfirmation ? "Hide password confirmation" : "Show password confirmation"}
-                >
-                  {showPasswordConfirmation ? (
-                    <svg viewBox="0 0 24 24" aria-hidden="true">
-                      <path d="M2 3.3 20.7 22" />
-                      <path d="M9.5 9.8a3 3 0 0 0 4.7 3.7" />
-                      <path d="M7.9 6.6A18.8 18.8 0 0 1 12 6c6.4 0 10 6 10 6a16.2 16.2 0 0 1-3.2 4.1" />
-                      <path d="M14.1 17.4A18.7 18.7 0 0 1 12 18c-6.4 0-10-6-10-6a16 16 0 0 1 3.2-4.1" />
-                    </svg>
-                  ) : (
-                    <svg viewBox="0 0 24 24" aria-hidden="true">
-                      <path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6-10-6-10-6Z" />
-                      <circle cx="12" cy="12" r="3" />
-                    </svg>
-                  )}
-                </button>
-              </div>
-              {errors.password_confirmation && (
-                <span className="auth-error">{errors.password_confirmation[0]}</span>
-              )}
-            </div>
+            <PasswordField
+              value={password_confirmation}
+              onChange={(e) => setPassword_confirmation(e.target.value)}
+              placeholder="Password Confirmation"
+              autoComplete="new-password"
+              error={errors.password_confirmation}
+            />
 
             <button className="auth-button" type="submit">
               Register

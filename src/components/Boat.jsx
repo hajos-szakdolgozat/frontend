@@ -3,65 +3,12 @@ import { httpClient } from "../api/axios";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import useAuthContext from "../hooks/useAuthContext";
-
-let favoriteIdsCache = null;
-let favoriteIdsRequest = null;
-
-const buildFavoriteIdSet = (payload = []) => {
-  const ids = payload
-    .map((item) => item?.boat_id ?? item?.boat?.id ?? item?.id)
-    .filter((id) => Number.isFinite(Number(id)))
-    .map(Number);
-  return new Set(ids);
-};
-
-const getFavoriteIds = async () => {
-  if (favoriteIdsCache) return favoriteIdsCache;
-  if (favoriteIdsRequest) return favoriteIdsRequest;
-
-  favoriteIdsRequest = httpClient
-    .get("/api/favorites/me")
-    .then(({ data }) => {
-      favoriteIdsCache = buildFavoriteIdSet(Array.isArray(data) ? data : []);
-      return favoriteIdsCache;
-    })
-    .catch(() => {
-      favoriteIdsCache = new Set();
-      return favoriteIdsCache;
-    })
-    .finally(() => {
-      favoriteIdsRequest = null;
-    });
-
-  return favoriteIdsRequest;
-};
-
-const getBoatImages = (boat) => {
-  if (Array.isArray(boat?.boat_images)) return boat.boat_images;
-  if (Array.isArray(boat?.boatImages)) return boat.boatImages;
-  if (Array.isArray(boat?.images)) return boat.images;
-  return [];
-};
-
-const resolveBoatImageUrl = (image) => {
-  const rawPath =
-    image?.image_url || image?.path || image?.url || image?.image_path || image?.src;
-  if (!rawPath) return null;
-
-  if (/^https?:\/\//i.test(rawPath)) {
-    return rawPath;
-  }
-
-  const baseUrl = String(httpClient.defaults.baseURL || "");
-  const normalizedBase = baseUrl.endsWith("/") ? baseUrl : `${baseUrl}/`;
-  const normalizedPath = String(rawPath).replace(/^\/+/, "");
-
-  if (normalizedPath.startsWith("storage/")) {
-    return `${normalizedBase}${normalizedPath}`;
-  }
-
-  return `${normalizedBase}storage/${normalizedPath}`;
-};
+import { getBoatImages, resolveBoatImageUrl } from "../utils/boatImages";
+import {
+  addFavoriteIdToCache,
+  getFavoriteIds,
+  removeFavoriteIdFromCache,
+} from "../services/favoritesService";
 
 const Boat = ({ boat, onFavoriteChange }) => {
   const [isFavorite, setIsFavorite] = useState(false);
@@ -90,12 +37,12 @@ const Boat = ({ boat, onFavoriteChange }) => {
         if (!isFavorite) {
           await httpClient.post(`/api/favorites/${boat.id}`);
           setIsFavorite(true);
-          if (favoriteIdsCache) favoriteIdsCache.add(Number(boat.id));
+          addFavoriteIdToCache(boat.id);
           if (onFavoriteChange) onFavoriteChange(boat.id, true);
         } else {
           await httpClient.delete(`/api/favorites/${boat.id}`); // contextbe átrakás (Kirus)
           setIsFavorite(false);
-          if (favoriteIdsCache) favoriteIdsCache.delete(Number(boat.id));
+          removeFavoriteIdFromCache(boat.id);
           if (onFavoriteChange) onFavoriteChange(boat.id, false);
         }
       } catch (err) {

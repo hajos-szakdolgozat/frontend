@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { httpClient } from "../api/axios";
 import useAuthContext from "../hooks/useAuthContext";
 import { invalidateFetchCache } from "../hooks/useFetch";
+import { getBoatImages } from "../utils/boatImages";
 import "./css/AddBoat.css";
 
 const AddBoat = () => {
@@ -38,13 +39,6 @@ const AddBoat = () => {
     length: "",
     draft: "",
   });
-
-  const extractBoatImages = (boatPayload) => {
-    if (Array.isArray(boatPayload?.boat_images)) return boatPayload.boat_images;
-    if (Array.isArray(boatPayload?.boatImages)) return boatPayload.boatImages;
-    if (Array.isArray(boatPayload?.images)) return boatPayload.images;
-    return [];
-  };
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -152,7 +146,7 @@ const AddBoat = () => {
       // dedicated image endpoint.
       if (createdBoatId) {
         const { data: refreshedBoat } = await httpClient.get(`/api/boats/${createdBoatId}`);
-        const existingImages = extractBoatImages(refreshedBoat);
+        const existingImages = getBoatImages(refreshedBoat);
 
         if (!existingImages.length && imageFiles.length) {
           await Promise.all(

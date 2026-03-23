@@ -29,7 +29,7 @@ const AuthContextProvider = ({ children }) => {
       await getUser();
       navigate("/");
     } catch (e) {
-      if (e.response.status === 422) {
+      if (e?.response?.status === 422) {
         setErrors(e.response.data.errors);
       }
     }
@@ -52,10 +52,13 @@ const AuthContextProvider = ({ children }) => {
         password,
         password_confirmation,
       });
+
+      // Ensure new users are authenticated even if backend registration does not auto-login.
+      await httpClient.post("/login", { email, password });
       await getUser();
       navigate("/");
     } catch (e) {
-      if (e.response.status === 422) {
+      if (e?.response?.status === 422) {
         setErrors(e.response.data.errors);
       }
     }
