@@ -131,7 +131,7 @@ function Users() {
   return (
     <div className="admin-content">
       <div className="admin-header">
-        <img src={logo} alt="kep" className="logo-kep" />
+        <img src={logo} alt="kép" className="logo-kep" />
 
         <div className="admin-search">
           <label>Keresés:</label>

@@ -5,16 +5,141 @@ import "./css/BoatPage.css";
 import useFetch from "../../hooks/useFetch";
 import useAuthContext from "../../hooks/useAuthContext";
 import { getBoatImages, resolveBoatImageUrl } from "../../utils/boatImages";
+import { httpClient } from "../../api/axios";
+import fallbackAvatar from "../../images/userimage.png";
 
 function BoatPage() {
   const { id } = useParams();
   const { user } = useAuthContext();
   const { fetchedData: boat, loading, error } = useFetch(`/api/boats/${id}`);
+  const {
+    fetchedData: reviewsResponse,
+    loading: reviewsLoading,
+    error: reviewsError,
+  } = useFetch(`/api/boats/${id}/reviews`);
 
   const [pageImageIndex, setPageImageIndex] = useState(0);
   const [lightboxImageIndex, setLightboxImageIndex] = useState(0);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+  const [isOwnerExpanded, setIsOwnerExpanded] = useState(false);
   const [brokenUrls, setBrokenUrls] = useState([]);
+  const [localReviews, setLocalReviews] = useState([]);
+  const [eligibleReservations, setEligibleReservations] = useState([]);
+  const [selectedReservationId, setSelectedReservationId] = useState("");
+  const [reviewRating, setReviewRating] = useState(5);
+  const [reviewComment, setReviewComment] = useState("");
+  const [reviewSubmitError, setReviewSubmitError] = useState("");
+  const [isSubmittingReview, setIsSubmittingReview] = useState(false);
+
+  const reviews = useMemo(() => {
+    if (Array.isArray(reviewsResponse)) return reviewsResponse;
+    if (Array.isArray(reviewsResponse?.reviews)) return reviewsResponse.reviews;
+    if (Array.isArray(reviewsResponse?.data)) return reviewsResponse.data;
+    return [];
+  }, [reviewsResponse]);
+
+  useEffect(() => {
+    setLocalReviews(reviews);
+  }, [reviews]);
+
+  const reviewSummary = useMemo(() => {
+    if (!localReviews.length) return { count: 0, average: null };
+    const total = localReviews.reduce((sum, item) => sum + Number(item?.rating || 0), 0);
+    return {
+      count: localReviews.length,
+      average: (total / localReviews.length).toFixed(1),
+    };
+  }, [localReviews]);
+
+  const owner = boat?.user || {};
+  const ownerAvatar = owner?.avatar_path
+    ? new URL(owner.avatar_path, httpClient.defaults.baseURL).toString()
+    : fallbackAvatar;
+
+  useEffect(() => {
+    const loadEligibleReservations = async () => {
+      if (!user || !boat?.id) {
+        setEligibleReservations([]);
+        setSelectedReservationId("");
+        return;
+      }
+
+      try {
+        const { data } = await httpClient.get("/api/reservations/mine");
+        const reservations = Array.isArray(data) ? data : Array.isArray(data?.data) ? data.data : [];
+        const filtered = reservations.filter((reservation) => {
+          const reservationBoatId = reservation?.boat_id || reservation?.boat?.id;
+          return Number(reservationBoatId) === Number(boat.id) && !reservation?.review;
+        });
+
+        setEligibleReservations(filtered);
+        setSelectedReservationId((prev) => {
+          if (prev && filtered.some((item) => String(item.id) === String(prev))) {
+            return prev;
+          }
+          return filtered[0] ? String(filtered[0].id) : "";
+        });
+      } catch {
+        setEligibleReservations([]);
+        setSelectedReservationId("");
+      }
+    };
+
+    loadEligibleReservations();
+  }, [user, boat?.id]);
+
+  const handleReviewSubmit = async (event) => {
+    event.preventDefault();
+    setReviewSubmitError("");
+
+    if (!selectedReservationId) {
+      setReviewSubmitError("Válassz foglalást az értékeléshez.");
+      return;
+    }
+
+    if (!reviewComment.trim()) {
+      setReviewSubmitError("Az értékelés szövege nem lehet üres.");
+      return;
+    }
+
+    if (reviewComment.trim().length < 10) {
+      setReviewSubmitError("Kérlek írj legalább 10 karaktert.");
+      return;
+    }
+
+    setIsSubmittingReview(true);
+    try {
+      const { data } = await httpClient.post("/api/reviews", {
+        reservation_id: Number(selectedReservationId),
+        boat_id: Number(boat.id),
+        rating: Number(reviewRating),
+        comment: reviewComment.trim(),
+      });
+
+      const createdReview = data?.review || data?.data || data;
+      const normalizedReview = {
+        id: createdReview?.id || Date.now(),
+        rating: Number(createdReview?.rating ?? reviewRating),
+        comment: createdReview?.comment ?? reviewComment.trim(),
+        created_at: createdReview?.created_at || new Date().toISOString(),
+        user: createdReview?.user || { name: user?.name || "Te" },
+      };
+
+      setLocalReviews((prev) => [normalizedReview, ...prev]);
+      setEligibleReservations((prev) =>
+        prev.filter((reservation) => String(reservation.id) !== String(selectedReservationId)),
+      );
+      setSelectedReservationId("");
+      setReviewRating(5);
+      setReviewComment("");
+    } catch (submitError) {
+      const backendMessage = submitError?.response?.data?.message;
+      const fieldMessage = Object.values(submitError?.response?.data?.errors || {})?.[0]?.[0];
+      setReviewSubmitError(backendMessage || fieldMessage || "Az értékelés mentése sikertelen.");
+    } finally {
+      setIsSubmittingReview(false);
+    }
+  };
 
   const imageUrls = useMemo(() => {
     const rawImages = getBoatImages(boat)
@@ -168,7 +293,7 @@ function BoatPage() {
   }, [isLightboxOpen, visibleImageUrls.length]);
 
   if (loading) {
-    return <p className="boat-page__status">Betoltes...</p>;
+    return <p className="boat-page__status">Betöltés...</p>;
   }
 
   if (error) {
@@ -176,7 +301,7 @@ function BoatPage() {
   }
 
   if (!boat) {
-    return <p className="boat-page__status">Hajo nem talalhato.</p>;
+    return <p className="boat-page__status">Hajó nem található.</p>;
   }
 
   return (
@@ -189,18 +314,18 @@ function BoatPage() {
           </p>
         </div>
         <Link className="boat-page__back" to="/">
-          Vissza a listahoz
+          Vissza a listához
         </Link>
       </header>
 
       <div className="boat-page__content">
-        <section className="boat-page__gallery" aria-label="Hajo kepek">
+        <section className="boat-page__gallery" aria-label="Hajó képek">
           {pageMainImage?.url ? (
             <button
               type="button"
               className="boat-page__gallery-main"
               onClick={() => setPageImageIndex(pageMainImage.index)}
-              aria-label="Fo kep"
+              aria-label="Fő kép"
             >
               <img
                 src={pageMainImage.url}
@@ -209,7 +334,7 @@ function BoatPage() {
               />
             </button>
           ) : (
-            <div className="boat-page__media-placeholder">Nincs kep</div>
+            <div className="boat-page__media-placeholder">Nincs kép</div>
           )}
 
           <aside className="boat-page__gallery-side">
@@ -223,13 +348,13 @@ function BoatPage() {
                 >
                   <img
                     src={item.url}
-                    alt={`${boat.name} - kep ${idx + 1}`}
+                    alt={`${boat.name} - kép ${idx + 1}`}
                     onError={() => markUrlAsBroken(item.url)}
                   />
                 </button>
               ))
             ) : (
-              <div className="boat-page__media-placeholder">Nincs kep</div>
+              <div className="boat-page__media-placeholder">Nincs kép</div>
             )}
           </aside>
 
@@ -247,18 +372,18 @@ function BoatPage() {
         <div className="boat-page__details">
           <div className="boat-page__badge">{boat.type}</div>
           <p className="boat-page__description">
-            {boat.description || "Nincs megadott leiras."}
+            {boat.description || "Nincs megadott leírás."}
           </p>
 
           <div className="boat-page__stats">
             <div>
-              <span>Ar / ej</span>
+              <span>Ár / éj</span>
               <strong>
                 {boat.price_per_night} {boat.currency || "EUR"}
               </strong>
             </div>
             <div>
-              <span>Evjarat</span>
+              <span>Évjárat</span>
               <strong>{boat.year_built}</strong>
             </div>
             <div>
@@ -266,15 +391,15 @@ function BoatPage() {
               <strong>{boat.length} m</strong>
             </div>
             <div>
-              <span>Szelesseg</span>
+              <span>Szélesség</span>
               <strong>{boat.width} m</strong>
             </div>
             <div>
-              <span>Merules</span>
+              <span>Merülés</span>
               <strong>{boat.draft} m</strong>
             </div>
             <div>
-              <span>Kapcsolattarto</span>
+              <span>Kapcsolattartó</span>
               <strong>{boat?.user?.name}</strong>
             </div>
           </div>
@@ -284,18 +409,18 @@ function BoatPage() {
           <ReservationFrom boatId={id} />
         ) : (
           <div className="boat-page__details">
-            <p className="boat-page__description">Foglalashoz be kell jelentkezned.</p>
+            <p className="boat-page__description">Foglaláshoz be kell jelentkezned.</p>
             <Link className="boat-page__back" to="/login">
-              Bejelentkezes
+              Bejelentkezés
             </Link>
           </div>
         )}
       </div>
 
-      <section className="boat-page__map" aria-label="Kikoto helyszin terkep">
+      <section className="boat-page__map" aria-label="Kikötő helyszín térkép">
         <div className="boat-page__map-header">
           <h2>Itt leszel</h2>
-          <p>{mapLocationLabel || "Nincs eleg adat a kikoto helyszinehez."}</p>
+          <p>{mapLocationLabel || "Nincs elég adat a kikötő helyszínéhez."}</p>
         </div>
 
         {googleMapsEmbedUrl ? (
@@ -303,7 +428,7 @@ function BoatPage() {
             <div className="boat-page__map-frame-wrap">
               <iframe
                 className="boat-page__map-frame"
-                title={`Google terkep - ${portLocationLabel}`}
+                title={`Google térkép - ${portLocationLabel}`}
                 src={googleMapsEmbedUrl}
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
@@ -317,12 +442,153 @@ function BoatPage() {
                 target="_blank"
                 rel="noreferrer"
               >
-                Megnyitas Google Maps-ben
+                Megnyitás Google Maps-ben
               </a>
             )}
           </>
         ) : (
-          <p className="boat-page__map-empty">A terkep megjelenitesehez kikoto nev es varos szukseges.</p>
+          <p className="boat-page__map-empty">A térkép megjelenítéséhez kikötő név és város szükséges.</p>
+        )}
+      </section>
+
+      <section className="boat-page__reviews" aria-label="Vélemények">
+        <div className="boat-page__reviews-header">
+          <h2>Vélemények</h2>
+          {reviewsLoading ? (
+            <p>Vélemények betöltése...</p>
+          ) : reviewsError ? (
+            <p>Nem sikerült betölteni a véleményeket.</p>
+          ) : reviewSummary.count > 0 ? (
+            <p>
+              {reviewSummary.average} / 5 ({reviewSummary.count} értékelés)
+            </p>
+          ) : (
+            <p>Még nincs értékelés erről a hirdetésről.</p>
+          )}
+        </div>
+
+        {reviewsLoading ? (
+          <p className="boat-page__reviews-status">Vélemények betöltése...</p>
+        ) : reviewsError ? (
+          <p className="boat-page__reviews-status">Nem sikerült betölteni a véleményeket.</p>
+        ) : reviews.length ? (
+          <div className="boat-page__reviews-list">
+            {localReviews.map((review) => {
+              const reviewerName =
+                review?.user?.name ||
+                review?.reviewer?.name ||
+                review?.reservation?.user?.name ||
+                "Ismeretlen felhasználó";
+              const createdAt = review?.created_at
+                ? new Date(review.created_at).toLocaleDateString("hu-HU")
+                : "-";
+
+              return (
+                <article key={review.id} className="boat-page__review-item">
+                  <header>
+                    <strong>{reviewerName}</strong>
+                    <span>{Number(review?.rating || 0).toFixed(1)} / 5</span>
+                  </header>
+                  <p>{review?.comment || "Nincs szöveges vélemény."}</p>
+                  <small>{createdAt}</small>
+                </article>
+              );
+            })}
+          </div>
+        ) : (
+          <p className="boat-page__reviews-status">Még nincs értékelés erről a hirdetésről.</p>
+        )}
+
+        {user && (
+          <form className="boat-page__review-form" onSubmit={handleReviewSubmit}>
+            <h3>Értékelés írása</h3>
+
+            {eligibleReservations.length ? (
+              <>
+                <label htmlFor="review-reservation">Foglalás kiválasztása</label>
+                <select
+                  id="review-reservation"
+                  value={selectedReservationId}
+                  onChange={(event) => setSelectedReservationId(event.target.value)}
+                >
+                  {eligibleReservations.map((reservation) => (
+                    <option key={reservation.id} value={reservation.id}>
+                      #{reservation.id} | {reservation.start_date} - {reservation.end_date}
+                    </option>
+                  ))}
+                </select>
+
+                <label htmlFor="review-rating">Értékelés (1-5)</label>
+                <select
+                  id="review-rating"
+                  value={reviewRating}
+                  onChange={(event) => setReviewRating(Number(event.target.value))}
+                >
+                  {[5, 4, 3, 2, 1].map((value) => (
+                    <option key={value} value={value}>
+                      {value}
+                    </option>
+                  ))}
+                </select>
+
+                <label htmlFor="review-comment">Vélemény</label>
+                <textarea
+                  id="review-comment"
+                  rows={4}
+                  value={reviewComment}
+                  onChange={(event) => setReviewComment(event.target.value)}
+                  placeholder="Írd le a tapasztalataidat a hajóval és a hirdetővel kapcsolatban."
+                />
+
+                {reviewSubmitError && (
+                  <p className="boat-page__review-error">{reviewSubmitError}</p>
+                )}
+
+                <button type="submit" disabled={isSubmittingReview}>
+                  {isSubmittingReview ? "Mentés..." : "Értékelés küldése"}
+                </button>
+              </>
+            ) : (
+              <p className="boat-page__reviews-status">
+                Értékelést csak olyan foglaláshoz tudsz írni, amit ennél a hirdetésnél még nem értékeltél.
+              </p>
+            )}
+          </form>
+        )}
+      </section>
+
+      <section className="boat-page__owner" aria-label="Hirdető profilja">
+        <button
+          type="button"
+          className="boat-page__owner-toggle"
+          onClick={() => setIsOwnerExpanded((prev) => !prev)}
+        >
+          <span>
+            <strong>{owner?.name || "Ismeretlen hirdető"}</strong>
+            <small>Hirdető profilja</small>
+          </span>
+          <span>{isOwnerExpanded ? "Részletek elrejtése" : "Részletek megnyitása"}</span>
+        </button>
+
+        {isOwnerExpanded && (
+          <article className="boat-page__owner-card">
+            <img src={ownerAvatar} alt={owner?.name || "Hirdető"} />
+            <div>
+              <h3>{owner?.name || "Ismeretlen hirdető"}</h3>
+              <p>
+                <strong>Szerepkör:</strong> {owner?.role || "-"}
+              </p>
+              <p>
+                <strong>Email:</strong> {owner?.email || "Nincs megadva"}
+              </p>
+              <p>
+                <strong>Telefon:</strong> {owner?.phone_number || "Nincs megadva"}
+              </p>
+              <p>
+                <strong>Értékelések a hirdetésen:</strong> {reviewSummary.count}
+              </p>
+            </div>
+          </article>
         )}
       </section>
 
@@ -341,7 +607,7 @@ function BoatPage() {
             </div>
             <img
               src={visibleImageUrls[lightboxImageIndex]}
-              alt={`${boat.name} nagy kep`}
+              alt={`${boat.name} nagy kép`}
               onError={() => markUrlAsBroken(visibleImageUrls[lightboxImageIndex])}
             />
 

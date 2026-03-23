@@ -116,6 +116,23 @@ const ReservationPage = () => {
             <strong>{reservation?.boat?.draft} m</strong>
           </div>
         </div>
+
+        <div className="reservation-page__details">
+          <div>
+            <span>Értékelés</span>
+            <strong>
+              {reservation?.review ? `${reservation.review.rating}/5` : "Még nincs értékelés"}
+            </strong>
+          </div>
+          {reservation?.review?.comment && (
+            <p className="reservation-page__review-text">{reservation.review.comment}</p>
+          )}
+          {!reservation?.review && (
+            <Link className="reservation-page__review-cta" to={`/reservations/${reservation.id}/review`}>
+              Értékelés írása
+            </Link>
+          )}
+        </div>
       </div>
     </section>
   );

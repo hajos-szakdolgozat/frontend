@@ -18,6 +18,7 @@ const Statistics = lazy(() => import("./pages/admin-pages/views/Statistics"));
 const BoatPage = lazy(() => import("./pages/public-pages/BoatPage"));
 const ReservationsPage = lazy(() => import("./pages/public-pages/ReservationsPage"));
 const ReservationPage = lazy(() => import("./pages/public-pages/ReservationPage"));
+const ReviewCreatePage = lazy(() => import("./pages/public-pages/ReviewCreatePage"));
 const AddBoat = lazy(() => import("./components/AddBoat"));
 const FavoritesPage = lazy(() => import("./pages/public-pages/FavoritesPage"));
 const ProfilePage = lazy(() => import("./pages/public-pages/ProfilePage"));
@@ -26,7 +27,7 @@ import "./App.css";
 
 function App() {
   return (
-    <Suspense fallback={<div style={{ padding: "1rem" }}>Betoltes...</div>}>
+    <Suspense fallback={<div style={{ padding: "1rem" }}>Betöltés...</div>}>
       <Routes>
         <Route element={<PublicLayout />}>
           <Route path="/" element={<Home />} />
@@ -36,6 +37,7 @@ function App() {
         <Route element={<AuthLayout />}>
           <Route path="/reservations" element={<ReservationsPage />} />
           <Route path="/reservations/:id" element={<ReservationPage />} />
+          <Route path="/reservations/:id/review" element={<ReviewCreatePage />} />
           <Route path="/favorites" element={<FavoritesPage />} />
           <Route path="favorites/me" element={<FavoritesPage />} />
           <Route path="/me" element={<ProfilePage />} />

@@ -18,6 +18,7 @@ function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
   const welcomeMessage = user ? `Üdvözöllek, ${user.name}!` : "";
+  const isAdmin = String(user?.role || "").toLowerCase() === "admin";
   const hasAvatarPath =
     typeof user?.avatar_path === "string" && user.avatar_path.trim() !== "";
   const avatarSrc = hasAvatarPath
@@ -166,9 +167,16 @@ function Navbar() {
                           setIsDropdownOpen(false);
                         }}
                       >
-                        Tema: {theme === "dark" ? "Vilagos" : "Sotet"}
+                        Téma: {theme === "dark" ? "Világos" : "Sötét"}
                       </button>
                     </li>
+                    {isAdmin && (
+                      <li>
+                        <Link to="/admin/users" onClick={() => setIsDropdownOpen(false)}>
+                          Admin felület
+                        </Link>
+                      </li>
+                    )}
                     <li>
                       <Link
                         to="/reservations"

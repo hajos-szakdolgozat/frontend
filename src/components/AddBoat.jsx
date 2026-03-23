@@ -59,13 +59,13 @@ const AddBoat = () => {
 
     const validFiles = files.filter((file) => file.type.startsWith("image/"));
     if (validFiles.length !== files.length) {
-      window.alert("Csak kep fajlok tolthetok fel.");
+      window.alert("Csak kép fájlok tölthetők fel.");
     }
 
     // Protect the UI and backend from accidental huge batches.
     const limitedFiles = validFiles.slice(0, 8);
     if (validFiles.length > 8) {
-      window.alert("Legfeljebb 8 kepet tolthetsz fel egyszerre.");
+      window.alert("Legfeljebb 8 képet tölthetsz fel egyszerre.");
     }
 
     setImageFiles(limitedFiles);
@@ -100,12 +100,12 @@ const AddBoat = () => {
     }
 
     if (!user?.id) {
-      window.alert("Nem talalhato felhasznaloi azonosito. Jelentkezz be ujra.");
+      window.alert("Nem található felhasználói azonosító. Jelentkezz be újra.");
       return;
     }
 
     if (!imageFiles.length) {
-      window.alert("Legalabb egy kepet tolts fel a hirdeteshez.");
+      window.alert("Legalább egy képet tölts fel a hirdetéshez.");
       return;
     }
 
@@ -381,7 +381,7 @@ const AddBoat = () => {
         </div>
 
         <div className="add-boat__field add-boat__field--full">
-          <label htmlFor="images">Hajo kepek (max 8 db)</label>
+          <label htmlFor="images">Hajó képek (max 8 db)</label>
           <input
             id="images"
             name="images"
@@ -395,9 +395,9 @@ const AddBoat = () => {
 
         {imageFiles.length > 0 && (
           <div className="add-boat__field add-boat__field--full">
-            <label>Valaszd ki a boritokept</label>
+            <label>Válaszd ki a borítóképet</label>
             <p className="add-boat__hint">
-              Kattints egy kepre vagy a radio gombra a thumbnail beallitasahoz.
+              Kattints egy képre vagy a rádió gombra a thumbnail beállításához.
             </p>
             <div className="add-boat__preview-grid">
               {imageFiles.map((file, index) => (
@@ -433,7 +433,7 @@ const AddBoat = () => {
                       className="add-boat__image-remove"
                       onClick={() => removeImageAt(index)}
                     >
-                      Torles
+                      Törlés
                     </button>
                   </div>
                 </article>
@@ -443,7 +443,7 @@ const AddBoat = () => {
         )}
 
         <button className="add-boat__submit" type="submit" disabled={submitting}>
-          {submitting ? "Feltoltes..." : "Create Boat"}
+          {submitting ? "Feltöltés..." : "Create Boat"}
         </button>
       </form>
     </section>

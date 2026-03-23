@@ -6,9 +6,9 @@ import fallbackAvatar from "../../images/userimage.png";
 import "./css/ProfilePage.css";
 
 const tabs = [
-  { key: "reservations", label: "Foglalasaim" },
-  { key: "reviews", label: "Ertekeleseim" },
-  { key: "settings", label: "Beallitasok" },
+  { key: "reservations", label: "Foglalásaim" },
+  { key: "reviews", label: "Értékeléseim" },
+  { key: "settings", label: "Beállítások" },
 ];
 
 const ProfilePage = () => {
@@ -39,27 +39,27 @@ const ProfilePage = () => {
       .filter((reservation) => reservation?.review)
       .map((reservation) => ({
         id: reservation.id,
-        boatName: reservation?.boat?.name || "Ismeretlen hajo",
-        reviewText: reservation?.review?.comment || "Nincs szoveges ertekeles.",
+        boatName: reservation?.boat?.name || "Ismeretlen hajó",
+        reviewText: reservation?.review?.comment || "Nincs szöveges értékelés.",
         rating: reservation?.review?.rating,
       }));
   }, [reservations]);
 
   const settingsContent = {
     password: {
-      title: "Jelszocsere",
-      description: "Frissitsd a jelszavadat a nagyobb fiokbiztonsag erdekeben.",
-      cta: "Jelszocsere inditasa",
+      title: "Jelszócsere",
+      description: "Frissítsd a jelszavadat a nagyobb fiókbiztonság érdekében.",
+      cta: "Jelszócsere indítása",
     },
     privacy: {
-      title: "Adatvedelem",
-      description: "Attekintheted, milyen adatokat kezel a rendszer es hogyan hasznaljuk oket.",
-      cta: "Adatvedelmi opciok",
+      title: "Adatvédelem",
+      description: "Áttekintheted, milyen adatokat kezel a rendszer és hogyan használjuk őket.",
+      cta: "Adatvédelmi opciók",
     },
     general: {
-      title: "Altalanos beallitasok",
-      description: "Fiokodhoz kapcsolodo alapbeallitasok, ertesitesek es preferenciak helye.",
-      cta: "Beallitasok megnyitasa",
+      title: "Általános beállítások",
+      description: "Fiókodhoz kapcsolódó alapbeállítások, értesítések és preferenciák helye.",
+      cta: "Beállítások megnyitása",
     },
   };
 
@@ -69,19 +69,19 @@ const ProfilePage = () => {
         <article className="profile-card">
           <header className="profile-card__header">
             <div className="profile-user">
-              <img src={avatarSrc} alt="Profilkep" className="profile-user__avatar" />
+              <img src={avatarSrc} alt="Profilkép" className="profile-user__avatar" />
               <div className="profile-user__meta">
-                <p className="profile-user__name">{user?.name || "Felhasznalo"}</p>
+                <p className="profile-user__name">{user?.name || "Felhasználó"}</p>
                 <p className="profile-user__email">{user?.email || "Nincs email"}</p>
               </div>
             </div>
 
             <button type="button" className="profile-edit-btn">
-              Profil szerkesztese
+              Profil szerkesztése
             </button>
           </header>
 
-          <div className="profile-tabs" role="tablist" aria-label="Profil szekciok">
+          <div className="profile-tabs" role="tablist" aria-label="Profil szekciók">
             {tabs.map((tab) => (
               <button
                 key={tab.key}
@@ -100,20 +100,20 @@ const ProfilePage = () => {
             {activeTab === "reservations" && (
               <div className="profile-panel">
                 {reservationsLoading ? (
-                  <p className="profile-empty">Betoltes...</p>
+                  <p className="profile-empty">Betöltés...</p>
                 ) : reservationsError ? (
-                  <p className="profile-empty">Nem sikerult betolteni a foglalasokat.</p>
+                  <p className="profile-empty">Nem sikerült betölteni a foglalásokat.</p>
                 ) : Array.isArray(reservations) && reservations.length > 0 ? (
                   reservations.map((reservation) => (
                     <article className="profile-list-item" key={reservation.id}>
                       <p>
-                        <strong>{reservation?.boat?.name || "Ismeretlen hajo"}</strong> - {" "}
+                        <strong>{reservation?.boat?.name || "Ismeretlen hajó"}</strong> - {" "}
                         {reservation?.start_date || "-"} | Status: {reservation?.status || "-"}
                       </p>
                     </article>
                   ))
                 ) : (
-                  <p className="profile-empty">Meg nincs foglalasod.</p>
+                  <p className="profile-empty">Még nincs foglalásod.</p>
                 )}
               </div>
             )}
@@ -132,7 +132,7 @@ const ProfilePage = () => {
                   ))
                 ) : (
                   <p className="profile-empty">
-                    Jelenleg nincs sajat ertekeles endpoint a backendben, vagy meg nem ertekeltel.
+                    Jelenleg nincs saját értékelés endpoint a backendben, vagy még nem értékeltél.
                   </p>
                 )}
               </div>
@@ -146,21 +146,21 @@ const ProfilePage = () => {
                     className={`profile-secondary-btn ${activeSetting === "password" ? "is-active" : ""}`}
                     onClick={() => setActiveSetting("password")}
                   >
-                    Jelszocsere
+                    Jelszócsere
                   </button>
                   <button
                     type="button"
                     className={`profile-secondary-btn ${activeSetting === "privacy" ? "is-active" : ""}`}
                     onClick={() => setActiveSetting("privacy")}
                   >
-                    Adatvedelem
+                    Adatvédelem
                   </button>
                   <button
                     type="button"
                     className={`profile-secondary-btn ${activeSetting === "general" ? "is-active" : ""}`}
                     onClick={() => setActiveSetting("general")}
                   >
-                    Beallitasok
+                    Beállítások
                   </button>
                 </div>
 

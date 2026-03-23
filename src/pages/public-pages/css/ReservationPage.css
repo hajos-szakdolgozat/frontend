@@ -103,6 +103,23 @@
   font-weight: 600;
 }
 
+.reservation-page__review-text {
+  margin: 0;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+}
+
+.reservation-page__review-cta {
+  justify-self: start;
+  display: inline-block;
+  border-radius: 10px;
+  padding: 0.55rem 0.85rem;
+  background: var(--color-primary);
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 700;
+}
+
 .reservation-page__badge {
   padding: 0.2rem 0.6rem;
   border-radius: 999px;

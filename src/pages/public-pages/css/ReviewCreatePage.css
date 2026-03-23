@@ -1,0 +1,141 @@
+.review-page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 3rem;
+  display: grid;
+  gap: 1.25rem;
+  text-align: left;
+}
+
+.review-page__status {
+  padding: 2rem;
+  text-align: center;
+  color: var(--color-text-muted);
+}
+
+.review-page__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.review-page__header h1 {
+  margin: 0;
+  font-size: 1.8rem;
+  color: var(--color-text);
+}
+
+.review-page__header p {
+  margin: 0.4rem 0 0;
+  color: var(--color-text-muted);
+}
+
+.review-page__back {
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  background: var(--color-surface-soft);
+  color: var(--color-text);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.review-page__card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 18px;
+  box-shadow: var(--shadow-soft);
+  padding: 1.25rem;
+  display: grid;
+  gap: 0.9rem;
+}
+
+.review-page__card h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: var(--color-text);
+}
+
+.review-page__card label {
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.review-page__card textarea {
+  width: 100%;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: var(--color-surface-soft);
+  color: var(--color-text);
+  padding: 0.8rem 0.9rem;
+  resize: vertical;
+  min-height: 140px;
+}
+
+.review-page__card textarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-primary) 20%, transparent);
+}
+
+.review-page__stars {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.review-star {
+  border: none;
+  background: transparent;
+  color: var(--color-border);
+  font-size: 1.8rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 0.08rem;
+}
+
+.review-star.is-active {
+  color: #f4b400;
+}
+
+.review-page__rating-label {
+  margin-left: 0.45rem;
+  color: var(--color-text-muted);
+  font-weight: 600;
+}
+
+.review-page__error {
+  margin: 0;
+  color: var(--status-rejected-text);
+  font-weight: 600;
+}
+
+.review-page__submit,
+.review-page__cta {
+  justify-self: start;
+  border: none;
+  border-radius: 10px;
+  background: var(--color-primary);
+  color: #fff;
+  padding: 0.62rem 1rem;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.review-page__submit:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+
+@media (max-width: 640px) {
+  .review-page {
+    padding: 1.4rem 1rem 2.2rem;
+  }
+
+  .review-page__header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
