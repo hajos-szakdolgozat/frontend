@@ -156,3 +156,31 @@
     height: 240px;
   }
 }
+
+@media (max-width: 480px) {
+  .reservation-page {
+    padding: 1.25rem 0.9rem 2rem;
+    gap: 1.25rem;
+  }
+
+  .reservation-page__header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .reservation-page__header h2 {
+    font-size: 1.4rem;
+  }
+
+  .reservation-page__media {
+    height: 200px;
+  }
+
+  .reservation-page__summary div,
+  .reservation-page__details div {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.2rem;
+  }
+}

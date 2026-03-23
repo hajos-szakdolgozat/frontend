@@ -41,3 +41,26 @@
   text-align: center;
   color: var(--color-text-muted);
 }
+
+@media (max-width: 768px) {
+  .reservations-page {
+    padding: 1.5rem 1rem;
+    gap: 1.25rem;
+  }
+
+  .reservations-page__header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .reservations-page__header h2 {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .reservations-page {
+    padding: 1rem 0.75rem;
+  }
+}

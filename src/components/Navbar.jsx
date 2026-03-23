@@ -86,7 +86,7 @@ function Navbar() {
         <div className="nav-logo">
           <Link to="/" className="brand-logo">
              <span className="brand-name">DockJet</span>
-             <span className="brand-image"><img src={img} alt="Brand icon" style={{height: '32px'}} /></span>
+             <span className="brand-image"><img src={img} alt="Brand icon" /></span>
           </Link>
           <h2>{welcomeMessage}</h2>
           

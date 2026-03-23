@@ -335,8 +335,13 @@
 .boat-page__review-item {
   border: 1px solid var(--color-border);
   border-radius: 14px;
-  padding: 0.9rem;
+  padding: 1rem 1.1rem;
   background: var(--color-surface);
+  transition: box-shadow 0.15s ease;
+}
+
+.boat-page__review-item:hover {
+  box-shadow: var(--shadow-soft);
 }
 
 .boat-page__review-item header {
@@ -346,20 +351,31 @@
   gap: 0.75rem;
 }
 
-.boat-page__review-item header span {
-  font-weight: 700;
+.boat-page__review-stars {
+  display: flex;
+  gap: 2px;
+}
+
+.boat-page__star {
+  color: var(--color-border);
+  font-size: 1rem;
+}
+
+.boat-page__star--filled {
   color: #f4b400;
 }
 
 .boat-page__review-item p {
-  margin: 0.4rem 0 0;
+  margin: 0.5rem 0 0;
   color: var(--color-text-muted);
+  line-height: 1.55;
 }
 
 .boat-page__review-item small {
   display: block;
-  margin-top: 0.45rem;
+  margin-top: 0.5rem;
   color: var(--color-text-muted);
+  font-size: 0.8rem;
 }
 
 .boat-page__review-form {
@@ -375,6 +391,40 @@
 .boat-page__review-form h3 {
   margin: 0;
   color: var(--color-text);
+}
+
+.boat-page__rating-stars {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.boat-page__rating-star {
+  border: none;
+  background: transparent;
+  color: var(--color-border);
+  font-size: 2rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 2px;
+  transition: color 0.1s ease, transform 0.1s ease;
+}
+
+.boat-page__rating-star:hover,
+.boat-page__rating-star.is-active {
+  color: #f4b400;
+}
+
+.boat-page__rating-star:hover {
+  transform: scale(1.15);
+}
+
+.boat-page__rating-label {
+  margin-left: 6px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  font-size: 0.95rem;
 }
 
 .boat-page__review-form label {
@@ -513,5 +563,52 @@
 
   .boat-page__owner-card {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .boat-page {
+    padding: 1.25rem 1rem;
+    gap: 1.5rem;
+  }
+
+  .boat-page__header h1 {
+    font-size: 1.45rem;
+  }
+
+  .boat-page__stats {
+    grid-template-columns: 1fr;
+  }
+
+  .boat-page__gallery-main {
+    height: 220px;
+  }
+
+  .boat-page__gallery-side {
+    grid-template-rows: repeat(2, 100px);
+  }
+
+  .boat-page__gallery-tile {
+    height: 100px;
+  }
+
+  .boat-page__review-form {
+    padding: 0.8rem;
+  }
+
+  .boat-page__rating-star {
+    font-size: 1.6rem;
+  }
+
+  .boat-page__map-frame {
+    height: 300px;
+  }
+
+  .boat-page__map-header h2 {
+    font-size: 1.3rem;
+  }
+
+  .boat-page__map-header p {
+    font-size: 1rem;
   }
 }

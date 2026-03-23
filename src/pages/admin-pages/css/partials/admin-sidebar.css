@@ -13,6 +13,46 @@
   left: 0;
   top: 0;
   color: #ffffff;
+  z-index: 200;
+}
+
+/* Brand sor (cím + hamburger) */
+.admin-sidebar__brand {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.admin-sidebar__title {
+  font-weight: 700;
+  font-size: 1rem;
+  color: #ffffff;
+  letter-spacing: 0.02em;
+}
+
+/* Hamburger gomb – desktopön rejtett */
+.admin-sidebar__hamburger {
+  display: none;
+  border: none;
+  background: transparent;
+  color: #ffffff;
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 6px;
+}
+
+.admin-sidebar__hamburger:hover {
+  background: var(--admin-sidebar-hover);
+}
+
+/* Links wrapper */
+.admin-sidebar__links {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
 /* Sidebar linkek és gombok */
@@ -40,4 +80,44 @@
 .admin-sidebar a.active {
   background: var(--admin-sidebar-active-bg);
   color: var(--admin-text);
+}
+
+/* ── Mobilos hamburger viselkedés ── */
+@media (max-width: 768px) {
+  .admin-sidebar {
+    width: 100%;
+    height: auto;
+    position: sticky;
+    top: 0;
+    flex-direction: column;
+    padding: 12px 16px;
+    gap: 0;
+    overflow: visible;
+  }
+
+  .admin-sidebar__brand {
+    display: flex;
+  }
+
+  .admin-sidebar__hamburger {
+    display: block;
+  }
+
+  .admin-sidebar__links {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.25s ease;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .admin-sidebar.is-open .admin-sidebar__links {
+    max-height: 400px;
+    padding-top: 10px;
+  }
+
+  .admin-sidebar a,
+  .admin-sidebar button {
+    width: 100%;
+  }
 }

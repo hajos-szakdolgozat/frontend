@@ -133,13 +133,21 @@ const Boat = ({ boat, onFavoriteChange }) => {
 
       <div className="boat-card__footer">
         <span className="boat-card__owner">{boat?.user?.name}</span>
-        <span
-          className={
-            boat.is_active ? "boat-card__status is-active" : "boat-card__status"
-          }
-        >
-          {boat.is_active ? "Elérhető" : "Inaktív"}
-        </span>
+        <div className="boat-card__rating">
+          {boat.reviews_count > 0 ? (
+            <>
+              {[1, 2, 3, 4, 5].map((s) => (
+                <span
+                  key={s}
+                  className={s <= Math.round(Number(boat.reviews_avg_rating)) ? "boat-card__star boat-card__star--filled" : "boat-card__star"}
+                >★</span>
+              ))}
+              <span className="boat-card__rating-count">({boat.reviews_count})</span>
+            </>
+          ) : (
+            <span className="boat-card__rating-none">Nincs értékelés</span>
+          )}
+        </div>
       </div>
     </Link>
   );

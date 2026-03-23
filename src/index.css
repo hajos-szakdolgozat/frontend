@@ -105,3 +105,24 @@ a:hover {
 button {
   font-family: inherit;
 }
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  overflow-x: hidden;
+}
+
+body {
+  margin: 0;
+  overflow-x: hidden;
+  min-width: 320px;
+}
+
+img,
+video {
+  max-width: 100%;
+}

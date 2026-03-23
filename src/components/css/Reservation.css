@@ -85,3 +85,18 @@
     grid-template-columns: 1fr;
   }
 }
+
+@media (max-width: 480px) {
+  .reservation-row {
+    padding: 0.85rem 1rem;
+  }
+
+  .reservation-row__main h3 {
+    font-size: 0.97rem;
+  }
+
+  .reservation-row__meta {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem;
+  }
+}

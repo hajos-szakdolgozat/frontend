@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import ReservationFrom from "../../components/ReservationFrom";
 import "./css/BoatPage.css";
-import useFetch from "../../hooks/useFetch";
+import useFetch, { invalidateFetchCache } from "../../hooks/useFetch";
 import useAuthContext from "../../hooks/useAuthContext";
 import { getBoatImages, resolveBoatImageUrl } from "../../utils/boatImages";
 import { httpClient } from "../../api/axios";
@@ -16,7 +16,7 @@ function BoatPage() {
     fetchedData: reviewsResponse,
     loading: reviewsLoading,
     error: reviewsError,
-  } = useFetch(`/api/boats/${id}/reviews`);
+  } = useFetch(`/api/boats/${id}/reviews`, { cacheTime: 0 });
 
   const [pageImageIndex, setPageImageIndex] = useState(0);
   const [lightboxImageIndex, setLightboxImageIndex] = useState(0);
@@ -57,19 +57,25 @@ function BoatPage() {
     : fallbackAvatar;
 
   useEffect(() => {
-    const loadEligibleReservations = async () => {
-      if (!user || !boat?.id) {
-        setEligibleReservations([]);
-        setSelectedReservationId("");
-        return;
-      }
+    if (!user || !id) {
+      setEligibleReservations([]);
+      setSelectedReservationId("");
+      return;
+    }
 
+    let cancelled = false;
+
+    const loadEligibleReservations = async () => {
       try {
         const { data } = await httpClient.get("/api/reservations/mine");
+        if (cancelled) return;
         const reservations = Array.isArray(data) ? data : Array.isArray(data?.data) ? data.data : [];
         const filtered = reservations.filter((reservation) => {
           const reservationBoatId = reservation?.boat_id || reservation?.boat?.id;
-          return Number(reservationBoatId) === Number(boat.id) && !reservation?.review;
+          const hasReview = Boolean(
+            reservation?.review?.id || reservation?.review?.comment,
+          );
+          return Number(reservationBoatId) === Number(id) && !hasReview;
         });
 
         setEligibleReservations(filtered);
@@ -80,13 +86,21 @@ function BoatPage() {
           return filtered[0] ? String(filtered[0].id) : "";
         });
       } catch {
-        setEligibleReservations([]);
-        setSelectedReservationId("");
+        if (!cancelled) {
+          setEligibleReservations([]);
+          setSelectedReservationId("");
+        }
       }
     };
 
+    setEligibleReservations([]);
+    setSelectedReservationId("");
     loadEligibleReservations();
-  }, [user, boat?.id]);
+
+    return () => {
+      cancelled = true;
+    };
+  }, [user, id]);
 
   const handleReviewSubmit = async (event) => {
     event.preventDefault();
@@ -129,6 +143,10 @@ function BoatPage() {
       setEligibleReservations((prev) =>
         prev.filter((reservation) => String(reservation.id) !== String(selectedReservationId)),
       );
+
+      invalidateFetchCache(`/api/boats/${id}/reviews`);
+      invalidateFetchCache("/api/reservations/mine");
+
       setSelectedReservationId("");
       setReviewRating(5);
       setReviewComment("");
@@ -487,7 +505,11 @@ function BoatPage() {
                 <article key={review.id} className="boat-page__review-item">
                   <header>
                     <strong>{reviewerName}</strong>
-                    <span>{Number(review?.rating || 0).toFixed(1)} / 5</span>
+                    <span className="boat-page__review-stars">
+                      {[1,2,3,4,5].map((s) => (
+                        <span key={s} className={s <= Number(review?.rating || 0) ? "boat-page__star boat-page__star--filled" : "boat-page__star"}>★</span>
+                      ))}
+                    </span>
                   </header>
                   <p>{review?.comment || "Nincs szöveges vélemény."}</p>
                   <small>{createdAt}</small>
@@ -518,18 +540,21 @@ function BoatPage() {
                   ))}
                 </select>
 
-                <label htmlFor="review-rating">Értékelés (1-5)</label>
-                <select
-                  id="review-rating"
-                  value={reviewRating}
-                  onChange={(event) => setReviewRating(Number(event.target.value))}
-                >
-                  {[5, 4, 3, 2, 1].map((value) => (
-                    <option key={value} value={value}>
-                      {value}
-                    </option>
+                <label htmlFor="review-rating">Értékelés</label>
+                <div className="boat-page__rating-stars" role="group" aria-label="Értékelés csillagokkal">
+                  {[1, 2, 3, 4, 5].map((value) => (
+                    <button
+                      key={value}
+                      type="button"
+                      className={`boat-page__rating-star${value <= reviewRating ? " is-active" : ""}`}
+                      onClick={() => setReviewRating(value)}
+                      aria-label={`${value} csillag`}
+                    >
+                      ★
+                    </button>
                   ))}
-                </select>
+                  <span className="boat-page__rating-label">{reviewRating} / 5</span>
+                </div>
 
                 <label htmlFor="review-comment">Vélemény</label>
                 <textarea

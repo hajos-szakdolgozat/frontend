@@ -121,6 +121,33 @@
   color: var(--color-text);
 }
 
+.boat-card__rating {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.boat-card__star {
+  color: var(--color-border);
+  font-size: 0.95rem;
+  line-height: 1;
+}
+
+.boat-card__star--filled {
+  color: #f4b400;
+}
+
+.boat-card__rating-count {
+  margin-left: 4px;
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
+.boat-card__rating-none {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
 .boat-card__status {
   padding: 0.2rem 0.5rem;
   border-radius: 8px;
