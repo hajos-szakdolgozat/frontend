@@ -9,15 +9,37 @@ export const getBoatImages = (boatPayload) => {
 
 export const resolveBoatImageUrl = (image) => {
   const rawPath =
-    image?.image_url || image?.path || image?.url || image?.image_path || image?.src;
+    image?.image_url ||
+    image?.path ||
+    image?.url ||
+    image?.image_path ||
+    image?.src;
   if (!rawPath) return null;
-
-  if (/^https?:\/\//i.test(rawPath)) {
-    return rawPath;
-  }
 
   const baseUrl = String(httpClient.defaults.baseURL || "");
   const normalizedBase = baseUrl.endsWith("/") ? baseUrl : `${baseUrl}/`;
+
+  if (/^https?:\/\//i.test(rawPath)) {
+    try {
+      const absolute = new URL(rawPath);
+      const backendBase = new URL(normalizedBase);
+
+      if (
+        absolute.pathname.startsWith("/storage/") &&
+        absolute.host !== backendBase.host
+      ) {
+        return new URL(
+          absolute.pathname.replace(/^\/+/, ""),
+          normalizedBase,
+        ).toString();
+      }
+    } catch {
+      return rawPath;
+    }
+
+    return rawPath;
+  }
+
   const normalizedPath = String(rawPath).replace(/^\/+/, "");
 
   if (normalizedPath.startsWith("storage/")) {

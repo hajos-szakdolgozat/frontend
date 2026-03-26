@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { useParams, Link } from "react-router-dom";
-import { httpClient } from "../../api/axios";
 import useFetch from "../../hooks/useFetch";
+import { resolveBoatImageUrl } from "../../utils/boatImages";
 import "./css/ReservationPage.css";
 
 const ReservationPage = () => {
@@ -29,9 +29,7 @@ const ReservationPage = () => {
     reservation?.boat?.boat_images?.find((image) => image.is_thumbnail) ||
     reservation?.boat?.boat_images?.[0];
 
-  const imageUrl = thumbnail?.path
-    ? `${httpClient.defaults.baseURL}storage/${thumbnail.path}`
-    : null;
+  const imageUrl = resolveBoatImageUrl(thumbnail);
 
   if (loading) {
     return <p className="reservation-page__status">Betöltés...</p>;
@@ -83,7 +81,8 @@ const ReservationPage = () => {
           <div>
             <span>Ár / éj</span>
             <strong>
-              {reservation?.boat?.price_per_night} {reservation?.boat?.currency || "€"}
+              {reservation?.boat?.price_per_night}{" "}
+              {reservation?.boat?.currency || "€"}
             </strong>
           </div>
           <div>
@@ -121,14 +120,21 @@ const ReservationPage = () => {
           <div>
             <span>Értékelés</span>
             <strong>
-              {reservation?.review ? `${reservation.review.rating}/5` : "Még nincs értékelés"}
+              {reservation?.review
+                ? `${reservation.review.rating}/5`
+                : "Még nincs értékelés"}
             </strong>
           </div>
           {reservation?.review?.comment && (
-            <p className="reservation-page__review-text">{reservation.review.comment}</p>
+            <p className="reservation-page__review-text">
+              {reservation.review.comment}
+            </p>
           )}
           {!reservation?.review && (
-            <Link className="reservation-page__review-cta" to={`/reservations/${reservation.id}/review`}>
+            <Link
+              className="reservation-page__review-cta"
+              to={`/reservations/${reservation.id}/review`}
+            >
               Értékelés írása
             </Link>
           )}

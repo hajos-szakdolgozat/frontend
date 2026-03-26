@@ -69,6 +69,46 @@
   color: var(--status-rejected-text);
 }
 
+.reservation-row__actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.reservation-row__action {
+  border: 1px solid transparent;
+  border-radius: 999px;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.reservation-row__action:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.reservation-row__action--approve {
+  background: var(--status-approved-bg);
+  color: var(--status-approved-text);
+  border-color: color-mix(
+    in srgb,
+    var(--status-approved-text) 20%,
+    transparent
+  );
+}
+
+.reservation-row__action--reject {
+  background: var(--status-rejected-bg);
+  color: var(--status-rejected-text);
+  border-color: color-mix(
+    in srgb,
+    var(--status-rejected-text) 20%,
+    transparent
+  );
+}
+
 @media (max-width: 900px) {
   .reservation-row {
     grid-template-columns: 1fr;

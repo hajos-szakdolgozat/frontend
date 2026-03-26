@@ -43,7 +43,9 @@ function Navbar() {
       return;
     }
 
-    const systemPrefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const systemPrefersDark = window.matchMedia(
+      "(prefers-color-scheme: dark)",
+    ).matches;
     setTheme(systemPrefersDark ? "dark" : "light");
   }, []);
 
@@ -85,11 +87,12 @@ function Navbar() {
       <div className="nav-container">
         <div className="nav-logo">
           <Link to="/" className="brand-logo">
-             <span className="brand-name">DockJet</span>
-             <span className="brand-image"><img src={img} alt="Brand icon" /></span>
+            <span className="brand-name">DockJet</span>
+            <span className="brand-image">
+              <img src={img} alt="Brand icon" />
+            </span>
           </Link>
           <h2>{welcomeMessage}</h2>
-          
         </div>
         <div className="nav-search">
           <div className="search-container">
@@ -131,7 +134,9 @@ function Navbar() {
               <option value="9">9 fő</option>
               <option value="10">10+ fő</option>
             </select>
-            <button className="search-button" onClick={handleSearch}>Keresés</button>
+            <button className="search-button" onClick={handleSearch}>
+              Keresés
+            </button>
           </div>
         </div>
         <div className="nav-links">
@@ -150,13 +155,22 @@ function Navbar() {
                 >
                   <img src={avatarSrc} alt="Profil" />
                 </button>
-                <div className={isDropdownOpen ? "dropdown is-open" : "dropdown"}>
+                <div
+                  className={isDropdownOpen ? "dropdown is-open" : "dropdown"}
+                >
                   <ul>
                     <li>
-                      <Link to="/me" onClick={() => setIsDropdownOpen(false)}>Profilom</Link>
+                      <Link to="/me" onClick={() => setIsDropdownOpen(false)}>
+                        Profilom
+                      </Link>
                     </li>
                     <li>
-                      <Link to="/newBoat" onClick={() => setIsDropdownOpen(false)}>Hajóm kiadása</Link>
+                      <Link
+                        to="/newBoat"
+                        onClick={() => setIsDropdownOpen(false)}
+                      >
+                        Hajóm kiadása
+                      </Link>
                     </li>
                     <li>
                       <button
@@ -172,7 +186,10 @@ function Navbar() {
                     </li>
                     {isAdmin && (
                       <li>
-                        <Link to="/admin/users" onClick={() => setIsDropdownOpen(false)}>
+                        <Link
+                          to="/admin/users"
+                          onClick={() => setIsDropdownOpen(false)}
+                        >
                           Admin felület
                         </Link>
                       </li>
@@ -183,28 +200,45 @@ function Navbar() {
                         aria-current="page"
                         onClick={() => setIsDropdownOpen(false)}
                       >
-                        Foglalásaim
+                        Utazásaim
                       </Link>
                     </li>
                     <li>
-                      <Link to="/favorites" onClick={() => setIsDropdownOpen(false)}>Kedvenceim</Link>
+                      <Link
+                        to="/myReservations"
+                        onClick={() => setIsDropdownOpen(false)}
+                      >
+                        Beérkezett foglalások
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        to="/favorites"
+                        onClick={() => setIsDropdownOpen(false)}
+                      >
+                        Kedvenceim
+                      </Link>
                     </li>
                     {user ? (
-                        <li>
-                          <button
-                            onClick={() => {
-                              setIsDropdownOpen(false);
-                              logout();
-                            }}
-                            aria-current="page"
-                          >
-                            LogOut
-                          </button>
-                        </li>
+                      <li>
+                        <button
+                          onClick={() => {
+                            setIsDropdownOpen(false);
+                            logout();
+                          }}
+                          aria-current="page"
+                        >
+                          LogOut
+                        </button>
+                      </li>
                     ) : (
                       <>
                         <li>
-                          <Link to="/login" aria-current="page" onClick={() => setIsDropdownOpen(false)}>
+                          <Link
+                            to="/login"
+                            aria-current="page"
+                            onClick={() => setIsDropdownOpen(false)}
+                          >
                             Login
                           </Link>
                         </li>

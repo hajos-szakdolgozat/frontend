@@ -12,18 +12,28 @@ const Login = lazy(() => import("./pages/public-pages/Login"));
 const AdminPage = lazy(() => import("./pages/admin-pages/AdminPage"));
 const Users = lazy(() => import("./pages/admin-pages/views/Users"));
 const Ads = lazy(() => import("./pages/admin-pages/views/Ads"));
-const Transactions = lazy(() => import("./pages/admin-pages/views/Transactions"));
+const Transactions = lazy(
+  () => import("./pages/admin-pages/views/Transactions"),
+);
 const Complaints = lazy(() => import("./pages/admin-pages/views/Complaints"));
 const Statistics = lazy(() => import("./pages/admin-pages/views/Statistics"));
 const BoatPage = lazy(() => import("./pages/public-pages/BoatPage"));
-const ReservationsPage = lazy(() => import("./pages/public-pages/ReservationsPage"));
-const ReservationPage = lazy(() => import("./pages/public-pages/ReservationPage"));
-const ReviewCreatePage = lazy(() => import("./pages/public-pages/ReviewCreatePage"));
+const ReservationsPage = lazy(
+  () => import("./pages/public-pages/ReservationsPage"),
+);
+const ReservationPage = lazy(
+  () => import("./pages/public-pages/ReservationPage"),
+);
+const ReviewCreatePage = lazy(
+  () => import("./pages/public-pages/ReviewCreatePage"),
+);
 const AddBoat = lazy(() => import("./components/AddBoat"));
 const FavoritesPage = lazy(() => import("./pages/public-pages/FavoritesPage"));
 const ProfilePage = lazy(() => import("./pages/public-pages/ProfilePage"));
 
 import "./App.css";
+import Reservations from "./components/IncomingReservations";
+import IncomingReservationsPage from "./pages/public-pages/IncomingReservationsPage";
 
 function App() {
   return (
@@ -37,11 +47,18 @@ function App() {
         <Route element={<AuthLayout />}>
           <Route path="/reservations" element={<ReservationsPage />} />
           <Route path="/reservations/:id" element={<ReservationPage />} />
-          <Route path="/reservations/:id/review" element={<ReviewCreatePage />} />
+          <Route
+            path="/reservations/:id/review"
+            element={<ReviewCreatePage />}
+          />
           <Route path="/favorites" element={<FavoritesPage />} />
           <Route path="favorites/me" element={<FavoritesPage />} />
           <Route path="/me" element={<ProfilePage />} />
           <Route path="/newBoat" element={<AddBoat />} />
+          <Route
+            path="/myReservations"
+            element={<IncomingReservationsPage />}
+          />
         </Route>
 
         <Route element={<AdminLayout />}>

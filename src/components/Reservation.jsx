@@ -1,10 +1,12 @@
 import "./css/Reservation.css";
 
-const Reservation = ({ reservation }) => {
+const Reservation = ({ reservation, onUpdateStatus, isUpdating = false }) => {
   const boatName = reservation?.boat?.name || "Ismeretlen hajó";
   const status = reservation?.status || "ismeretlen";
   const pricePerNight = reservation?.boat?.price_per_night || 0;
   const currency = reservation?.boat?.currency || "€";
+  const canModerate = typeof onUpdateStatus === "function";
+  const isPending = status === "pending";
 
   const nights = (() => {
     if (!reservation?.start_date || !reservation?.end_date) return 0;
@@ -28,7 +30,9 @@ const Reservation = ({ reservation }) => {
       <div className="reservation-row__meta">
         <div>
           <span>Ár / éj</span>
-          <strong>{pricePerNight} {currency}</strong>
+          <strong>
+            {pricePerNight} {currency}
+          </strong>
         </div>
         <div>
           <span>Típus</span>
@@ -36,13 +40,36 @@ const Reservation = ({ reservation }) => {
         </div>
         <div>
           <span>Összesen</span>
-          <strong>{total} {currency}</strong>
+          <strong>
+            {total} {currency}
+          </strong>
         </div>
       </div>
 
-      <span className={`reservation-row__status status--${status}`}>
-        {status}
-      </span>
+      {canModerate && isPending ? (
+        <div className="reservation-row__actions">
+          <button
+            type="button"
+            className="reservation-row__action reservation-row__action--approve"
+            onClick={() => onUpdateStatus(reservation.id, "approved")}
+            disabled={isUpdating}
+          >
+            Elfogad
+          </button>
+          <button
+            type="button"
+            className="reservation-row__action reservation-row__action--reject"
+            onClick={() => onUpdateStatus(reservation.id, "rejected")}
+            disabled={isUpdating}
+          >
+            Elutasít
+          </button>
+        </div>
+      ) : (
+        <span className={`reservation-row__status status--${status}`}>
+          {status}
+        </span>
+      )}
     </article>
   );
 };
