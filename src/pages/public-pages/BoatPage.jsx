@@ -322,6 +322,10 @@ function BoatPage() {
     return <p className="boat-page__status">Hajó nem található.</p>;
   }
 
+  const ownerId = Number(boat?.user_id || boat?.user?.id || 0);
+  const currentUserId = Number(user?.id || 0);
+  const canEditBoat = Boolean(user && (ownerId === currentUserId || user?.role === "admin"));
+
   return (
     <section className="boat-page">
       <header className="boat-page__header">
@@ -331,9 +335,16 @@ function BoatPage() {
             {boat?.port?.name} • {boat?.port?.city}
           </p>
         </div>
-        <Link className="boat-page__back" to="/">
-          Vissza a listához
-        </Link>
+        <div>
+          {canEditBoat && (
+            <Link className="boat-page__back" to={`/boats/${boat.id}/edit`}>
+              Hirdetés szerkesztése
+            </Link>
+          )}
+          <Link className="boat-page__back" to="/">
+            Vissza a listához
+          </Link>
+        </div>
       </header>
 
       <div className="boat-page__content">
