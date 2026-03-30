@@ -4,6 +4,7 @@ import useFetch from "../../hooks/useFetch";
 import { httpClient } from "../../api/axios";
 import fallbackAvatar from "../../images/userimage.png";
 import { resolveAvatarUrl } from "../../utils/avatarImage";
+import "./css/AuthPages.css";
 import "./css/ProfilePage.css";
 
 const tabs = [

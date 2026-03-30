@@ -51,6 +51,21 @@ function BoatPage() {
     };
   }, [localReviews]);
 
+  const approvedReservations = useMemo(() => {
+    if (Array.isArray(boat?.reservations)) return boat.reservations;
+    if (Array.isArray(boat?.approved_reservations)) return boat.approved_reservations;
+    if (Array.isArray(boat?.data?.reservations)) return boat.data.reservations;
+    return [];
+  }, [boat]);
+
+  const isBoatActive = useMemo(() => {
+    const activeFlag = boat?.is_active ?? boat?.active ?? boat?.status;
+    if (typeof activeFlag === "string") {
+      return !["inactive", "archived", "disabled", "0"].includes(activeFlag.toLowerCase());
+    }
+    return activeFlag !== false && activeFlag !== 0;
+  }, [boat]);
+
   const owner = boat?.user || {};
   const ownerAvatar = owner?.avatar_path
     ? new URL(owner.avatar_path, httpClient.defaults.baseURL).toString()
@@ -435,7 +450,11 @@ function BoatPage() {
         </div>
 
         {user ? (
-          <ReservationFrom boatId={id} />
+          <ReservationFrom
+            boatId={id}
+            isBoatActive={isBoatActive}
+            unavailableRanges={approvedReservations}
+          />
         ) : (
           <div className="boat-page__details">
             <p className="boat-page__description">Foglaláshoz be kell jelentkezned.</p>

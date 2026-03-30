@@ -57,6 +57,13 @@
   box-shadow: 0 10px 20px color-mix(in srgb, var(--color-primary) 24%, transparent);
 }
 
+.reservation-form__submit:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+  transform: none;
+  box-shadow: none;
+}
+
 .reservation-form__error {
   margin: 0;
   padding: 0.6rem 0.75rem;
@@ -64,4 +71,11 @@
   background: var(--status-rejected-bg);
   color: var(--status-rejected-text);
   font-size: 0.9rem;
+}
+
+.reservation-form__hint {
+  margin: -0.25rem 0 0;
+  font-size: 0.88rem;
+  color: var(--color-text-muted);
+  line-height: 1.5;
 }
