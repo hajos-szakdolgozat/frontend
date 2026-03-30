@@ -160,3 +160,47 @@
   background: var(--status-approved-bg);
   color: var(--status-approved-text);
 }
+
+@media (max-width: 1024px) {
+  .boat-card {
+    min-height: 390px;
+  }
+}
+
+@media (max-width: 640px) {
+  .boat-card {
+    padding: 1rem;
+    min-height: auto;
+    gap: 0.85rem;
+  }
+
+  .boat-card__media {
+    height: 165px;
+  }
+
+  .boat-card__header {
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+
+  .boat-card__title {
+    font-size: 1.05rem;
+  }
+
+  .boat-card__meta {
+    grid-template-columns: 1fr;
+    gap: 0.55rem;
+  }
+
+  .boat-card__footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.4rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .boat-card__media {
+    height: 145px;
+  }
+}

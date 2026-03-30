@@ -9,6 +9,7 @@ import { resolveAvatarUrl } from "../utils/avatarImage";
 function Navbar() {
   const { user, logout } = useAuthContext();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isNavMenuOpen, setIsNavMenuOpen] = useState(false);
   const [theme, setTheme] = useState("light");
   const [searchLocation, setSearchLocation] = useState("");
   const [checkIn, setCheckIn] = useState("");
@@ -56,6 +57,11 @@ function Navbar() {
     document.documentElement.setAttribute("data-theme", theme);
     localStorage.setItem("theme", theme);
   }, [theme]);
+
+  useEffect(() => {
+    setIsNavMenuOpen(false);
+    setIsDropdownOpen(false);
+  }, [location.pathname, location.search]);
 
   const toggleTheme = () => {
     setTheme((prev) => (prev === "dark" ? "light" : "dark"));
@@ -143,7 +149,21 @@ function Navbar() {
           </div>
         </div>
         <div className="nav-links">
-          <div id="navbar-default">
+          <button
+            type="button"
+            className="nav-menu-toggle"
+            aria-label="Menü megnyitása"
+            aria-expanded={isNavMenuOpen}
+            onClick={() => setIsNavMenuOpen((prev) => !prev)}
+          >
+            <span />
+            <span />
+            <span />
+          </button>
+          <div
+            id="navbar-default"
+            className={isNavMenuOpen ? "is-open" : ""}
+          >
             <ul>
               <li>
                 <Link to="/" aria-current="page">
@@ -235,7 +255,7 @@ function Navbar() {
                           }}
                           aria-current="page"
                         >
-                          LogOut
+                          Kijelentkezés
                         </button>
                       </li>
                     ) : (

@@ -290,6 +290,39 @@
   height: 16px;
 }
 
+.profile-privacy-option {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.85rem;
+  padding: 0.7rem 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background: var(--color-surface-soft);
+}
+
+.profile-privacy-option span {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.profile-privacy-option strong {
+  color: var(--color-text);
+  font-size: 0.95rem;
+}
+
+.profile-privacy-option small {
+  color: var(--color-text-muted);
+  line-height: 1.35;
+}
+
+.profile-privacy-option input[type="checkbox"] {
+  margin-top: 0.15rem;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
 @media (max-width: 680px) {
   .profile-card__header {
     flex-direction: column;

@@ -350,7 +350,7 @@ function BoatPage() {
             {boat?.port?.name} • {boat?.port?.city}
           </p>
         </div>
-        <div>
+        <div className="boat-page__header-actions">
           {canEditBoat && (
             <Link className="boat-page__back" to={`/boats/${boat.id}/edit`}>
               Hirdetés szerkesztése
