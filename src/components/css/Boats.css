@@ -22,6 +22,97 @@
   color: var(--color-text-muted);
 }
 
+.boats__advanced {
+  display: grid;
+  gap: 0.9rem;
+  width: min(100%, 860px);
+  padding: 1rem;
+  border-radius: 18px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-soft);
+}
+
+.boats__advanced-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.boats__advanced-header h3 {
+  margin: 0;
+}
+
+.boats__advanced-toggle {
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: var(--color-surface-soft);
+  color: var(--color-text);
+  padding: 0.8rem 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.boats__advanced-toggle.is-open {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.boats__filters {
+  display: grid;
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+  gap: 0.85rem;
+}
+
+.boats__filter,
+.boats__filter-actions button {
+  width: 100%;
+  min-height: 44px;
+  border-radius: 12px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-soft);
+  color: var(--color-text);
+  padding: 0.7rem 0.85rem;
+  font: inherit;
+}
+
+.boats__filter--type,
+.boats__filter--active,
+.boats__filter--sort {
+  grid-column: span 2;
+}
+
+.boats__filter--min-price,
+.boats__filter--max-price {
+  grid-column: span 2;
+}
+
+.boats__filter-actions {
+  grid-column: 7 / -1;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+.boats__filter-actions button {
+  width: auto;
+  min-width: 150px;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.boats__filter-actions button:first-child {
+  border: none;
+  background: var(--color-primary);
+  color: #fff;
+}
+
+.boats__filter-reset {
+  background: transparent !important;
+}
+
 .boats__grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -30,18 +121,71 @@
 }
 
 @media (max-width: 1024px) {
+  .boats__advanced-header {
+    align-items: flex-start;
+  }
+
+  .boats__filters {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+
+  .boats__filter--type {
+    grid-column: span 3;
+  }
+
+  .boats__filter--min-price,
+  .boats__filter--max-price,
+  .boats__filter--active,
+  .boats__filter--sort {
+    grid-column: span 2;
+  }
+
+  .boats__filter-actions {
+    grid-column: 1 / -1;
+    justify-content: flex-start;
+  }
+
   .boats__grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 640px) {
+  .boats__filters {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .boats__filter {
+    grid-column: span 1 !important;
+  }
+
+  .boats__filter-actions {
+    grid-column: 1 / -1;
+    flex-direction: column;
+  }
+
+  .boats__filter-actions button {
+    width: 100%;
+  }
+
   .boats__grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 420px) {
+  .boats__advanced {
+    padding: 0.85rem;
+  }
+
+  .boats__filters {
+    grid-template-columns: 1fr;
+  }
+
+  .boats__filter {
+    grid-column: 1 / -1 !important;
+  }
+
   .boats__grid {
     grid-template-columns: 1fr;
   }

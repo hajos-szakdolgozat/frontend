@@ -300,13 +300,28 @@
   display: flex;
   width: 100%;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: space-between;
   padding: 0.8rem 0.9rem;
   border-radius: 10px;
   font-size: 0.95rem;
   font-weight: 600;
   line-height: 1.35;
   text-align: left;
+}
+
+.nav-badge {
+  min-width: 22px;
+  height: 22px;
+  padding: 0 0.35rem;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-primary);
+  color: #fff;
+  font-size: 0.74rem;
+  font-weight: 700;
+  line-height: 1;
 }
 
 #navbar-default .dropdown li + li {

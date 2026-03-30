@@ -33,6 +33,8 @@ const AddBoat = lazy(() => import("./components/AddBoat"));
 const EditBoatPage = lazy(() => import("./pages/public-pages/EditBoatPage"));
 const FavoritesPage = lazy(() => import("./pages/public-pages/FavoritesPage"));
 const ProfilePage = lazy(() => import("./pages/public-pages/ProfilePage"));
+const MyBoatsPage = lazy(() => import("./pages/public-pages/MyBoatsPage"));
+const NotificationsPage = lazy(() => import("./pages/public-pages/NotificationsPage"));
 
 import "./App.css";
 import Reservations from "./components/IncomingReservations";
@@ -57,6 +59,8 @@ function App() {
           <Route path="/favorites" element={<FavoritesPage />} />
           <Route path="favorites/me" element={<FavoritesPage />} />
           <Route path="/me" element={<ProfilePage />} />
+          <Route path="/my-boats" element={<MyBoatsPage />} />
+          <Route path="/notifications" element={<NotificationsPage />} />
           <Route path="/newBoat" element={<AddBoat />} />
           <Route path="/boats/:id/edit" element={<EditBoatPage />} />
           <Route

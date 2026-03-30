@@ -1,0 +1,174 @@
+.my-boats-page {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 2rem 1rem 3rem;
+  display: grid;
+  gap: 1.5rem;
+}
+
+.my-boats-page__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.my-boats-page__header h1,
+.my-boats-page__header p {
+  margin: 0;
+}
+
+.my-boats-page__header p,
+.my-boats-page__status,
+.my-boats-page__empty p {
+  color: var(--color-text-muted);
+}
+
+.my-boats-page__create,
+.my-boats-page__empty a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.8rem 1rem;
+  border-radius: 12px;
+  background: var(--color-primary);
+  color: #fff;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.my-boats-page__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.my-boats-card {
+  border: 1px solid var(--color-border);
+  border-radius: 18px;
+  overflow: hidden;
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+}
+
+.my-boats-card__media {
+  position: relative;
+  display: block;
+  height: 210px;
+  background: var(--color-surface-soft);
+}
+
+.my-boats-card__media img,
+.my-boats-card__placeholder {
+  width: 100%;
+  height: 100%;
+}
+
+.my-boats-card__media img {
+  object-fit: cover;
+  display: block;
+}
+
+.my-boats-card__placeholder {
+  display: grid;
+  place-items: center;
+  color: var(--color-text-muted);
+}
+
+.my-boats-card__status {
+  position: absolute;
+  top: 0.9rem;
+  left: 0.9rem;
+  padding: 0.35rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.my-boats-card__status.is-active {
+  background: var(--status-approved-bg);
+  color: var(--status-approved-text);
+}
+
+.my-boats-card__status.is-inactive {
+  background: var(--status-rejected-bg);
+  color: var(--status-rejected-text);
+}
+
+.my-boats-card__body {
+  padding: 1rem;
+  display: grid;
+  gap: 1rem;
+}
+
+.my-boats-card__body h2,
+.my-boats-card__body p {
+  margin: 0;
+}
+
+.my-boats-card__body p {
+  color: var(--color-text-muted);
+}
+
+.my-boats-card__meta {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+  padding: 0.85rem;
+  border-radius: 14px;
+  background: var(--color-surface-soft);
+}
+
+.my-boats-card__meta span {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+}
+
+.my-boats-card__meta strong {
+  color: var(--color-text);
+}
+
+.my-boats-card__actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.my-boats-card__actions a {
+  flex: 1 1 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 0.9rem;
+  border-radius: 12px;
+  font-weight: 700;
+  text-decoration: none;
+  background: var(--color-surface-soft);
+  color: var(--color-text);
+}
+
+.my-boats-page__empty {
+  display: grid;
+  place-items: start;
+  gap: 1rem;
+  padding: 1.5rem;
+  border: 1px dashed var(--color-border);
+  border-radius: 18px;
+  background: var(--color-surface);
+}
+
+@media (max-width: 680px) {
+  .my-boats-page__header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .my-boats-card__meta {
+    grid-template-columns: 1fr;
+  }
+
+  .my-boats-card__actions {
+    flex-direction: column;
+  }
+}

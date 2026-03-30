@@ -6,6 +6,7 @@ import img from "../pages/admin-pages/views/images/logo.png";
 import { useEffect, useRef, useState } from "react";
 import { resolveAvatarUrl } from "../utils/avatarImage";
 import { applyTheme, getPreferredTheme, persistTheme } from "../utils/theme";
+import { httpClient } from "../api/axios";
 
 function Navbar() {
   const { user, logout } = useAuthContext();
@@ -17,6 +18,7 @@ function Navbar() {
   const [checkOut, setCheckOut] = useState("");
   const [guests, setGuests] = useState("");
   const [avatarLoadFailed, setAvatarLoadFailed] = useState(false);
+  const [unreadNotifications, setUnreadNotifications] = useState(0);
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
   const location = useLocation();
@@ -29,6 +31,43 @@ function Navbar() {
   useEffect(() => {
     setAvatarLoadFailed(false);
   }, [user?.avatar_path]);
+
+  useEffect(() => {
+    const syncUnread = (event) => {
+      setUnreadNotifications(Number(event?.detail?.unreadCount || 0));
+    };
+
+    window.addEventListener("notifications:updated", syncUnread);
+    return () => window.removeEventListener("notifications:updated", syncUnread);
+  }, []);
+
+  useEffect(() => {
+    if (!user) {
+      setUnreadNotifications(0);
+      return;
+    }
+
+    let active = true;
+
+    const loadUnreadCount = async () => {
+      try {
+        const { data } = await httpClient.get("/api/notifications/unread-count");
+        if (active) {
+          setUnreadNotifications(Number(data?.unread_count || 0));
+        }
+      } catch {
+        if (active) {
+          setUnreadNotifications(0);
+        }
+      }
+    };
+
+    loadUnreadCount();
+
+    return () => {
+      active = false;
+    };
+  }, [user, location.pathname]);
 
   useEffect(() => {
     const handleOutsideClick = (event) => {
@@ -177,6 +216,25 @@ function Navbar() {
                     <li>
                       <Link to="/me" onClick={() => setIsDropdownOpen(false)}>
                         Profilom
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        to="/notifications"
+                        onClick={() => setIsDropdownOpen(false)}
+                      >
+                        Értesítések
+                        {unreadNotifications > 0 && (
+                          <span className="nav-badge">{unreadNotifications}</span>
+                        )}
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        to="/my-boats"
+                        onClick={() => setIsDropdownOpen(false)}
+                      >
+                        Saját hirdetéseim
                       </Link>
                     </li>
                     <li>
