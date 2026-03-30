@@ -75,7 +75,7 @@ const Boat = ({ boat, onFavoriteChange }) => {
     return () => (mounted = false);
   }, [user, boat.id]);
   return (
-    <Link to={boat.is_active ? `/boat/${boat.id}` : ""} className="boat-card">
+    <Link to={`/boat/${boat.id}`} className="boat-card">
       <div className="boat-card__media">
         <span
           className="boat-card__favorite"

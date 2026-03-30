@@ -7,6 +7,18 @@ const Reservation = ({ reservation, onUpdateStatus, isUpdating = false }) => {
   const currency = reservation?.boat?.currency || "€";
   const canModerate = typeof onUpdateStatus === "function";
   const isPending = status === "pending";
+  const bookedByName =
+    reservation?.user?.name ||
+    reservation?.customer?.name ||
+    reservation?.guest?.name ||
+    reservation?.renter?.name ||
+    "Ismeretlen felhasználó";
+  const bookedByEmail =
+    reservation?.user?.email ||
+    reservation?.customer?.email ||
+    reservation?.guest?.email ||
+    reservation?.renter?.email ||
+    "";
 
   const nights = (() => {
     if (!reservation?.start_date || !reservation?.end_date) return 0;
@@ -25,6 +37,12 @@ const Reservation = ({ reservation, onUpdateStatus, isUpdating = false }) => {
         <p>
           {reservation?.start_date} → {reservation?.end_date}
         </p>
+        {canModerate && (
+          <p className="reservation-row__guest">
+            Foglaló: <strong>{bookedByName}</strong>
+            {bookedByEmail ? ` (${bookedByEmail})` : ""}
+          </p>
+        )}
       </div>
 
       <div className="reservation-row__meta">

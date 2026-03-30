@@ -40,6 +40,7 @@ const EditBoatPage = () => {
   const [formData, setFormData] = useState(initialForm);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [error, setError] = useState("");
 
   const canEdit = useMemo(() => {
@@ -151,6 +152,34 @@ const EditBoatPage = () => {
       );
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    const shouldDelete = window.confirm(
+      "Biztosan törölni szeretnéd ezt a hirdetést? Ez a művelet nem visszavonható.",
+    );
+
+    if (!shouldDelete) {
+      return;
+    }
+
+    setDeleting(true);
+    setError("");
+
+    try {
+      await httpClient.delete(`/api/boats/${id}`);
+      invalidateFetchCache("/api/boats");
+      invalidateFetchCache(`/api/boats/${id}`);
+      window.alert("Hirdetés sikeresen törölve.");
+      navigate("/");
+    } catch (deleteError) {
+      setError(
+        deleteError?.response?.data?.message ||
+          "A hirdetés törlése sikertelen.",
+      );
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -354,9 +383,19 @@ const EditBoatPage = () => {
 
         {error && <p className="boat-page__status">{error}</p>}
 
-        <button className="add-boat__submit" type="submit" disabled={saving}>
-          {saving ? "Mentés..." : "Hirdetés frissítése"}
-        </button>
+        <div className="add-boat__actions">
+          <button className="add-boat__submit" type="submit" disabled={saving || deleting}>
+            {saving ? "Mentés..." : "Hirdetés frissítése"}
+          </button>
+          <button
+            className="add-boat__delete"
+            type="button"
+            onClick={handleDelete}
+            disabled={saving || deleting}
+          >
+            {deleting ? "Törlés..." : "Hirdetés törlése"}
+          </button>
+        </div>
       </form>
     </section>
   );

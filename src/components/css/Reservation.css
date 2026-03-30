@@ -22,6 +22,16 @@
   font-size: 0.9rem;
 }
 
+.reservation-row__guest {
+  margin-top: 0.45rem;
+  font-size: 0.92rem;
+  color: var(--color-text);
+}
+
+.reservation-row__guest strong {
+  color: var(--color-text);
+}
+
 .reservation-row__meta {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));

@@ -116,6 +116,45 @@
   box-shadow: 0 10px 20px color-mix(in srgb, var(--color-primary) 24%, transparent);
 }
 
+.add-boat__actions {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.add-boat__actions .add-boat__submit {
+  grid-column: auto;
+  flex: 1 1 240px;
+}
+
+.add-boat__delete {
+  flex: 1 1 220px;
+  padding: 0.75rem 1rem;
+  border: 1px solid color-mix(in srgb, var(--status-rejected-text) 24%, transparent);
+  border-radius: 12px;
+  background: var(--status-rejected-bg);
+  color: var(--status-rejected-text);
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    opacity 0.15s ease;
+}
+
+.add-boat__delete:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 20px color-mix(in srgb, var(--status-rejected-text) 16%, transparent);
+}
+
+.add-boat__delete:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
 .add-boat__image-list {
   display: grid;
   gap: 0.5rem;
