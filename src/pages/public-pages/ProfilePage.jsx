@@ -1,8 +1,9 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import useAuthContext from "../../hooks/useAuthContext";
 import useFetch from "../../hooks/useFetch";
 import { httpClient } from "../../api/axios";
 import fallbackAvatar from "../../images/userimage.png";
+import { resolveAvatarUrl } from "../../utils/avatarImage";
 import "./css/ProfilePage.css";
 
 const tabs = [
@@ -20,7 +21,19 @@ const ProfilePage = () => {
   const [passwordSubmitting, setPasswordSubmitting] = useState(false);
   const [passwordError, setPasswordError] = useState("");
   const [passwordSuccess, setPasswordSuccess] = useState("");
-  const { user } = useAuthContext();
+  const [profileForm, setProfileForm] = useState({
+    name: "",
+    email: "",
+    phone_number: "",
+  });
+  const [avatarFile, setAvatarFile] = useState(null);
+  const [avatarPreview, setAvatarPreview] = useState("");
+  const [avatarLoadFailed, setAvatarLoadFailed] = useState(false);
+  const [removeAvatar, setRemoveAvatar] = useState(false);
+  const [profileSubmitting, setProfileSubmitting] = useState(false);
+  const [profileError, setProfileError] = useState("");
+  const [profileSuccess, setProfileSuccess] = useState("");
+  const { user, getUser } = useAuthContext();
   const {
     fetchedData: reservations,
     loading: reservationsLoading,
@@ -28,13 +41,9 @@ const ProfilePage = () => {
   } = useFetch("/api/reservations/mine");
 
   const avatarSrc = useMemo(() => {
-    const hasAvatarPath =
-      typeof user?.avatar_path === "string" && user.avatar_path.trim() !== "";
-
-    return hasAvatarPath
-      ? new URL(user.avatar_path, httpClient.defaults.baseURL).toString()
-      : fallbackAvatar;
-  }, [user]);
+    if (avatarLoadFailed) return fallbackAvatar;
+    return resolveAvatarUrl(user?.avatar_path, fallbackAvatar);
+  }, [user?.avatar_path, avatarLoadFailed]);
 
   const reviews = useMemo(() => {
     if (!Array.isArray(reservations)) {
@@ -50,6 +59,26 @@ const ProfilePage = () => {
         rating: reservation?.review?.rating,
       }));
   }, [reservations]);
+
+  useEffect(() => {
+    setProfileForm({
+      name: user?.name || "",
+      email: user?.email || "",
+      phone_number: user?.phone_number || "",
+    });
+    setAvatarLoadFailed(false);
+    setAvatarFile(null);
+    setAvatarPreview("");
+    setRemoveAvatar(false);
+  }, [user?.name, user?.email, user?.phone_number, user?.avatar_path]);
+
+  useEffect(() => {
+    return () => {
+      if (avatarPreview?.startsWith("blob:")) {
+        URL.revokeObjectURL(avatarPreview);
+      }
+    };
+  }, [avatarPreview]);
 
   const settingsContent = {
     password: {
@@ -107,20 +136,92 @@ const ProfilePage = () => {
     }
   };
 
+  const handleProfileInputChange = (event) => {
+    const { name, value } = event.target;
+    setProfileForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleAvatarChange = (event) => {
+    const file = event.target.files?.[0];
+    if (!file) {
+      setAvatarFile(null);
+      setAvatarPreview("");
+      return;
+    }
+
+    if (!file.type.startsWith("image/")) {
+      setProfileError("Csak képfájl tölthető fel profilképnek.");
+      return;
+    }
+
+    setAvatarFile(file);
+    setRemoveAvatar(false);
+    setAvatarPreview(URL.createObjectURL(file));
+    setProfileError("");
+  };
+
+  const handleProfileSave = async (event) => {
+    event.preventDefault();
+    setProfileError("");
+    setProfileSuccess("");
+    setProfileSubmitting(true);
+
+    try {
+      const payload = new FormData();
+      payload.append("name", profileForm.name);
+      payload.append("email", profileForm.email);
+      payload.append("phone_number", profileForm.phone_number);
+      payload.append("remove_avatar", removeAvatar ? "1" : "0");
+
+      if (avatarFile) {
+        payload.append("avatar", avatarFile);
+      }
+
+      await httpClient.get("/sanctum/csrf-cookie");
+      await httpClient.post("/api/me", payload, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      await getUser();
+      setProfileSuccess("A profil adatai sikeresen frissültek.");
+      setAvatarFile(null);
+      setAvatarPreview("");
+      setRemoveAvatar(false);
+    } catch (error) {
+      const backendErrors = error?.response?.data?.errors;
+      const flatErrors = backendErrors ? Object.values(backendErrors).flat().join(" ") : "";
+      setProfileError(flatErrors || "A profil mentése sikertelen.");
+    } finally {
+      setProfileSubmitting(false);
+    }
+  };
+
   return (
     <section className="profile-page">
       <div className="profile-page__inner">
         <article className="profile-card">
           <header className="profile-card__header">
             <div className="profile-user">
-              <img src={avatarSrc} alt="Profilkép" className="profile-user__avatar" />
+              <img
+                src={avatarSrc}
+                alt="Profilkép"
+                className="profile-user__avatar"
+                onError={() => setAvatarLoadFailed(true)}
+              />
               <div className="profile-user__meta">
                 <p className="profile-user__name">{user?.name || "Felhasználó"}</p>
                 <p className="profile-user__email">{user?.email || "Nincs email"}</p>
               </div>
             </div>
 
-            <button type="button" className="profile-edit-btn">
+            <button
+              type="button"
+              className="profile-edit-btn"
+              onClick={() => {
+                setActiveTab("settings");
+                setActiveSetting("general");
+              }}
+            >
               Profil szerkesztése
             </button>
           </header>
@@ -250,6 +351,75 @@ const ProfilePage = () => {
                         disabled={passwordSubmitting}
                       >
                         {passwordSubmitting ? "Mentés..." : "Jelszó módosítása"}
+                      </button>
+                    </form>
+                  ) : activeSetting === "general" ? (
+                    <form className="auth-form" onSubmit={handleProfileSave}>
+                      <div className="auth-field">
+                        <input
+                          type="text"
+                          name="name"
+                          value={profileForm.name}
+                          onChange={handleProfileInputChange}
+                          placeholder="Név"
+                          autoComplete="name"
+                          required
+                        />
+                      </div>
+
+                      <div className="auth-field">
+                        <input
+                          type="email"
+                          name="email"
+                          value={profileForm.email}
+                          onChange={handleProfileInputChange}
+                          placeholder="Email"
+                          autoComplete="email"
+                          required
+                        />
+                      </div>
+
+                      <div className="auth-field">
+                        <input
+                          type="text"
+                          name="phone_number"
+                          value={profileForm.phone_number}
+                          onChange={handleProfileInputChange}
+                          placeholder="Telefonszám"
+                          autoComplete="tel"
+                          required
+                        />
+                      </div>
+
+                      <div className="profile-avatar-edit">
+                        <img
+                          src={avatarPreview || avatarSrc}
+                          alt="Profilkép előnézet"
+                          className="profile-avatar-edit__preview"
+                          onError={() => setAvatarLoadFailed(true)}
+                        />
+                        <div className="profile-avatar-edit__controls">
+                          <input type="file" accept="image/*" onChange={handleAvatarChange} />
+                          <label className="profile-avatar-edit__remove">
+                            <input
+                              type="checkbox"
+                              checked={removeAvatar}
+                              onChange={(event) => setRemoveAvatar(event.target.checked)}
+                            />
+                            Profilkép törlése
+                          </label>
+                        </div>
+                      </div>
+
+                      {profileError && <p className="profile-empty">{profileError}</p>}
+                      {profileSuccess && <p className="profile-empty">{profileSuccess}</p>}
+
+                      <button
+                        type="submit"
+                        className="profile-settings-cta"
+                        disabled={profileSubmitting}
+                      >
+                        {profileSubmitting ? "Mentés..." : "Profil mentése"}
                       </button>
                     </form>
                   ) : (

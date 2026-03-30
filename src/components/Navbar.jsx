@@ -3,8 +3,8 @@ import "./css/Navbar.css";
 import useAuthContext from "../hooks/useAuthContext";
 import userImg from "../images/userimage.png";
 import img from "../pages/admin-pages/views/images/logo.png";
-import { httpClient } from "../api/axios";
 import { useEffect, useRef, useState } from "react";
+import { resolveAvatarUrl } from "../utils/avatarImage";
 
 function Navbar() {
   const { user, logout } = useAuthContext();
@@ -14,16 +14,19 @@ function Navbar() {
   const [checkIn, setCheckIn] = useState("");
   const [checkOut, setCheckOut] = useState("");
   const [guests, setGuests] = useState("");
+  const [avatarLoadFailed, setAvatarLoadFailed] = useState(false);
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
   const location = useLocation();
   const welcomeMessage = user ? `Üdvözöllek, ${user.name}!` : "";
   const isAdmin = String(user?.role || "").toLowerCase() === "admin";
-  const hasAvatarPath =
-    typeof user?.avatar_path === "string" && user.avatar_path.trim() !== "";
-  const avatarSrc = hasAvatarPath
-    ? new URL(user.avatar_path, httpClient.defaults.baseURL).toString()
-    : userImg;
+  const avatarSrc = avatarLoadFailed
+    ? userImg
+    : resolveAvatarUrl(user?.avatar_path, userImg);
+
+  useEffect(() => {
+    setAvatarLoadFailed(false);
+  }, [user?.avatar_path]);
 
   useEffect(() => {
     const handleOutsideClick = (event) => {
@@ -153,7 +156,11 @@ function Navbar() {
                   className="avatar-button"
                   onClick={() => setIsDropdownOpen((prev) => !prev)}
                 >
-                  <img src={avatarSrc} alt="Profil" />
+                  <img
+                    src={avatarSrc}
+                    alt="Profil"
+                    onError={() => setAvatarLoadFailed(true)}
+                  />
                 </button>
                 <div
                   className={isDropdownOpen ? "dropdown is-open" : "dropdown"}
