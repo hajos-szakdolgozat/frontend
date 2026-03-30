@@ -5,12 +5,13 @@ import userImg from "../images/userimage.png";
 import img from "../pages/admin-pages/views/images/logo.png";
 import { useEffect, useRef, useState } from "react";
 import { resolveAvatarUrl } from "../utils/avatarImage";
+import { applyTheme, getPreferredTheme, persistTheme } from "../utils/theme";
 
 function Navbar() {
   const { user, logout } = useAuthContext();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isNavMenuOpen, setIsNavMenuOpen] = useState(false);
-  const [theme, setTheme] = useState("light");
+  const [theme, setTheme] = useState(getPreferredTheme);
   const [searchLocation, setSearchLocation] = useState("");
   const [checkIn, setCheckIn] = useState("");
   const [checkOut, setCheckOut] = useState("");
@@ -41,21 +42,8 @@ function Navbar() {
   }, []);
 
   useEffect(() => {
-    const savedTheme = localStorage.getItem("theme");
-    if (savedTheme === "light" || savedTheme === "dark") {
-      setTheme(savedTheme);
-      return;
-    }
-
-    const systemPrefersDark = window.matchMedia(
-      "(prefers-color-scheme: dark)",
-    ).matches;
-    setTheme(systemPrefersDark ? "dark" : "light");
-  }, []);
-
-  useEffect(() => {
-    document.documentElement.setAttribute("data-theme", theme);
-    localStorage.setItem("theme", theme);
+    applyTheme(theme);
+    persistTheme(theme);
   }, [theme]);
 
   useEffect(() => {

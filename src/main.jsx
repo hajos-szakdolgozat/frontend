@@ -4,6 +4,9 @@ import App from "./App.jsx";
 
 import "./index.css";
 import AuthContextProvider from "./context/AuthContextProvider.jsx";
+import { initializeTheme } from "./utils/theme.js";
+
+initializeTheme();
 
 createRoot(document.getElementById("root")).render(
   <BrowserRouter>
