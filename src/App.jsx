@@ -9,6 +9,8 @@ import AdminLayout from "./layouts/AdminLayout";
 const Home = lazy(() => import("./pages/public-pages/Home"));
 const Register = lazy(() => import("./pages/public-pages/Register"));
 const Login = lazy(() => import("./pages/public-pages/Login"));
+const ForgotPassword = lazy(() => import("./pages/public-pages/ForgotPassword"));
+const ResetPassword = lazy(() => import("./pages/public-pages/ResetPassword"));
 const AdminPage = lazy(() => import("./pages/admin-pages/AdminPage"));
 const Users = lazy(() => import("./pages/admin-pages/views/Users"));
 const Ads = lazy(() => import("./pages/admin-pages/views/Ads"));
@@ -77,6 +79,8 @@ function App() {
         <Route element={<GuestLayout />}>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
         </Route>
       </Routes>
     </Suspense>

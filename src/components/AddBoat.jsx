@@ -7,6 +7,7 @@ import "./css/AddBoat.css";
 
 const AddBoat = () => {
   const { user } = useAuthContext();
+  const currentYear = new Date().getFullYear();
 
   const [ports, setPorts] = useState([]);
   const [imageFiles, setImageFiles] = useState([]);
@@ -47,6 +48,10 @@ const AddBoat = () => {
       ...formData,
       [name]: type === "checkbox" ? checked : value,
     });
+  };
+
+  const preventWheelValueChange = (event) => {
+    event.currentTarget.blur();
   };
 
   const handleImageChange = (e) => {
@@ -266,6 +271,10 @@ const AddBoat = () => {
             name="price_per_night"
             value={formData.price_per_night}
             onChange={handleChange}
+            onWheel={preventWheelValueChange}
+            min="1"
+            max="1000000"
+            step="1"
             required
           />
         </div>
@@ -311,6 +320,10 @@ const AddBoat = () => {
             name="year_built"
             value={formData.year_built}
             onChange={handleChange}
+            onWheel={preventWheelValueChange}
+            min="1900"
+            max={currentYear + 1}
+            step="1"
             required
           />
         </div>
@@ -323,7 +336,10 @@ const AddBoat = () => {
             name="capacity"
             value={formData.capacity}
             onChange={handleChange}
+            onWheel={preventWheelValueChange}
             min="1"
+            max="100"
+            step="1"
             required
           />
         </div>
@@ -337,6 +353,9 @@ const AddBoat = () => {
             name="width"
             value={formData.width}
             onChange={handleChange}
+            onWheel={preventWheelValueChange}
+            min="0.5"
+            max="30"
             required
           />
         </div>
@@ -350,6 +369,9 @@ const AddBoat = () => {
             name="length"
             value={formData.length}
             onChange={handleChange}
+            onWheel={preventWheelValueChange}
+            min="2"
+            max="120"
             required
           />
         </div>
@@ -363,6 +385,9 @@ const AddBoat = () => {
             name="draft"
             value={formData.draft}
             onChange={handleChange}
+            onWheel={preventWheelValueChange}
+            min="0.1"
+            max="15"
             required
           />
         </div>

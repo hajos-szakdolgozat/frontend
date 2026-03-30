@@ -14,6 +14,12 @@ const tabs = [
 const ProfilePage = () => {
   const [activeTab, setActiveTab] = useState("reservations");
   const [activeSetting, setActiveSetting] = useState("password");
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [newPasswordConfirmation, setNewPasswordConfirmation] = useState("");
+  const [passwordSubmitting, setPasswordSubmitting] = useState(false);
+  const [passwordError, setPasswordError] = useState("");
+  const [passwordSuccess, setPasswordSuccess] = useState("");
   const { user } = useAuthContext();
   const {
     fetchedData: reservations,
@@ -61,6 +67,44 @@ const ProfilePage = () => {
       description: "Fiókodhoz kapcsolódó alapbeállítások, értesítések és preferenciák helye.",
       cta: "Beállítások megnyitása",
     },
+  };
+
+  const handlePasswordUpdate = async (event) => {
+    event.preventDefault();
+    setPasswordError("");
+    setPasswordSuccess("");
+
+    if (!currentPassword || !newPassword || !newPasswordConfirmation) {
+      setPasswordError("Minden mező kitöltése kötelező.");
+      return;
+    }
+
+    if (newPassword !== newPasswordConfirmation) {
+      setPasswordError("Az új jelszó és a megerősítés nem egyezik.");
+      return;
+    }
+
+    setPasswordSubmitting(true);
+
+    try {
+      await httpClient.get("/sanctum/csrf-cookie");
+      const { data } = await httpClient.put("/password", {
+        current_password: currentPassword,
+        password: newPassword,
+        password_confirmation: newPasswordConfirmation,
+      });
+
+      setCurrentPassword("");
+      setNewPassword("");
+      setNewPasswordConfirmation("");
+      setPasswordSuccess(data?.message || "A jelszó módosítása sikeres.");
+    } catch (error) {
+      const backendErrors = error?.response?.data?.errors;
+      const flatErrors = backendErrors ? Object.values(backendErrors).flat().join(" ") : "";
+      setPasswordError(flatErrors || "A jelszó módosítása sikertelen.");
+    } finally {
+      setPasswordSubmitting(false);
+    }
   };
 
   return (
@@ -167,9 +211,52 @@ const ProfilePage = () => {
                 <article className="profile-settings-detail">
                   <h3>{settingsContent[activeSetting].title}</h3>
                   <p>{settingsContent[activeSetting].description}</p>
-                  <button type="button" className="profile-settings-cta">
-                    {settingsContent[activeSetting].cta}
-                  </button>
+                  {activeSetting === "password" ? (
+                    <form className="auth-form" onSubmit={handlePasswordUpdate}>
+                      <div className="auth-field">
+                        <input
+                          type="password"
+                          value={currentPassword}
+                          onChange={(event) => setCurrentPassword(event.target.value)}
+                          placeholder="Jelenlegi jelszó"
+                          autoComplete="current-password"
+                        />
+                      </div>
+                      <div className="auth-field">
+                        <input
+                          type="password"
+                          value={newPassword}
+                          onChange={(event) => setNewPassword(event.target.value)}
+                          placeholder="Új jelszó"
+                          autoComplete="new-password"
+                        />
+                      </div>
+                      <div className="auth-field">
+                        <input
+                          type="password"
+                          value={newPasswordConfirmation}
+                          onChange={(event) => setNewPasswordConfirmation(event.target.value)}
+                          placeholder="Új jelszó megerősítése"
+                          autoComplete="new-password"
+                        />
+                      </div>
+
+                      {passwordError && <p className="profile-empty">{passwordError}</p>}
+                      {passwordSuccess && <p className="profile-empty">{passwordSuccess}</p>}
+
+                      <button
+                        type="submit"
+                        className="profile-settings-cta"
+                        disabled={passwordSubmitting}
+                      >
+                        {passwordSubmitting ? "Mentés..." : "Jelszó módosítása"}
+                      </button>
+                    </form>
+                  ) : (
+                    <button type="button" className="profile-settings-cta">
+                      {settingsContent[activeSetting].cta}
+                    </button>
+                  )}
                 </article>
               </div>
             )}
