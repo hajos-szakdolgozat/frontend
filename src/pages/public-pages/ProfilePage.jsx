@@ -12,6 +12,17 @@ const tabs = [
   { key: "settings", label: "Beállítások" },
 ];
 
+const PRIVACY_STORAGE_KEY = "dockjet_privacy_settings";
+
+const defaultPrivacySettings = {
+  profileVisible: true,
+  showEmailToOwners: false,
+  showPhoneToOwners: true,
+  marketingEmails: false,
+  bookingNotifications: true,
+  reviewReminders: true,
+};
+
 const ProfilePage = () => {
   const [activeTab, setActiveTab] = useState("reservations");
   const [activeSetting, setActiveSetting] = useState("password");
@@ -33,6 +44,9 @@ const ProfilePage = () => {
   const [profileSubmitting, setProfileSubmitting] = useState(false);
   const [profileError, setProfileError] = useState("");
   const [profileSuccess, setProfileSuccess] = useState("");
+  const [privacySettings, setPrivacySettings] = useState(defaultPrivacySettings);
+  const [privacySubmitting, setPrivacySubmitting] = useState(false);
+  const [privacySuccess, setPrivacySuccess] = useState("");
   const { user, getUser } = useAuthContext();
   const {
     fetchedData: reservations,
@@ -79,6 +93,17 @@ const ProfilePage = () => {
       }
     };
   }, [avatarPreview]);
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(PRIVACY_STORAGE_KEY);
+      if (!raw) return;
+      const parsed = JSON.parse(raw);
+      setPrivacySettings((prev) => ({ ...prev, ...parsed }));
+    } catch {
+      setPrivacySettings(defaultPrivacySettings);
+    }
+  }, []);
 
   const settingsContent = {
     password: {
@@ -193,6 +218,26 @@ const ProfilePage = () => {
       setProfileError(flatErrors || "A profil mentése sikertelen.");
     } finally {
       setProfileSubmitting(false);
+    }
+  };
+
+  const handlePrivacyChange = (event) => {
+    const { name, checked } = event.target;
+    setPrivacySettings((prev) => ({
+      ...prev,
+      [name]: checked,
+    }));
+    setPrivacySuccess("");
+  };
+
+  const handlePrivacySave = async (event) => {
+    event.preventDefault();
+    setPrivacySubmitting(true);
+    try {
+      localStorage.setItem(PRIVACY_STORAGE_KEY, JSON.stringify(privacySettings));
+      setPrivacySuccess("Az adatvédelmi beállítások mentve.");
+    } finally {
+      setPrivacySubmitting(false);
     }
   };
 
@@ -420,6 +465,96 @@ const ProfilePage = () => {
                         disabled={profileSubmitting}
                       >
                         {profileSubmitting ? "Mentés..." : "Profil mentése"}
+                      </button>
+                    </form>
+                  ) : activeSetting === "privacy" ? (
+                    <form className="auth-form" onSubmit={handlePrivacySave}>
+                      <label className="profile-privacy-option">
+                        <span>
+                          <strong>Profil láthatósága</strong>
+                          <small>A hirdetők látják a profil alapadatait foglalásnál.</small>
+                        </span>
+                        <input
+                          type="checkbox"
+                          name="profileVisible"
+                          checked={privacySettings.profileVisible}
+                          onChange={handlePrivacyChange}
+                        />
+                      </label>
+
+                      <label className="profile-privacy-option">
+                        <span>
+                          <strong>Email megosztása hirdetőkkel</strong>
+                          <small>Foglaláshoz kapcsolódó kapcsolatfelvételhez.</small>
+                        </span>
+                        <input
+                          type="checkbox"
+                          name="showEmailToOwners"
+                          checked={privacySettings.showEmailToOwners}
+                          onChange={handlePrivacyChange}
+                        />
+                      </label>
+
+                      <label className="profile-privacy-option">
+                        <span>
+                          <strong>Telefonszám megosztása hirdetőkkel</strong>
+                          <small>Gyors egyeztetéshez indulás előtt.</small>
+                        </span>
+                        <input
+                          type="checkbox"
+                          name="showPhoneToOwners"
+                          checked={privacySettings.showPhoneToOwners}
+                          onChange={handlePrivacyChange}
+                        />
+                      </label>
+
+                      <label className="profile-privacy-option">
+                        <span>
+                          <strong>Marketing emailek</strong>
+                          <small>Újdonságok, kedvezmények és tippek küldése emailben.</small>
+                        </span>
+                        <input
+                          type="checkbox"
+                          name="marketingEmails"
+                          checked={privacySettings.marketingEmails}
+                          onChange={handlePrivacyChange}
+                        />
+                      </label>
+
+                      <label className="profile-privacy-option">
+                        <span>
+                          <strong>Foglalási értesítések</strong>
+                          <small>Állapotváltozásról és jóváhagyásról email értesítés.</small>
+                        </span>
+                        <input
+                          type="checkbox"
+                          name="bookingNotifications"
+                          checked={privacySettings.bookingNotifications}
+                          onChange={handlePrivacyChange}
+                        />
+                      </label>
+
+                      <label className="profile-privacy-option">
+                        <span>
+                          <strong>Értékelés emlékeztetők</strong>
+                          <small>Emlékeztető küldése lezárt foglalás után.</small>
+                        </span>
+                        <input
+                          type="checkbox"
+                          name="reviewReminders"
+                          checked={privacySettings.reviewReminders}
+                          onChange={handlePrivacyChange}
+                        />
+                      </label>
+
+                      {privacySuccess && <p className="profile-empty">{privacySuccess}</p>}
+
+                      <button
+                        type="submit"
+                        className="profile-settings-cta"
+                        disabled={privacySubmitting}
+                      >
+                        {privacySubmitting ? "Mentés..." : "Adatvédelmi beállítások mentése"}
                       </button>
                     </form>
                   ) : (

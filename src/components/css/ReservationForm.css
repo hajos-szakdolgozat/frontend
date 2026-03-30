@@ -8,6 +8,7 @@
   box-shadow: var(--shadow-card);
   border: 1px solid var(--color-border);
   max-width: 420px;
+  width: 100%;
   font-family: inherit;
 }
 
@@ -64,4 +65,21 @@
   background: var(--status-rejected-bg);
   color: var(--status-rejected-text);
   font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+  .reservation-form {
+    max-width: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .reservation-form {
+    padding: 1rem;
+    border-radius: 14px;
+  }
+
+  .reservation-form__submit {
+    width: 100%;
+  }
 }

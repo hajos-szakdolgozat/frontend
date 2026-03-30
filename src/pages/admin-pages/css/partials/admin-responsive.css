@@ -88,7 +88,7 @@
 
   .ads-table,
   .user-table {
-    min-width: 600px;
+    min-width: 520px;
   }
 
   .filter-card {
@@ -110,6 +110,25 @@
 
   .stats-chart-body--small {
     height: 210px;
+  }
+}
+
+@media (max-width: 560px) {
+  .admin-content {
+    padding: 0 10px 18px;
+  }
+
+  .ads-table-container {
+    padding: 10px;
+  }
+
+  .ads-table,
+  .user-table {
+    min-width: 480px;
+  }
+
+  .admin-search {
+    gap: 6px;
   }
 }
 
