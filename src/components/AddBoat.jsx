@@ -5,24 +5,12 @@ import { invalidateFetchCache } from "../hooks/useFetch";
 import { getBoatImages } from "../utils/boatImages";
 import "./css/AddBoat.css";
 
-const defaultAmenities = [
-  {
-    id: "air_conditioning",
-    slug: "air_conditioning",
-    name: "Légkondícionálás",
-  },
-  { id: "jacuzzi", slug: "jacuzzi", name: "Jakuzzi" },
-  { id: "extra_bed", slug: "extra_bed", name: "Pótágy" },
-  { id: "wifi", slug: "wifi", name: "Wifi" },
-  { id: "netflix", slug: "netflix", name: "Netflix" },
-];
-
 const AddBoat = () => {
   const { user } = useAuthContext();
   const currentYear = new Date().getFullYear();
 
   const [ports, setPorts] = useState([]);
-  const [amenities, setAmenities] = useState(defaultAmenities);
+  const [amenities, setAmenities] = useState([]);
   const [selectedAmenities, setSelectedAmenities] = useState([]);
   const [newAmenityName, setNewAmenityName] = useState("");
   const [addingAmenity, setAddingAmenity] = useState(false);
@@ -316,9 +304,7 @@ const AddBoat = () => {
 
         setPorts(Array.isArray(portsData) ? portsData : []);
 
-        if (Array.isArray(amenitiesData) && amenitiesData.length) {
-          setAmenities(amenitiesData);
-        }
+        setAmenities(Array.isArray(amenitiesData) ? amenitiesData : []);
       } catch (err) {
         console.error("Failed to load form data", err);
       }

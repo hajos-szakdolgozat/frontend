@@ -28,13 +28,17 @@ const typeOptions = [
   "Speedboat",
 ];
 
-const defaultAmenityOptions = [
+const requestedAmenityOptions = [
   { label: "Légkondícionálás", value: "air_conditioning" },
   { label: "Jakuzzi", value: "jacuzzi" },
   { label: "Pótágy", value: "extra_bed" },
   { label: "Wifi", value: "wifi" },
   { label: "Netflix", value: "netflix" },
 ];
+
+const requestedAmenityMap = new Map(
+  requestedAmenityOptions.map((item) => [item.value, item.label]),
+);
 
 const toAmenitySlug = (value) =>
   String(value || "")
@@ -50,7 +54,7 @@ const Boats = () => {
   const [filters, setFilters] = useState(initialFilters);
   const [isAdvancedOpen, setIsAdvancedOpen] = useState(false);
   const [isAmenitiesOpen, setIsAmenitiesOpen] = useState(false);
-  const [amenityOptions, setAmenityOptions] = useState(defaultAmenityOptions);
+  const [amenityOptions, setAmenityOptions] = useState([]);
   const amenitiesRef = useRef(null);
 
   useEffect(() => {
@@ -63,28 +67,25 @@ const Boats = () => {
           return;
         }
 
-        const mapped = data
+        const dbValues = new Set(
+          data
+            .map((item) =>
+              String(item?.slug || toAmenitySlug(item?.name || "")).trim(),
+            )
+            .filter(Boolean),
+        );
+
+        const filteredAndOrdered = requestedAmenityOptions
+          .filter((item) => dbValues.has(item.value))
           .map((item) => ({
-            label: String(item?.name || "").trim(),
-            value: String(item?.slug || toAmenitySlug(item?.name || "")).trim(),
-          }))
-          .filter((item) => item.label && item.value);
+            value: item.value,
+            label: requestedAmenityMap.get(item.value) || item.label,
+          }));
 
-        const uniqueByValue = [];
-        const seenValues = new Set();
-        mapped.forEach((item) => {
-          if (!seenValues.has(item.value)) {
-            seenValues.add(item.value);
-            uniqueByValue.push(item);
-          }
-        });
-
-        if (uniqueByValue.length) {
-          setAmenityOptions(uniqueByValue);
-        }
+        setAmenityOptions(filteredAndOrdered);
       } catch {
         if (!cancelled) {
-          setAmenityOptions(defaultAmenityOptions);
+          setAmenityOptions([]);
         }
       }
     };
