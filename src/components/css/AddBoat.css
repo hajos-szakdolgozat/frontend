@@ -51,7 +51,8 @@
   font-weight: 600;
 }
 
-.add-boat__field input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+.add-boat__field
+  input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
 .add-boat__field textarea,
 .add-boat__field select {
   padding: 0.65rem 0.8rem;
@@ -68,12 +69,14 @@
   min-height: 110px;
 }
 
-.add-boat__field input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):focus,
+.add-boat__field
+  input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):focus,
 .add-boat__field textarea:focus,
 .add-boat__field select:focus {
   outline: none;
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 24%, transparent);
+  box-shadow: 0 0 0 3px
+    color-mix(in srgb, var(--color-primary) 24%, transparent);
 }
 
 .add-boat__checkbox {
@@ -89,6 +92,60 @@
 .add-boat__checkbox input {
   width: 1rem;
   height: 1rem;
+}
+
+.add-boat__amenities-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.55rem 0.8rem;
+}
+
+.add-boat__amenity-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.35rem 0.45rem;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background: var(--color-surface-soft);
+}
+
+.add-boat__amenity-item input {
+  width: 1rem;
+  height: 1rem;
+  margin: 0;
+}
+
+.add-boat__amenity-create {
+  margin-top: 0.7rem;
+  display: flex;
+  gap: 0.55rem;
+}
+
+.add-boat__amenity-create input {
+  flex: 1;
+  min-height: 40px;
+  padding: 0.55rem 0.7rem;
+  border-radius: 10px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-soft);
+  color: var(--color-text);
+  font: inherit;
+}
+
+.add-boat__amenity-create button {
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  padding: 0.55rem 0.9rem;
+  background: var(--color-surface-soft);
+  color: var(--color-text);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.add-boat__amenity-create button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
 }
 
 .add-boat__submit {
@@ -113,7 +170,8 @@
 
 .add-boat__submit:hover {
   transform: translateY(-1px);
-  box-shadow: 0 10px 20px color-mix(in srgb, var(--color-primary) 24%, transparent);
+  box-shadow: 0 10px 20px
+    color-mix(in srgb, var(--color-primary) 24%, transparent);
 }
 
 .add-boat__actions {
@@ -131,7 +189,8 @@
 .add-boat__delete {
   flex: 1 1 220px;
   padding: 0.75rem 1rem;
-  border: 1px solid color-mix(in srgb, var(--status-rejected-text) 24%, transparent);
+  border: 1px solid
+    color-mix(in srgb, var(--status-rejected-text) 24%, transparent);
   border-radius: 12px;
   background: var(--status-rejected-bg);
   color: var(--status-rejected-text);
@@ -145,7 +204,8 @@
 
 .add-boat__delete:hover {
   transform: translateY(-1px);
-  box-shadow: 0 10px 20px color-mix(in srgb, var(--status-rejected-text) 16%, transparent);
+  box-shadow: 0 10px 20px
+    color-mix(in srgb, var(--status-rejected-text) 16%, transparent);
 }
 
 .add-boat__delete:disabled {
@@ -181,7 +241,8 @@
 
 .add-boat__preview-card--active {
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 18%, transparent);
+  box-shadow: 0 0 0 3px
+    color-mix(in srgb, var(--color-primary) 18%, transparent);
 }
 
 .add-boat__preview-select {
@@ -231,6 +292,20 @@
   .add-boat__form {
     grid-template-columns: 1fr;
     padding: 1rem;
+  }
+
+  .add-boat__amenities-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 520px) {
+  .add-boat__amenities-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .add-boat__amenity-create {
+    flex-direction: column;
   }
 }
 

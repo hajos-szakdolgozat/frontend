@@ -29,6 +29,7 @@ const initialForm = {
   width: "",
   length: "",
   draft: "",
+  amenities: [],
 };
 
 const EditBoatPage = () => {
@@ -37,6 +38,7 @@ const EditBoatPage = () => {
   const { user, authLoading } = useAuthContext();
 
   const [ports, setPorts] = useState([]);
+  const [amenities, setAmenities] = useState([]);
   const [formData, setFormData] = useState(initialForm);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -57,9 +59,14 @@ const EditBoatPage = () => {
       setError("");
 
       try {
-        const [{ data: portsData }, { data: boatData }] = await Promise.all([
+        const [
+          { data: portsData },
+          { data: boatData },
+          { data: amenitiesData },
+        ] = await Promise.all([
           httpClient.get("/api/ports"),
           httpClient.get(`/api/boats/${id}`),
+          httpClient.get("/api/amenities"),
         ]);
 
         if (cancelled) return;
@@ -75,6 +82,14 @@ const EditBoatPage = () => {
         }
 
         setPorts(Array.isArray(portsData) ? portsData : []);
+        setAmenities(Array.isArray(amenitiesData) ? amenitiesData : []);
+
+        const selectedAmenityIds = Array.isArray(boatData?.boat_amenities)
+          ? boatData.boat_amenities
+              .map((item) => Number(item?.amenity_id || item?.amenity?.id || 0))
+              .filter((value) => Number.isInteger(value) && value > 0)
+          : [];
+
         setFormData({
           port_id: String(boatData?.port_id ?? ""),
           name: String(boatData?.name ?? ""),
@@ -88,6 +103,7 @@ const EditBoatPage = () => {
           width: String(boatData?.width ?? ""),
           length: String(boatData?.length ?? ""),
           draft: String(boatData?.draft ?? ""),
+          amenities: selectedAmenityIds,
         });
       } catch (loadError) {
         if (!cancelled) {
@@ -120,6 +136,18 @@ const EditBoatPage = () => {
     }));
   };
 
+  const handleAmenityToggle = (amenityId) => {
+    setFormData((prev) => {
+      const isSelected = prev.amenities.includes(amenityId);
+      return {
+        ...prev,
+        amenities: isSelected
+          ? prev.amenities.filter((idValue) => idValue !== amenityId)
+          : [...prev.amenities, amenityId],
+      };
+    });
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     setSaving(true);
@@ -135,6 +163,7 @@ const EditBoatPage = () => {
         width: Number(formData.width),
         length: Number(formData.length),
         draft: Number(formData.draft),
+        amenities: formData.amenities.map((amenityId) => Number(amenityId)),
       });
 
       invalidateFetchCache("/api/boats");
@@ -381,10 +410,33 @@ const EditBoatPage = () => {
           </label>
         </div>
 
+        <div className="add-boat__field add-boat__field--full">
+          <label>Felszereltségek</label>
+          <div className="add-boat__amenities-grid">
+            {amenities.map((amenity) => {
+              const amenityId = Number(amenity.id);
+              return (
+                <label key={amenity.id} className="add-boat__amenity-item">
+                  <input
+                    type="checkbox"
+                    checked={formData.amenities.includes(amenityId)}
+                    onChange={() => handleAmenityToggle(amenityId)}
+                  />
+                  <span>{amenity.name}</span>
+                </label>
+              );
+            })}
+          </div>
+        </div>
+
         {error && <p className="boat-page__status">{error}</p>}
 
         <div className="add-boat__actions">
-          <button className="add-boat__submit" type="submit" disabled={saving || deleting}>
+          <button
+            className="add-boat__submit"
+            type="submit"
+            disabled={saving || deleting}
+          >
             {saving ? "Mentés..." : "Hirdetés frissítése"}
           </button>
           <button

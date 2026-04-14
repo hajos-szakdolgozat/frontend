@@ -252,6 +252,41 @@
   font-size: 1rem;
 }
 
+.boat-page__amenities {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.boat-page__amenities h2 {
+  margin: 0;
+  color: var(--color-text);
+  font-size: 1.15rem;
+}
+
+.boat-page__amenities-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+.boat-page__amenity-item {
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-soft);
+  color: var(--color-text);
+  border-radius: 999px;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.boat-page__amenities-empty {
+  margin: 0;
+  color: var(--color-text-muted);
+}
+
 .boat-page__map {
   margin-top: 0.25rem;
   padding-top: 0.5rem;
@@ -416,7 +451,9 @@
   line-height: 1;
   cursor: pointer;
   padding: 0 2px;
-  transition: color 0.1s ease, transform 0.1s ease;
+  transition:
+    color 0.1s ease,
+    transform 0.1s ease;
 }
 
 .boat-page__rating-star:hover,
@@ -454,7 +491,8 @@
 .boat-page__review-form textarea:focus {
   outline: none;
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-primary) 18%, transparent);
+  box-shadow: 0 0 0 4px
+    color-mix(in srgb, var(--color-primary) 18%, transparent);
 }
 
 .boat-page__review-error {

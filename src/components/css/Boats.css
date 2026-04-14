@@ -89,6 +89,57 @@
   grid-column: span 2;
 }
 
+.boats__amenities {
+  grid-column: span 2;
+  position: relative;
+}
+
+.boats__amenities-toggle {
+  width: 100%;
+  min-height: 44px;
+  border-radius: 12px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-soft);
+  color: var(--color-text);
+  padding: 0.7rem 0.85rem;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.boats__amenities-toggle.is-open {
+  border-color: var(--color-primary);
+}
+
+.boats__amenities-dropdown {
+  position: absolute;
+  top: calc(100% + 0.35rem);
+  left: 0;
+  width: 100%;
+  min-width: 220px;
+  z-index: 10;
+  padding: 0.6rem;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: var(--color-surface);
+  box-shadow: var(--shadow-soft);
+  display: grid;
+  gap: 0.45rem;
+}
+
+.boats__amenity-option {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 0.95rem;
+  cursor: pointer;
+  padding: 0.15rem 0.2rem;
+}
+
+.boats__amenity-option input {
+  margin: 0;
+}
+
 .boats__filter-actions {
   grid-column: 7 / -1;
   display: flex;
@@ -136,7 +187,8 @@
   .boats__filter--min-price,
   .boats__filter--max-price,
   .boats__filter--active,
-  .boats__filter--sort {
+  .boats__filter--sort,
+  .boats__amenities {
     grid-column: span 2;
   }
 
@@ -157,6 +209,10 @@
 
   .boats__filter {
     grid-column: span 1 !important;
+  }
+
+  .boats__amenities {
+    grid-column: span 2 !important;
   }
 
   .boats__filter-actions {
@@ -180,6 +236,10 @@
 
   .boats__filters {
     grid-template-columns: 1fr;
+  }
+
+  .boats__amenities {
+    grid-column: 1 / -1 !important;
   }
 
   .boats__filter {

@@ -5,11 +5,27 @@ import { invalidateFetchCache } from "../hooks/useFetch";
 import { getBoatImages } from "../utils/boatImages";
 import "./css/AddBoat.css";
 
+const defaultAmenities = [
+  {
+    id: "air_conditioning",
+    slug: "air_conditioning",
+    name: "Légkondícionálás",
+  },
+  { id: "jacuzzi", slug: "jacuzzi", name: "Jakuzzi" },
+  { id: "extra_bed", slug: "extra_bed", name: "Pótágy" },
+  { id: "wifi", slug: "wifi", name: "Wifi" },
+  { id: "netflix", slug: "netflix", name: "Netflix" },
+];
+
 const AddBoat = () => {
   const { user } = useAuthContext();
   const currentYear = new Date().getFullYear();
 
   const [ports, setPorts] = useState([]);
+  const [amenities, setAmenities] = useState(defaultAmenities);
+  const [selectedAmenities, setSelectedAmenities] = useState([]);
+  const [newAmenityName, setNewAmenityName] = useState("");
+  const [addingAmenity, setAddingAmenity] = useState(false);
   const [imageFiles, setImageFiles] = useState([]);
   const [thumbnailIndex, setThumbnailIndex] = useState(0);
   const [submitting, setSubmitting] = useState(false);
@@ -77,6 +93,80 @@ const AddBoat = () => {
     setThumbnailIndex(0);
   };
 
+  const handleAmenityToggle = (amenityId) => {
+    setSelectedAmenities((prev) => {
+      const parsedId = Number(amenityId);
+      if (!Number.isInteger(parsedId) || parsedId <= 0) {
+        return prev;
+      }
+
+      if (prev.includes(parsedId)) {
+        return prev.filter((idValue) => idValue !== parsedId);
+      }
+
+      return [...prev, parsedId];
+    });
+  };
+
+  const handleAddAmenity = async () => {
+    const trimmedName = newAmenityName.trim();
+    if (!trimmedName) {
+      window.alert("Adj meg egy felszereltség nevet.");
+      return;
+    }
+
+    setAddingAmenity(true);
+    try {
+      const { data } = await httpClient.post("/api/amenities", {
+        name: trimmedName,
+      });
+
+      const amenityId = Number(data?.id || 0);
+      const amenitySlug = String(data?.slug || "").trim();
+      const amenityLabel = String(data?.name || trimmedName).trim();
+
+      if (!amenityId) {
+        window.alert("A felszereltség mentése sikertelen.");
+        return;
+      }
+
+      setAmenities((prev) => {
+        const alreadyExists = prev.some(
+          (item) => Number(item.id) === amenityId,
+        );
+        if (alreadyExists) {
+          return prev;
+        }
+
+        return [
+          ...prev,
+          {
+            id: amenityId,
+            slug: amenitySlug,
+            name: amenityLabel,
+          },
+        ];
+      });
+
+      setSelectedAmenities((prev) =>
+        prev.includes(amenityId) ? prev : [...prev, amenityId],
+      );
+      setNewAmenityName("");
+    } catch (error) {
+      const backendMessage = error?.response?.data?.message;
+      const fieldErrors = error?.response?.data?.errors
+        ? Object.values(error.response.data.errors).flat().join("\n")
+        : "";
+      window.alert(
+        backendMessage ||
+          fieldErrors ||
+          "A felszereltség hozzáadása sikertelen.",
+      );
+    } finally {
+      setAddingAmenity(false);
+    }
+  };
+
   const removeImageAt = (indexToRemove) => {
     setImageFiles((prev) => prev.filter((_, index) => index !== indexToRemove));
     setThumbnailIndex((prev) => {
@@ -138,19 +228,28 @@ const AddBoat = () => {
         payload.append("images[]", file);
       });
       payload.append("thumbnail_index", String(thumbnailIndex));
+      selectedAmenities.forEach((amenityId) => {
+        payload.append("amenities[]", String(amenityId));
+      });
 
       const token = localStorage.getItem("token");
       const requestConfig = token
         ? { headers: { Authorization: `Bearer ${token}` } }
         : {};
 
-      const createResponse = await httpClient.post("/api/newBoat", payload, requestConfig);
+      const createResponse = await httpClient.post(
+        "/api/newBoat",
+        payload,
+        requestConfig,
+      );
       const createdBoatId = createResponse?.data?.id;
 
       // Fallback: if /api/newBoat does not persist image files, upload them through the
       // dedicated image endpoint.
       if (createdBoatId) {
-        const { data: refreshedBoat } = await httpClient.get(`/api/boats/${createdBoatId}`);
+        const { data: refreshedBoat } = await httpClient.get(
+          `/api/boats/${createdBoatId}`,
+        );
         const existingImages = getBoatImages(refreshedBoat);
 
         if (!existingImages.length && imageFiles.length) {
@@ -158,7 +257,10 @@ const AddBoat = () => {
             imageFiles.map((file, index) => {
               const imagePayload = new FormData();
               imagePayload.append("image", file);
-              imagePayload.append("is_thumbnail", index === thumbnailIndex ? "1" : "0");
+              imagePayload.append(
+                "is_thumbnail",
+                index === thumbnailIndex ? "1" : "0",
+              );
               return httpClient.post(
                 `/api/boats/${createdBoatId}/images`,
                 imagePayload,
@@ -188,6 +290,7 @@ const AddBoat = () => {
         length: "",
         draft: "",
       });
+      setSelectedAmenities([]);
       setImageFiles([]);
       setThumbnailIndex(0);
     } catch (error) {
@@ -203,15 +306,25 @@ const AddBoat = () => {
   };
 
   useEffect(() => {
-    const loadPorts = async () => {
+    const loadData = async () => {
       try {
-        const { data } = await httpClient.get("/api/ports");
-        setPorts(data);
+        const [{ data: portsData }, { data: amenitiesData }] =
+          await Promise.all([
+            httpClient.get("/api/ports"),
+            httpClient.get("/api/amenities"),
+          ]);
+
+        setPorts(Array.isArray(portsData) ? portsData : []);
+
+        if (Array.isArray(amenitiesData) && amenitiesData.length) {
+          setAmenities(amenitiesData);
+        }
       } catch (err) {
-        console.error("Failed to load ports", err);
+        console.error("Failed to load form data", err);
       }
     };
-    loadPorts();
+
+    loadData();
   }, []);
 
   return (
@@ -406,6 +519,46 @@ const AddBoat = () => {
         </div>
 
         <div className="add-boat__field add-boat__field--full">
+          <label>Felszereltségek</label>
+          <div className="add-boat__amenities-grid">
+            {amenities.map((amenity) => {
+              const amenityId = Number(amenity.id);
+              const isSelectable = Number.isInteger(amenityId) && amenityId > 0;
+              return (
+                <label
+                  key={amenity.id || amenity.slug || amenity.name}
+                  className="add-boat__amenity-item"
+                >
+                  <input
+                    type="checkbox"
+                    checked={selectedAmenities.includes(amenityId)}
+                    onChange={() => handleAmenityToggle(amenityId)}
+                    disabled={!isSelectable}
+                  />
+                  <span>{amenity.name}</span>
+                </label>
+              );
+            })}
+          </div>
+
+          <div className="add-boat__amenity-create">
+            <input
+              type="text"
+              value={newAmenityName}
+              onChange={(event) => setNewAmenityName(event.target.value)}
+              placeholder="Új felszereltség hozzáadása"
+            />
+            <button
+              type="button"
+              onClick={handleAddAmenity}
+              disabled={addingAmenity}
+            >
+              {addingAmenity ? "Hozzáadás..." : "Hozzáadás"}
+            </button>
+          </div>
+        </div>
+
+        <div className="add-boat__field add-boat__field--full">
           <label htmlFor="images">Hajó képek (max 8 db)</label>
           <input
             id="images"
@@ -467,7 +620,11 @@ const AddBoat = () => {
           </div>
         )}
 
-        <button className="add-boat__submit" type="submit" disabled={submitting}>
+        <button
+          className="add-boat__submit"
+          type="submit"
+          disabled={submitting}
+        >
           {submitting ? "Feltöltés..." : "Create Boat"}
         </button>
       </form>

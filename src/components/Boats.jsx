@@ -1,6 +1,7 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import useFetch from "../hooks/useFetch";
+import { httpClient } from "../api/axios";
 import Boat from "./Boat";
 
 import "./css/Boats.css";
@@ -15,6 +16,7 @@ const initialFilters = {
   maxPrice: "",
   active: "",
   sort: "newest",
+  amenities: [],
 };
 
 const typeOptions = [
@@ -26,14 +28,98 @@ const typeOptions = [
   "Speedboat",
 ];
 
+const defaultAmenityOptions = [
+  { label: "Légkondícionálás", value: "air_conditioning" },
+  { label: "Jakuzzi", value: "jacuzzi" },
+  { label: "Pótágy", value: "extra_bed" },
+  { label: "Wifi", value: "wifi" },
+  { label: "Netflix", value: "netflix" },
+];
+
+const toAmenitySlug = (value) =>
+  String(value || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "_")
+    .replace(/^_+|_+$/g, "");
+
 const Boats = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [filters, setFilters] = useState(initialFilters);
   const [isAdvancedOpen, setIsAdvancedOpen] = useState(false);
+  const [isAmenitiesOpen, setIsAmenitiesOpen] = useState(false);
+  const [amenityOptions, setAmenityOptions] = useState(defaultAmenityOptions);
+  const amenitiesRef = useRef(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadAmenities = async () => {
+      try {
+        const { data } = await httpClient.get("/api/amenities");
+        if (cancelled || !Array.isArray(data)) {
+          return;
+        }
+
+        const mapped = data
+          .map((item) => ({
+            label: String(item?.name || "").trim(),
+            value: String(item?.slug || toAmenitySlug(item?.name || "")).trim(),
+          }))
+          .filter((item) => item.label && item.value);
+
+        const uniqueByValue = [];
+        const seenValues = new Set();
+        mapped.forEach((item) => {
+          if (!seenValues.has(item.value)) {
+            seenValues.add(item.value);
+            uniqueByValue.push(item);
+          }
+        });
+
+        if (uniqueByValue.length) {
+          setAmenityOptions(uniqueByValue);
+        }
+      } catch {
+        if (!cancelled) {
+          setAmenityOptions(defaultAmenityOptions);
+        }
+      }
+    };
+
+    loadAmenities();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        amenitiesRef.current &&
+        !amenitiesRef.current.contains(event.target)
+      ) {
+        setIsAmenitiesOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
+    const amenities = params.getAll("amenities[]");
+
+    if (!amenities.length) {
+      amenities.push(...params.getAll("amenities"));
+    }
+
     const nextFilters = {
       location: params.get("location") || "",
       guests: params.get("guests") || "",
@@ -44,16 +130,18 @@ const Boats = () => {
       maxPrice: params.get("max_price") || "",
       active: params.get("active") || "",
       sort: params.get("sort") || "newest",
+      amenities,
     };
 
     setFilters(nextFilters);
     setIsAdvancedOpen(
       Boolean(
         nextFilters.type ||
-          nextFilters.minPrice ||
-          nextFilters.maxPrice ||
-          nextFilters.active ||
-          (nextFilters.sort && nextFilters.sort !== "newest"),
+        nextFilters.minPrice ||
+        nextFilters.maxPrice ||
+        nextFilters.active ||
+        nextFilters.amenities.length ||
+        (nextFilters.sort && nextFilters.sort !== "newest"),
       ),
     );
   }, [location.search]);
@@ -79,6 +167,15 @@ const Boats = () => {
       }
     });
 
+    const amenities = params.getAll("amenities[]");
+    if (amenities.length) {
+      amenities.forEach((amenity) => query.append("amenities[]", amenity));
+    } else {
+      params.getAll("amenities").forEach((amenity) => {
+        query.append("amenities[]", amenity);
+      });
+    }
+
     const queryString = query.toString();
     return queryString ? `/api/boats?${queryString}` : "/api/boats";
   }, [location.search]);
@@ -88,6 +185,18 @@ const Boats = () => {
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFilters((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleAmenityChange = (amenityValue) => {
+    setFilters((prev) => {
+      const alreadySelected = prev.amenities.includes(amenityValue);
+      return {
+        ...prev,
+        amenities: alreadySelected
+          ? prev.amenities.filter((item) => item !== amenityValue)
+          : [...prev.amenities, amenityValue],
+      };
+    });
   };
 
   const handleApplyFilters = (event) => {
@@ -103,19 +212,31 @@ const Boats = () => {
     if (filters.maxPrice) query.set("max_price", filters.maxPrice);
     if (filters.active) query.set("active", filters.active);
     if (filters.sort) query.set("sort", filters.sort);
+    if (filters.amenities.length) {
+      filters.amenities.forEach((amenity) => {
+        query.append("amenities[]", amenity);
+      });
+    }
 
     const queryString = query.toString();
     navigate(queryString ? `/?${queryString}` : "/");
+    setIsAmenitiesOpen(false);
   };
 
   const handleResetFilters = () => {
     setFilters(initialFilters);
+    setIsAmenitiesOpen(false);
     navigate("/");
   };
 
   const hasAdvancedFilters =
-    Boolean(filters.type || filters.minPrice || filters.maxPrice || filters.active) ||
-    filters.sort !== "newest";
+    Boolean(
+      filters.type ||
+      filters.minPrice ||
+      filters.maxPrice ||
+      filters.active ||
+      filters.amenities.length,
+    ) || filters.sort !== "newest";
 
   const filtersForm = (
     <section className="boats__advanced">
@@ -152,7 +273,7 @@ const Boats = () => {
             className="boats__filter boats__filter--min-price"
             value={filters.minPrice}
             onChange={handleChange}
-            placeholder="Min ár"
+            placeholder="Min ár/éj(€)"
           />
           <input
             type="number"
@@ -161,7 +282,7 @@ const Boats = () => {
             className="boats__filter boats__filter--max-price"
             value={filters.maxPrice}
             onChange={handleChange}
-            placeholder="Max ár"
+            placeholder="Max ár/éj(€)"
           />
           <select
             name="active"
@@ -185,9 +306,40 @@ const Boats = () => {
             <option value="rating_desc">Legjobb értékelés</option>
           </select>
 
+          <div className="boats__amenities" ref={amenitiesRef}>
+            <button
+              type="button"
+              className={`boats__amenities-toggle${isAmenitiesOpen ? " is-open" : ""}`}
+              onClick={() => setIsAmenitiesOpen((prev) => !prev)}
+            >
+              {filters.amenities.length
+                ? `Felszereltség (${filters.amenities.length})`
+                : "Felszereltség"}
+            </button>
+
+            {isAmenitiesOpen && (
+              <div className="boats__amenities-dropdown">
+                {amenityOptions.map((amenity) => (
+                  <label key={amenity.value} className="boats__amenity-option">
+                    <input
+                      type="checkbox"
+                      checked={filters.amenities.includes(amenity.value)}
+                      onChange={() => handleAmenityChange(amenity.value)}
+                    />
+                    <span>{amenity.label}</span>
+                  </label>
+                ))}
+              </div>
+            )}
+          </div>
+
           <div className="boats__filter-actions">
             <button type="submit">Szűrés</button>
-            <button type="button" className="boats__filter-reset" onClick={handleResetFilters}>
+            <button
+              type="button"
+              className="boats__filter-reset"
+              onClick={handleResetFilters}
+            >
               Alaphelyzet
             </button>
           </div>
