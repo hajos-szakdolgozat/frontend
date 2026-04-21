@@ -1,0 +1,226 @@
+SZAKDOLGOZATI PREZENTÁCIÓS ÖSSZEFOGLALÓ
+=====================================
+
+1. BACKEND FELÉPÍTÉSE ÉS LOGIKA
+-------------------------------
+
+A kód alapján a backend egy Laravel alapú REST API, ahol a feldolgozás menete a következő:
+Frontend kérés -> Route -> Controller -> Model -> Adatbázis -> JSON válasz
+
+Rétegek és felelősségek:
+- Controller réteg:
+  - fogadja a HTTP kéréseket
+  - validálja az adatokat
+  - ellenőrzi a jogosultságokat
+  - kezeli az üzleti logikát
+  - JSON választ ad vissza
+
+- Service réteg:
+  - külön, erősen leválasztott service struktúra nem hangsúlyos
+  - a legtöbb üzleti logika közvetlenül a controllerekben van megírva
+
+- Model réteg:
+  - az adatbázis táblákat reprezentálja
+  - kezeli a kapcsolatokat és adattípusokat
+  - Eloquent ORM segítségével kapcsolódik az adatbázishoz
+
+Röviden: a backend Controller-Model központú Laravel architektúrát használ, ahol az üzleti szabályok jelentős része a controllerekben valósul meg.
+
+
+2. LEGFONTOSABB API VÉGPONTOK ÉS CONTROLLEREK
+---------------------------------------------
+
+BoatController:
+- hajók listázása és szűrése
+- egy hajó adatainak lekérése
+- saját hajók kezelése
+- új hajó létrehozása, szerkesztése, törlése
+
+ReservationController:
+- foglalások létrehozása
+- saját foglalások lekérdezése
+- foglalási státusz módosítása
+- időpontütközések ellenőrzése
+
+ReviewController:
+- értékelés létrehozása
+- hajóhoz vagy felhasználóhoz tartozó értékelések lekérdezése
+
+FavoriteController:
+- kedvencek hozzáadása és törlése
+- saját kedvencek listázása
+
+UserController:
+- profiladatok módosítása
+- admin szintű felhasználókezelés
+
+NotificationController:
+- értesítések listázása
+- olvasatlan értesítések száma
+- olvasottra állítás
+
+PortController és AmenityController:
+- kikötők és felszereltségek kezelése
+
+TransactionController:
+- tranzakciók adminisztrációja
+
+Prezentáció-kompatibilis pontok:
+- A hajókezelés támogatja a keresést, szűrést és tulajdonos alapú jogosultságot.
+- A foglalási logika kezeli az időpontütközéseket és a státuszváltásokat.
+- Az értékelési rendszer biztosítja, hogy egy foglaláshoz csak egy értékelés tartozzon.
+- Az admin funkciók külön jogosultsági védelemmel vannak leválasztva.
+
+
+3. AUTENTIKÁCIÓ ÉS JOGOSULTSÁGKEZELÉS
+------------------------------------
+
+Az autentikáció Laravel Sanctum segítségével valósul meg.
+
+Működési logika:
+- bejelentkezés és regisztráció után hitelesített session jön létre
+- a frontend először lekéri a CSRF cookie-t
+- ezután küldi el a belépési vagy regisztrációs adatokat
+- a jogosultságkezelés role alapú
+- az admin végpontokat middleware védi
+
+Rövid szakmai megfogalmazás:
+- Technológia: Laravel Sanctum
+- Védelem: session alapú hitelesítés + CSRF védelem
+- Jogosultság: role alapú hozzáférés, admin és normál felhasználói szintekkel
+- Extra biztonság: login rate limiting is látható
+
+
+4. ADATBÁZIS ÉS ADATSZERKEZET
+-----------------------------
+
+Legfontosabb táblák:
+- users – felhasználók
+- boats – hajóhirdetések
+- ports – kikötők
+- amenities – felszereltségek
+- boat_amenities – kapcsolótábla a hajók és felszereltségek között
+- boat_images – hajóképek
+- reservations – foglalások
+- reviews – értékelések
+- favorites – kedvencek
+- transactions – tranzakciók
+- notifications – értesítések
+
+Kapcsolatok:
+- User 1:N Boat
+- User 1:N Reservation
+- Port 1:N Boat
+- Boat 1:N BoatImage
+- Boat 1:N Reservation
+- Reservation 1:1 Review
+- Boat N:M Amenity
+- User N:M Boat a favorites táblán keresztül
+
+Rövid összefoglaló:
+Az adatbázis relációs struktúrára épül, amelyben a központi entitások a felhasználó, a hajó és a foglalás. A kapcsolatok jól modellezik a valós üzleti működést.
+
+Migráció:
+Az adatbázis séma Laravel Migration technológiával készült.
+- a táblák migration fájlokkal jönnek létre
+- a mezők és idegen kulcsok a Schema Builder segítségével vannak definiálva
+- a későbbi módosítások külön migrációs fájlokban jelentek meg
+
+Röviden: a séma verziózott, visszagörgethető migrációkkal készült.
+
+
+5. FRONTEND TECHNOLÓGIÁK ÉS MEGOLDÁSOK
+--------------------------------------
+
+A frontend React alapú egyoldalas alkalmazás.
+
+Főbb megoldások:
+- React Router kezeli a navigációt
+- AuthContext tárolja a felhasználói állapotot
+- Axios biztosítja az API kommunikációt
+- saját useFetch hook gyorsítótárazott adatlekérést végez
+- külön publikus, belépett és admin layoutok vannak
+- statisztikai grafikonok is megjelennek az admin felületen
+
+Frontend Service réteg és backend kapcsolat:
+- az Axios kliens központilag van beállítva
+- a komponensek ezen keresztül érik el a backend API végpontokat
+- az auth és a kedvencek külön segédfüggvényeket kaptak
+
+Reszponzivitás:
+A projektben Bootstrap helyett főként egyedi CSS megoldások láthatók.
+
+Alkalmazott technikák:
+- media queryk
+- Flexbox
+- CSS Grid
+- mobilbarát táblázatok és kártyás elrendezés
+- világos és sötét téma CSS változókkal
+
+
+6. MINŐSÉGBIZTOSÍTÁS ÉS TESZTELÉS
+---------------------------------
+
+A projektben már automata és manuális tesztelés is megjelenik.
+
+Jelenlegi tesztelési helyzet:
+- backend oldalon PHPUnit alapú tesztkörnyezet működik
+- frontend oldalon Vitest és Testing Library alapú komponens tesztek készültek
+- jelenleg összesen körülbelül 18 automata teszt található a projektben
+- ebből 4 frontend teszt és 14 backend teszt érhető el
+- a foglalási folyamat külön frontend és backend oldalon is végig van tesztelve
+
+Lefedett foglalási tesztesetek:
+1. sikeres foglalás létrehozása
+2. inaktív hajóra való foglalás tiltása
+3. saját hajóra való foglalás tiltása
+4. ütköző dátumtartomány kezelése
+5. backend hibaüzenet megjelenítése
+6. foglalás jóváhagyási folyamat ellenőrzése
+
+
+Továbbfejlesztési javaslatok:
+- külön service osztályok bevezetése backend oldalon
+- részletesebb automata tesztek készítése
+- API dokumentáció létrehozása
+- lapozás és keresési optimalizálás
+- audit naplózás admin műveletekre
+- valós idejű értesítések bevezetése
+- biztonsági ellenőrzések további erősítése
+
+
+7. 3-4 MONDATOS SZAKMAI ÖSSZEFOGLALÓ A DIÁRA
+--------------------------------------------
+
+A fejlesztett rendszer egy modern, webalapú hajóbérlési platform, amely lehetővé teszi a hajók hirdetését, keresését, foglalását és értékelését. A backend Laravel alapú REST API-ként működik, míg a frontend React segítségével biztosít gyors és felhasználóbarát kezelőfelületet. A rendszer támogatja a hitelesítést, a szerepkör alapú jogosultságkezelést, az adminisztrációs funkciókat és az értesítési megoldásokat is. A megoldás jól szemlélteti egy teljes értékű, adatbázis-központú, többfelhasználós webalkalmazás felépítését.
+
+
+8. TECHNOLÓGIAI STACK
+---------------------
+
+Backend:
+- PHP 8.2
+- Laravel 12
+- Laravel Sanctum 4.2
+- Laravel Breeze 2.3
+
+Frontend:
+- React 19.2
+- Vite 7.2
+- React Router DOM 7.11
+- Axios 1.14
+
+Kiegészítők:
+- Chart.js
+- React Chartjs 2
+- Recharts
+- ESLint
+- PHPUnit
+- Vitest
+- Testing Library
+
+Miért jó választás szakdolgozathoz?
+- jól elkülöníthető frontend és backend
+- ipari környezetben is elterjedt technológiák
+- könnyen bemutatható architektúra
+- egy projektben demonstrálható adatbázis, API, autentikáció és felhasználói felület

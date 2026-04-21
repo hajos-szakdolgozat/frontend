@@ -1,10 +1,10 @@
 :root {
-  --nav-bg: color-mix(in srgb, var(--color-surface) 90%, transparent);
+  --nav-bg: color-mix(in srgb, var(--color-surface) 92%, transparent);
   --accent: var(--color-primary);
   --muted: var(--color-text-muted);
   --border: var(--color-border);
   --shadow: var(--shadow-soft);
-  --nav-height: 100px;
+  --nav-height: 90px;
 }
 
 .nav {
@@ -26,7 +26,7 @@
   margin: 0 auto;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   gap: 16px;
   padding: 12px 18px;
 }
@@ -97,30 +97,197 @@
 }
 
 .nav-search {
-  flex: 0 1 760px;
-  width: min(760px, 100%);
-  max-width: 760px;
+  flex: 1 1 700px;
+  width: min(680px, 100%);
+  max-width: 680px;
+  margin-right: 14px;
+  min-width: 0;
 }
 
 .search-container {
   display: flex;
+  flex-direction: column;
+  gap: 0;
+  align-items: stretch;
+  position: relative;
+  padding: 0;
+}
+
+.search-row {
+  display: flex;
   gap: 8px;
   align-items: center;
-  padding: 8px;
+  min-width: 0;
+}
+
+.search-shell {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  padding: 5px;
+  border: 1px solid color-mix(in srgb, var(--border) 82%, #fff);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-surface) 97%, #fff);
+  box-shadow: 0 10px 30px color-mix(in srgb, #000 8%, transparent);
+}
+
+.nav-search-segment {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.18rem;
+  padding: 0.18rem 0.7rem;
+  position: relative;
+}
+
+.nav-search-segment + .nav-search-segment {
+  border-left: 1px solid color-mix(in srgb, var(--border) 70%, #fff);
+}
+
+.nav-search-segment--location {
+  flex: 1.35 1 0;
+}
+
+.nav-search-segment--dates {
+  flex: 1.2 1 0;
+}
+
+.nav-search-segment--guests {
+  flex: 0.8 1 0;
+}
+
+.nav-search-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.nav-search-date-fields {
+  display: flex;
+  gap: 0.45rem;
+  min-width: 0;
+}
+
+.nav-search-trigger {
+  min-width: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.18rem;
+  padding: 0.32rem 0.45rem;
+  border: none;
+  border-radius: 14px;
+  background: transparent;
+  color: var(--color-text);
+  cursor: pointer;
+  transition:
+    background 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.nav-search-trigger:hover,
+.nav-search-trigger.is-open,
+.nav-search-trigger:focus-visible {
+  background: color-mix(in srgb, var(--color-surface-soft) 58%, #fff);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 35%, transparent);
+  outline: none;
+}
+
+.nav-search-trigger-value {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nav-search-chip-label {
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: var(--muted);
+}
+
+.nav-search-popover {
+  position: relative;
+  position: absolute;
+  top: calc(100% + 0.7rem);
+  left: 0;
+  min-width: 220px;
+  padding: 0.8rem;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: color-mix(in srgb, var(--color-surface) 98%, #fff);
+  box-shadow: 0 20px 40px color-mix(in srgb, #000 14%, transparent);
+  z-index: 1260;
+}
+
+.nav-search-popover--dates {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.7rem;
+  min-width: 240px;
+}
+
+.nav-search-popover--guests {
+  min-width: 180px;
+  padding: 0.5rem;
+}
+
+.nav-search-popover-field {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.28rem;
+  padding: 0.6rem 0.7rem;
+  border-radius: 14px;
+  background: var(--color-surface-soft);
+}
+
+.nav-search-guest-list {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.nav-search-guest-option {
+  width: 100%;
+  border: none;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--color-text);
+  padding: 0.62rem 0.72rem;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+}
+
+.nav-search-guest-option:hover,
+.nav-search-guest-option.is-selected {
+  background: color-mix(in srgb, var(--color-primary) 15%, transparent);
+}
+
+.nav-search-guest-option.is-selected {
+  color: var(--color-primary);
+  font-weight: 700;
 }
 
 .nav-search-input {
-  height: 100%;
-  padding: 6px 10px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  background: var(--color-surface-soft);
+  min-width: 0;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
   color: var(--color-text);
-  font-size: 0.95rem;
+  font-size: 0.86rem;
+  font-weight: 500;
   outline: none;
-  transition:
-    box-shadow 0.15s ease,
-    border-color 0.15s ease;
+  box-shadow: none;
+  appearance: none;
 }
 
 .nav-search-input::placeholder {
@@ -128,21 +295,184 @@
 }
 
 .nav-search-input:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-primary) 24%, transparent);
+  box-shadow: none;
 }
+
 .date-input {
-  min-width: 130px;
+  min-width: 0;
+  width: 100%;
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.date-input::-webkit-calendar-picker-indicator {
+  opacity: 0.75;
+  cursor: pointer;
+  filter: saturate(0) brightness(0.55);
+}
+
+.date-input::-webkit-datetime-edit {
+  padding: 0;
+}
+
+.date-input::-webkit-datetime-edit-fields-wrapper {
+  padding: 0;
+}
+
+.date-input:valid {
+  color: var(--color-text);
 }
 
 .search-button {
   background: var(--accent);
   color: #fff;
   border: none;
-  padding: 8px 12px;
-  border-radius: 8px;
+  padding: 0 1rem;
+  min-height: 42px;
+  border-radius: 999px;
   cursor: pointer;
+  font-weight: 700;
+  font-size: 0.88rem;
+  box-shadow: 0 8px 18px color-mix(in srgb, var(--accent) 30%, transparent);
+}
+
+.nav-advanced {
+  position: relative;
+  display: flex;
+  justify-content: flex-start;
+  flex-shrink: 0;
+}
+
+.nav-advanced-toggle {
+  min-height: 42px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-surface) 97%, #fff);
+  color: var(--color-text);
+  padding: 0 0.9rem;
+  font: inherit;
+  font-size: 0.84rem;
   font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: 0 10px 26px color-mix(in srgb, #000 7%, transparent);
+}
+
+.nav-advanced-toggle.is-open {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.nav-advanced-dropdown {
+  position: absolute;
+  top: calc(100% + 0.85rem);
+  right: 0;
+  left: auto;
+  width: min(660px, calc(100vw - 3rem));
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 28px;
+  background: color-mix(in srgb, var(--color-surface) 98%, #fff);
+  box-shadow: 0 24px 48px color-mix(in srgb, #000 12%, transparent);
+  z-index: 1250;
+}
+
+.nav-advanced-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem;
+}
+
+.nav-advanced-field,
+.nav-advanced-amenities-toggle,
+.nav-advanced-actions button {
+  min-height: 42px;
+  border-radius: 14px;
+}
+
+.nav-advanced-field {
+  padding: 0.8rem 1rem;
+  border: 1px solid var(--border);
+  background: var(--color-surface-soft);
+}
+
+.nav-advanced-amenities {
+  position: relative;
+  grid-column: 1 / -1;
+}
+
+.nav-advanced-amenities-toggle {
+  width: 100%;
+  border: 1px solid var(--border);
+  background: var(--color-surface-soft);
+  color: var(--color-text);
+  padding: 0.8rem 1rem;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.nav-advanced-amenities-toggle.is-open {
+  border-color: var(--accent);
+}
+
+.nav-advanced-amenities-dropdown {
+  position: absolute;
+  top: calc(100% + 0.35rem);
+  left: 0;
+  width: 100%;
+  min-width: 220px;
+  z-index: 10;
+  padding: 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--color-surface);
+  box-shadow: var(--shadow-soft);
+  display: grid;
+  gap: 0.45rem;
+}
+
+.nav-advanced-amenity-option {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 0.95rem;
+  cursor: pointer;
+  padding: 0.15rem 0.2rem;
+}
+
+.nav-advanced-amenity-option input {
+  margin: 0;
+}
+
+.nav-advanced-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding-top: 0.2rem;
+}
+
+.nav-advanced-actions button {
+  width: auto;
+  min-width: 150px;
+  border: 1px solid var(--border);
+  padding: 0.8rem 1.2rem;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.nav-advanced-submit {
+  border: none !important;
+  background: var(--accent);
+  color: #fff;
+}
+
+.nav-advanced-reset {
+  background: transparent;
+  color: var(--color-text);
 }
 
 .nav-links {
@@ -150,7 +480,8 @@
   align-items: center;
   gap: 12px;
   padding-right: 0;
-  margin-left: 0;
+  margin-left: auto;
+  flex-shrink: 0;
 }
 
 .nav-menu-toggle {
@@ -330,11 +661,11 @@
 
 @media (max-width: 900px) {
   .nav {
-    height: 84px;
+    height: 76px;
   }
 
   .with-navbar-offset {
-    padding-top: 84px;
+    padding-top: 76px;
   }
 
   .nav-container {
@@ -344,6 +675,7 @@
 
   .nav-search {
     display: none;
+    margin-right: 0;
   }
 
   .nav-logo h2 {
@@ -423,8 +755,29 @@
     margin-top: 0;
   }
 
-  .search-container {
-    gap: 6px;
+  .nav-advanced-dropdown {
+    width: min(640px, calc(100vw - 2rem));
+  }
+
+  .nav-search-popover {
+    left: 0;
+    right: auto;
+  }
+
+  .nav-advanced-form {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .nav-advanced-amenities {
+    grid-column: 1 / -1;
+  }
+
+  .nav-advanced-actions {
+    justify-content: stretch;
+  }
+
+  .nav-advanced-actions button {
+    flex: 1 1 0;
   }
 
   .nav-container {
@@ -438,11 +791,11 @@
 
 @media (max-width: 480px) {
   .nav {
-    height: 74px;
+    height: 68px;
   }
 
   .with-navbar-offset {
-    padding-top: 74px;
+    padding-top: 68px;
   }
 
   .nav-container {
@@ -462,6 +815,23 @@
   #navbar-default {
     width: min(94vw, 360px);
     right: -2px;
+  }
+
+  .nav-advanced-dropdown {
+    width: min(94vw, 360px);
+    right: 0;
+  }
+
+  .nav-advanced-form {
+    grid-template-columns: 1fr;
+  }
+
+  .nav-advanced-actions {
+    flex-direction: column;
+  }
+
+  .nav-advanced-actions button {
+    width: 100%;
   }
 
   .dropdown {
