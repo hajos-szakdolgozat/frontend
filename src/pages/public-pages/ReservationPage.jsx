@@ -25,6 +25,17 @@ const ReservationPage = () => {
     return nights * price;
   }, [nights, reservation]);
 
+  const amenityNames = useMemo(() => {
+    const boatAmenities = Array.isArray(reservation?.boat?.boatAmenities)
+      ? reservation.boat.boatAmenities
+      : Array.isArray(reservation?.boat?.boat_amenities)
+        ? reservation.boat.boat_amenities
+        : [];
+    return boatAmenities
+      .map((item) => item?.amenity?.name || item?.name || "")
+      .filter(Boolean);
+  }, [reservation]);
+
   const thumbnail =
     reservation?.boat?.boat_images?.find((image) => image.is_thumbnail) ||
     reservation?.boat?.boat_images?.[0];
@@ -114,6 +125,21 @@ const ReservationPage = () => {
             <span>Merülés</span>
             <strong>{reservation?.boat?.draft} m</strong>
           </div>
+        </div>
+
+        <div className="reservation-page__details">
+          <div>
+            <span>Felszereltségek</span>
+          </div>
+          {amenityNames.length ? (
+            <ul>
+              {amenityNames.map((name) => (
+                <li key={name}>{name}</li>
+              ))}
+            </ul>
+          ) : (
+            <p>Ennél a hirdetésnél nincs megadva felszereltség.</p>
+          )}
         </div>
 
         <div className="reservation-page__details">
