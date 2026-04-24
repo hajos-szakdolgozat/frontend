@@ -5,6 +5,25 @@ import { invalidateFetchCache } from "../hooks/useFetch";
 import { getBoatImages } from "../utils/boatImages";
 import "./css/AddBoat.css";
 
+const extractCollection = (payload, fallbackKey) => {
+  if (Array.isArray(payload)) {
+    return payload;
+  }
+
+  if (!payload || typeof payload !== "object") {
+    return [];
+  }
+
+  const candidateKeys = [fallbackKey, "data", "items", "results"];
+  for (const key of candidateKeys) {
+    if (Array.isArray(payload[key])) {
+      return payload[key];
+    }
+  }
+
+  return [];
+};
+
 const AddBoat = () => {
   const { user } = useAuthContext();
   const currentYear = new Date().getFullYear();
@@ -295,18 +314,23 @@ const AddBoat = () => {
 
   useEffect(() => {
     const loadData = async () => {
-      try {
-        const [{ data: portsData }, { data: amenitiesData }] =
-          await Promise.all([
-            httpClient.get("/api/ports"),
-            httpClient.get("/api/amenities"),
-          ]);
+      const [portsResult, amenitiesResult] = await Promise.allSettled([
+        httpClient.get("/api/ports"),
+        httpClient.get("/api/amenities"),
+      ]);
 
-        setPorts(Array.isArray(portsData) ? portsData : []);
+      if (portsResult.status === "fulfilled") {
+        setPorts(extractCollection(portsResult.value.data, "ports"));
+      } else {
+        setPorts([]);
+        console.error("Failed to load ports", portsResult.reason);
+      }
 
-        setAmenities(Array.isArray(amenitiesData) ? amenitiesData : []);
-      } catch (err) {
-        console.error("Failed to load form data", err);
+      if (amenitiesResult.status === "fulfilled") {
+        setAmenities(extractCollection(amenitiesResult.value.data, "amenities"));
+      } else {
+        setAmenities([]);
+        console.error("Failed to load amenities", amenitiesResult.reason);
       }
     };
 

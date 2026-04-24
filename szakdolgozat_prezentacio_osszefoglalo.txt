@@ -219,6 +219,153 @@ Kiegészítők:
 - Vitest
 - Testing Library
 
+
+9. KIEMELHETŐ KÓDRÉSZLET AZ ELŐADÁSHOZ
+-------------------------------------
+
+Ha egy konkrét, szakmailag jól bemutatható részt kell kiemelni a kódból, akkor a foglalási folyamat a legjobb választás.
+
+Miért ez a legjobb példa?
+- van benne frontend validáció
+- van benne backend üzleti ellenőrzés
+- kapcsolódik hozzá jogosultságkezelés
+- értesítési logika is megjelenik
+- tesztekkel is alá van támasztva
+
+Frontend oldalon kiemelhető rész:
+- fájl: src/components/ReservationFrom.jsx
+
+9. KIEMELHETŐ KÓDRÉSZLET AZ ELŐADÁSHOZ
+-------------------------------------
+
+Ha egy konkrét, szakmailag jól bemutatható részt kell kiemelni a kódból, akkor a foglalási folyamat a legjobb választás.
+
+Miért ez a legjobb példa?
+- van benne frontend validáció
+- van benne backend üzleti ellenőrzés
+- kapcsolódik hozzá jogosultságkezelés
+- értesítési logika is megjelenik
+- tesztekkel is alá van támasztva
+
+Frontend oldalon kiemelhető rész:
+- fájl: src/components/ReservationFrom.jsx
+
+9. KIEMELHETŐ KÓDRÉSZLET AZ ELŐADÁSHOZ
+-------------------------------------
+
+Ha egy konkrét, szakmailag jól bemutatható részt kell kiemelni a kódból, akkor a foglalási folyamat a legjobb választás.
+
+Miért ez a legjobb példa?
+- van benne frontend validáció
+- van benne backend üzleti ellenőrzés
+- kapcsolódik hozzá jogosultságkezelés
+- értesítési logika is megjelenik
+- tesztekkel is alá van támasztva
+
+Frontend oldalon kiemelhető rész:
+- fájl: src/components/ReservationFrom.jsx
+
+9. KIEMELHETŐ KÓDRÉSZLET AZ ELŐADÁSHOZ
+-------------------------------------
+
+Ha egy konkrét, szakmailag jól bemutatható részt kell kiemelni a kódból, akkor a foglalási folyamat a legjobb választás.
+
+Miért ez a legjobb példa?
+- van benne frontend validáció
+- van benne backend üzleti ellenőrzés
+- kapcsolódik hozzá jogosultságkezelés
+- értesítési logika is megjelenik
+- tesztekkel is alá van támasztva
+
+Frontend oldalon kiemelhető rész:
+- fájl: src/components/ReservationFrom.jsx
+
+9. KIEMELHETŐ KÓDRÉSZLET AZ ELŐADÁSHOZ
+-------------------------------------
+
+Ha egy konkrét, szakmailag jól bemutatható részt kell kiemelni a kódból, akkor a foglalási folyamat a legjobb választás.
+
+Miért ez a legjobb példa?
+- van benne frontend validáció
+- van benne backend üzleti ellenőrzés
+- kapcsolódik hozzá jogosultságkezelés
+- értesítési logika is megjelenik
+- tesztekkel is alá van támasztva
+
+Frontend oldalon kiemelhető rész:
+- fájl: src/components/ReservationFrom.jsx
+
+9. KIEMELHETŐ KÓDRÉSZLET AZ ELŐADÁSHOZ
+-------------------------------------
+
+Ha egy konkrét, szakmailag jól bemutatható részt kell kiemelni a kódból, akkor a foglalási folyamat a legjobb választás.
+
+Miért ez a legjobb példa?
+- van benne frontend validáció
+- van benne backend üzleti ellenőrzés
+- kapcsolódik hozzá jogosultságkezelés
+- értesítési logika is megjelenik
+- tesztekkel is alá van támasztva
+
+Frontend oldalon kiemelhető rész:
+- fájl: src/components/ReservationFrom.jsx
+
+9. KIEMELHETŐ KÓDRÉSZLET AZ ELŐADÁSHOZ
+-------------------------------------
+
+Ha egy konkrét, szakmailag jól bemutatható részt kell kiemelni a kódból, akkor a foglalási folyamat a legjobb választás.
+
+Miért ez a legjobb példa?
+- van benne frontend validáció
+- van benne backend üzleti ellenőrzés
+- kapcsolódik hozzá jogosultságkezelés
+- értesítési logika is megjelenik
+- tesztekkel is alá van támasztva
+
+Frontend oldalon kiemelhető rész:
+- fájl: src/components/ReservationFrom.jsx
+
+Erről ezt lehet mondani:
+Ez a komponens kezeli a foglalás létrehozását a felhasználói felületen. A felhasználó itt választ kezdő- és záródátumot, a komponens pedig még beküldés előtt ellenőrzi, hogy az adott időszak nem ütközik-e már jóváhagyott foglalással. A megoldás azért erős, mert nemcsak egy sima űrlapbeküldés történik, hanem a felület már előre segít elkerülni a hibás foglalásokat. Emellett a komponens a backendtől is lekéri a foglalási adatokat, tehát a kliensoldali és szerveroldali logika össze van hangolva.
+
+Konkrét szakmai pontok a frontendhez:
+- a foglalt időintervallumok betöltése több API végpont kipróbálásával történik
+- csak a jóváhagyott foglalások számítanak blokkoló tényezőnek
+- a kiválasztott dátumtartomány átfedését külön függvény ellenőrzi
+- hibás vagy ütköző foglalás esetén a beküldés letiltásra kerül
+- sikeres mentés után navigáció történik a foglalások oldalára
+
+Backend oldalon kiemelhető rész:
+- fájl: ../backend/app/Http/Controllers/ReservationController.php
+
+Erről ezt lehet mondani:
+A backend oldalon a ReservationController végzi a foglalási üzleti szabályok érvényesítését. Itt történik annak ellenőrzése, hogy a hajó létezik-e, aktív-e, nem a saját hajóról van-e szó, illetve hogy nincs-e már jóváhagyott foglalás ugyanarra az időszakra. Ez azért fontos, mert a frontend kényelmi ellenőrzése önmagában nem lenne elég, a valódi adatbiztonságot mindig a backendnek kell garantálnia.
+
+Konkrét szakmai pontok a backendhez:
+- a store metódus validálja a beérkező adatokat
+- külön üzleti szabály tiltja az inaktív hajó foglalását
+- külön szabály tiltja, hogy a tulajdonos a saját hajóját lefoglalja
+- a hasApprovedOverlap függvény adatbázis szinten ellenőrzi az átfedést
+- sikeres foglalás után a rendszer értesítést küld a hajó tulajdonosának
+- a státuszfrissítésnél csak pending állapotú foglalás módosítható
+
+Prezentációban elmondható folyamat:
+1. A felhasználó kiválaszt egy hajót és egy dátumtartományt.
+2. A frontend azonnal ellenőrzi, hogy van-e ütközés más foglalással.
+3. Beküldés után a backend újra lefuttatja ugyanezt az ellenőrzést.
+4. Ha minden rendben van, a foglalás elmentődik pending státusszal.
+5. A hajó tulajdonosa értesítést kap az új foglalásról.
+6. Jóváhagyáskor vagy elutasításkor a foglaló is értesítést kap.
+
+Rövid, előadásban felhasználható szöveg:
+Az egyik legerősebb része a rendszernek a foglalási folyamat, mert itt egyszerre jelenik meg a felhasználói élmény és a backend üzleti logika. A frontend már a dátumválasztás során próbálja kizárni az ütköző foglalásokat, a backend pedig ugyanazt a szabályt újraellenőrzi, hogy az adatbázis biztosan konzisztens maradjon. Így a rendszer nemcsak kényelmesen használható, hanem megbízható is. A folyamatot tovább erősíti, hogy a foglaláshoz automatikus értesítési mechanizmus is kapcsolódik.
+
+Kapcsolódó tesztelési példa:
+- fájl: src/test/ReservationFrom.test.jsx
+
+Erről ezt lehet mondani:
+A foglalási logika tesztekkel is ellenőrizve van, például sikeres foglalás, inaktív hajó tiltása, ütköző időpont kezelése és backend hibaüzenet megjelenítése esetén is. Ez azért fontos, mert így nemcsak a funkció készült el, hanem a megbízhatósága is igazolható.
+
 Miért jó választás szakdolgozathoz?
 - jól elkülöníthető frontend és backend
 - ipari környezetben is elterjedt technológiák
